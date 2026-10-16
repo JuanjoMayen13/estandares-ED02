@@ -9,7 +9,7 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 | Estándar | Angular | Flutter | Versión |
 |---|---|---|---|
 | Componente de carga (engranajes de pantalla completa) | [angular/componente-carga.md](angular/componente-carga.md) | [flutter/componente-carga.md](flutter/componente-carga.md) | 1.0.0 |
-| Barra de estado (usuario, estación, empresa, copyright y versión) | [angular/barra-estado.md](angular/barra-estado.md) | — | 1.0.0 |
+| Barra de estado (usuario, estación, empresa, copyright y versión) | [angular/barra-estado.md](angular/barra-estado.md) | [flutter/barra-estado.md](flutter/barra-estado.md) | 1.0.0 |
 
 ## Estructura del repositorio
 

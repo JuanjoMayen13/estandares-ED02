@@ -1,44 +1,67 @@
-# Estándares de interfaz
+# Estándares de desarrollo
 
-Estándares de diseño y componentes compartidos para las aplicaciones de los distintos equipos de desarrollo. Cada estándar describe **cómo se ve y cómo se comporta** un elemento de la interfaz, e incluye el código de referencia para reproducirlo igual en todas las aplicaciones.
+Estándares compartidos del equipo ED02 para las aplicaciones de los distintos equipos de desarrollo. Hay dos grupos:
+
+- **Interfaz (UI):** describen **cómo se ve y cómo se comporta** un elemento de la interfaz, e incluyen el código de referencia para reproducirlo igual en todas las aplicaciones.
+- **Backend:** describen **cómo se construye** una pieza de servidor (base de datos SQL Server y API), con plantillas listas para copiar.
 
 Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se versiona por separado.
 
 ## Estándares disponibles
+
+### Interfaz
 
 | Estándar | Angular | Flutter | Versión |
 |---|---|---|---|
 | Componente de carga (engranajes de pantalla completa) | [angular/componente-carga.md](angular/componente-carga.md) | [flutter/componente-carga.md](flutter/componente-carga.md) | 1.0.0 |
 | Barra de estado (usuario, estación, empresa, copyright y versión) | [angular/barra-estado.md](angular/barra-estado.md) | [flutter/barra-estado.md](flutter/barra-estado.md) | 1.0.0 |
 
+### Backend
+
+| Estándar | Capa | Archivo | Versión |
+|---|---|---|---|
+| Procesos en segundo plano (cola + Job de SQL Server Agent) | SQL + API | [backend/procesos-segundo-plano.md](backend/procesos-segundo-plano.md) | 1.0.0 |
+
 ## Estructura del repositorio
 
 ```
-├── angular/     Estándares para aplicaciones web (Angular, con Tailwind o CSS puro)
-└── flutter/     Estándares para aplicaciones móviles (Flutter)
+├── angular/     Estándares de interfaz para aplicaciones web (Angular, con Tailwind o CSS puro)
+├── flutter/     Estándares de interfaz para aplicaciones móviles (Flutter)
+└── backend/     Estándares de servidor que tocan SQL y API a la vez
+    ├── sql/     Estándares solo de base de datos (SQL Server)
+    └── api/     Estándares solo del API
 ```
+
+Las carpetas `backend/sql/` y `backend/api/` se crean cuando llegue su primer estándar. Para decidir dónde va uno de backend:
+
+- Si solo toca la base de datos (procedimientos, tablas, Jobs, permisos), va en `backend/sql/`.
+- Si solo toca el API (controladores, servicios, modelos, endpoints), va en `backend/api/`.
+- Si para aplicarlo hay que tocar las dos capas a la vez, va en la raíz de `backend/`.
+
+Cuando un estándar se apoya en otro, lo enlaza en lugar de repetir su contenido.
 
 ## Cómo usar un estándar
 
 1. Abre el archivo del estándar que necesitas, en la carpeta de tu tecnología.
-2. Lee la **especificación visual** (colores, medidas, comportamiento) y las **reglas de uso**.
-3. Copia el código de referencia a tu proyecto. Los estándares de Angular traen dos versiones con el mismo resultado visual: con Tailwind y con CSS puro. Elige la que corresponda a tu proyecto.
-4. Anota en un comentario la versión del estándar que copiaste (por ejemplo `// Estándar componente de carga v1.0.0`) para saber cuándo actualizar.
-5. Recorre el **checklist de QA** del estándar antes de entregar.
+2. Lee la especificación (en interfaz: colores, medidas y comportamiento; en backend: piezas, nomenclatura y flujo) y las **reglas de uso**.
+3. Copia el código de referencia o las plantillas a tu proyecto. Los estándares de Angular traen dos versiones con el mismo resultado visual: con Tailwind y con CSS puro. Elige la que corresponda a tu proyecto.
+4. Anota en un comentario la versión del estándar que copiaste (por ejemplo `// Estándar componente de carga v1.0.0` o `-- Estandar procesos segundo plano v1.0.0`) para saber cuándo actualizar.
+5. Recorre el **checklist** del estándar antes de entregar.
 
 ## Reglas generales
 
-- **No modificar** colores, tamaños, tiempos ni la estructura en cada proyecto. Si algo debe cambiar, se cambia aquí y se publica una nueva versión.
+- **No modificar** en cada proyecto lo que el estándar fija (en interfaz: colores, tamaños, tiempos y estructura; en backend: nombres, estructura de tablas, estados y forma de los endpoints). Si algo debe cambiar, se cambia aquí y se publica una nueva versión.
 - Un cambio en un estándar se aplica a **todas sus implementaciones a la vez** y se registra en su historial.
-- Cada estándar describe **solo el diseño**: no incluye lógica propia de ninguna aplicación (sesión, temas de color, navegación).
+- Los estándares de interfaz describen **solo el diseño**: no incluyen lógica propia de ninguna aplicación (sesión, temas de color, navegación).
+- Los estándares de backend describen **un patrón general**: los casos reales aparecen solo como ejemplo, y su detalle se documenta aparte.
 
 ## Versionado
 
 Cada estándar usa [SemVer](https://semver.org/lang/es/):
 
-- **MAJOR**: cambia el aspecto.
+- **MAJOR**: cambia el aspecto (interfaz) o el contrato (backend: tablas, parámetros, estados o endpoints).
 - **MINOR**: agrega opciones compatibles.
-- **PATCH**: corrige sin cambiar el aspecto.
+- **PATCH**: corrige sin cambiar el aspecto ni el contrato.
 
 El historial de cambios está al final de cada archivo.
 

@@ -1,8 +1,9 @@
 # Estándares de desarrollo
 
-Estándares compartidos del equipo ED02 para las aplicaciones de los distintos equipos de desarrollo. Hay dos grupos:
+Estándares compartidos del equipo ED02 para las aplicaciones de los distintos equipos de desarrollo. Hay tres grupos:
 
 - **Interfaz (UI):** describen **cómo se ve y cómo se comporta** un elemento de la interfaz, e incluyen el código de referencia para reproducirlo igual en todas las aplicaciones.
+- **Integración con el API:** describen **cómo debe comportarse** una aplicación ante un contrato del API (endpoints, eventos, errores), con una implementación sugerida que cada proyecto adapta.
 - **Backend:** describen **cómo se construye** una pieza de servidor (base de datos SQL Server y API), con plantillas listas para copiar.
 
 Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se versiona por separado.
@@ -16,6 +17,12 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 | Componente de carga (engranajes de pantalla completa) | [angular/componente-carga.md](angular/componente-carga.md) | [flutter/componente-carga.md](flutter/componente-carga.md) | 1.0.0 |
 | Barra de estado (usuario, estación, empresa, copyright y versión) | [angular/barra-estado.md](angular/barra-estado.md) | [flutter/barra-estado.md](flutter/barra-estado.md) | 1.0.0 |
 
+### Integración con el API
+
+| Estándar | Angular | Flutter | Versión |
+|---|---|---|---|
+| Sesión única (una sola sesión activa por usuario entre web y móvil) | [angular/sesion-unica.md](angular/sesion-unica.md) | — | 1.0.0 |
+
 ### Backend
 
 | Estándar | Capa | Archivo | Versión |
@@ -25,8 +32,8 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 ## Estructura del repositorio
 
 ```
-├── angular/     Estándares de interfaz para aplicaciones web (Angular, con Tailwind o CSS puro)
-├── flutter/     Estándares de interfaz para aplicaciones móviles (Flutter)
+├── angular/     Estándares de interfaz e integración para aplicaciones web (Angular, con Tailwind o CSS puro)
+├── flutter/     Estándares de interfaz e integración para aplicaciones móviles (Flutter)
 └── backend/     Estándares de servidor que tocan SQL y API a la vez
     ├── sql/     Estándares solo de base de datos (SQL Server)
     └── api/     Estándares solo del API

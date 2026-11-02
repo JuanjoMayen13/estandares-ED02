@@ -21,13 +21,15 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 
 | Estándar | Angular | Flutter | Versión |
 |---|---|---|---|
-| Sesión única (una sola sesión activa por usuario entre web y móvil) | [angular/sesion-unica.md](angular/sesion-unica.md) | — | 1.0.0 |
+| Sesión única (una sola sesión activa por usuario entre web y móvil) | [angular/sesion-unica.md](angular/sesion-unica.md) | [flutter/sesion-unica.md](flutter/sesion-unica.md) | 1.0.1 (Angular) · 1.0.0 (Flutter) |
 
 ### Backend
 
 | Estándar | Capa | Archivo | Versión |
 |---|---|---|---|
 | Procesos en segundo plano (cola + Job de SQL Server Agent) | SQL + API | [backend/procesos-segundo-plano.md](backend/procesos-segundo-plano.md) | 1.0.0 |
+| Sesión única: tabla `SesionUsuario` y procedimientos | SQL | [backend/sql/sesion-unica.md](backend/sql/sesion-unica.md) | 1.0.0 |
+| Sesión única: login, validación por petición, hub y cierre de sesión | API | [backend/api/sesion-unica.md](backend/api/sesion-unica.md) | 1.0.0 |
 
 ## Estructura del repositorio
 
@@ -39,7 +41,7 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
     └── api/     Estándares solo del API
 ```
 
-Las carpetas `backend/sql/` y `backend/api/` se crean cuando llegue su primer estándar. Para decidir dónde va uno de backend:
+Para decidir dónde va uno de backend:
 
 - Si solo toca la base de datos (procedimientos, tablas, Jobs, permisos), va en `backend/sql/`.
 - Si solo toca el API (controladores, servicios, modelos, endpoints), va en `backend/api/`.

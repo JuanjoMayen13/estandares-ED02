@@ -9,7 +9,8 @@ Está escrita para que la siga **cualquier equipo**, tenga la estructura que ten
 
 | Referencia | |
 |---|---|
-| **Versión** | 1.0.0 — 2026-10-30 |
+| **Versión** | 1.0.1 — 2026-11-02 |
+| Estándares relacionados | API: [backend/api/sesion-unica.md](../backend/api/sesion-unica.md) · Base de datos: [backend/sql/sesion-unica.md](../backend/sql/sesion-unica.md) · Flutter: [flutter/sesion-unica.md](../flutter/sesion-unica.md) |
 | Colección de pruebas del API | `ApiBusiness_Sesion_Unica.postman_collection.json`, en `business/docs/SCRIPTS_API/` del repositorio del portal GD02 (no está en este repositorio) |
 | Dependencia | `@microsoft/signalr` (el código de ejemplo se probó con la `10.x`) |
 | Versión de Angular de los ejemplos | 15 o superior (`inject()`, interceptores funcionales, componentes standalone). La sección 5.9 explica las equivalencias para versiones anteriores. |
@@ -1096,4 +1097,5 @@ Solo como referencia de cómo quedó en un proyecto real. Los demás proyectos *
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 1.0.1 | 2026-11-02 | Ligas a los estándares de sesión única del API, la base de datos y Flutter. |
 | 1.0.0 | 2026-10-30 | Primera versión. Contrato con el API, comportamientos obligatorios (C1–C13) e implementación sugerida, tomados del portal web GD02. |

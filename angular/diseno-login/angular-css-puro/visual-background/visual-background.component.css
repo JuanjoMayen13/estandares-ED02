@@ -1,0 +1,86 @@
+/* Degradado base: mismos tonos que <app-loading-screen>, para que el paso del arranque al login no se note */
+.fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(147, 197, 253, 0.16), transparent 60%),
+    linear-gradient(135deg, #3b4b9a, #172554);
+}
+
+:host-context(.dark) .fondo {
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(99, 102, 241, 0.14), transparent 60%),
+    linear-gradient(135deg, #1e2759, #0a1029);
+}
+
+/* Manchas de color muy difuminadas que se desplazan despacio */
+.resplandor {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  animation: flotar 20s ease-in-out infinite alternate;
+}
+
+.resplandor-1 {
+  width: 560px;
+  height: 560px;
+  top: -180px;
+  left: -140px;
+  background: #3b82f6;
+}
+
+.resplandor-2 {
+  width: 480px;
+  height: 480px;
+  right: -120px;
+  bottom: -200px;
+  background: #6366f1;
+  animation-delay: -7s;
+}
+
+/* Toque ámbar: el mismo tono del engranaje naranja del arranque */
+.resplandor-3 {
+  width: 300px;
+  height: 300px;
+  top: 58%;
+  left: 64%;
+  background: #f59e0b;
+  opacity: 0.16;
+  animation-duration: 26s;
+}
+
+:host-context(.dark) .resplandor {
+  opacity: 0.32;
+}
+
+:host-context(.dark) .resplandor-3 {
+  opacity: 0.1;
+}
+
+/* Rejilla de puntos que se desvanece hacia los bordes */
+.rejilla {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 25%, transparent 75%);
+}
+
+@keyframes flotar {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(60px, 40px) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resplandor {
+    animation: none;
+  }
+}

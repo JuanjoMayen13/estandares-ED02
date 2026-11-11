@@ -1,0 +1,37 @@
+{
+  "labelsLogin": {
+    "iniciarSesion": "Anmelden",
+    "subtituloLogin": "Geben Sie Ihre Zugangsdaten ein, um fortzufahren",
+    "bienvenidaTitulo": "Willkommen zurück",
+    "bienvenidaTexto": "Melden Sie sich mit Ihrem Benutzer an, um dort weiterzumachen, wo Sie aufgehört haben.",
+    "usuarioLogin": "Benutzer",
+    "contraseñaLogin": "Passwort",
+    "errorUsuarioLogin": "Sie müssen den Namen des Benutzers eingeben",
+    "errorContraseñaLogin": "Sie müssen das Passwort eingeben",
+    "guardarDatosSesion": "Sitzungsdaten speichern",
+    "cargandoLogin": "Laden",
+    "cargandoInfoAdicional": "Zusätzliche Informationen werden geladen, bitte warten...",
+    "cambiarServidor": "Server ändern",
+    "menuAutenticacionLogin": "Authentifizierungsmenü",
+    "seleccionarInformacionAdicionalLogin": "Wählen Sie die erforderlichen Informationen aus",
+    "empresasLogin": "Unternehmen",
+    "estacionesTrabajoLogin": "Arbeitsplätze",
+    "guardarCambiosBtnsLogin": "Änderungen speichern",
+    "ErrorConexionAPI": "Überprüfen Sie die URL oder die API-Verbindung.",
+    "ErrorAutenticacion": "Fehler bei der Authentifizierung des Benutzers.",
+    "sinEmpresasAsignadas": "Dem Benutzer sind keine Unternehmen zugewiesen.",
+    "errorServidorLogin": "Anmeldung aufgrund eines Serverfehlers nicht möglich. Versuchen Sie es erneut oder wenden Sie sich an den Support."
+  },
+  "common": {
+    "idioma": "Sprache",
+    "cargandoPuntos": "Wird geladen..."
+  },
+  "shared": {
+    "modoClaro": "Hell",
+    "modoOscuro": "Dunkel",
+    "seleccioneEmpresaPrimero": "Wählen Sie zuerst ein Unternehmen aus",
+    "empresaSinEstaciones": "Dem ausgewählten Unternehmen sind keine Arbeitsstationen zugewiesen.",
+    "copiado": "Kopiert",
+    "copiarVersion": "Versionsinformationen {{version}} kopieren"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "labelsLogin": {
+    "iniciarSesion": "Iniciar Sesión",
+    "subtituloLogin": "Ingresa tus credenciales para continuar",
+    "bienvenidaTitulo": "Bienvenido de nuevo",
+    "bienvenidaTexto": "Ingresa con tu usuario para continuar donde lo dejaste.",
+    "usuarioLogin": "Usuario",
+    "contraseñaLogin": "Contraseña",
+    "errorUsuarioLogin": "Debe ingresar el usuario",
+    "errorContraseñaLogin": "Debe ingresar la contraseña",
+    "guardarDatosSesion": "Guardar sesión",
+    "cargandoLogin": "Cargando",
+    "cargandoInfoAdicional": "Cargando información adicional, espere...",
+    "cambiarServidor": "Cambiar servidor",
+    "menuAutenticacionLogin": "Menú de Autenticación",
+    "seleccionarInformacionAdicionalLogin": "Selecciona la información requerida",
+    "empresasLogin": "Empresas",
+    "estacionesTrabajoLogin": "Estaciones de Trabajo",
+    "guardarCambiosBtnsLogin": "Guardar cambios",
+    "ErrorConexionAPI": "Revisa la URL o la conexión a la API.",
+    "ErrorAutenticacion": "Error al autenticar el usuario.",
+    "sinEmpresasAsignadas": "El usuario no tiene empresas asignadas.",
+    "errorServidorLogin": "No se pudo iniciar sesión por un error en el servidor. Intente de nuevo o contacte a soporte."
+  },
+  "common": {
+    "idioma": "Idioma",
+    "cargandoPuntos": "Cargando..."
+  },
+  "shared": {
+    "modoClaro": "Claro",
+    "modoOscuro": "Oscuro",
+    "seleccioneEmpresaPrimero": "Seleccione una empresa primero",
+    "empresaSinEstaciones": "La empresa seleccionada no tiene estaciones de trabajo asignadas.",
+    "copiado": "Copiado",
+    "copiarVersion": "Copiar la información de la versión {{version}}"
+  }
+}

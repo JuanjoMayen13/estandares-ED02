@@ -6,7 +6,7 @@ Estándares compartidos del equipo ED02 para las aplicaciones de los distintos e
 - **Integración con el API:** describen **cómo debe comportarse** una aplicación ante un contrato del API (endpoints, eventos, errores), con una implementación sugerida que cada proyecto adapta.
 - **Backend:** describen **cómo se construye** una pieza de servidor (base de datos SQL Server y API), con plantillas listas para copiar.
 
-Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se versiona por separado.
+Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se versiona por separado. Si trae código para copiar, imágenes o una demo, vive en su propia carpeta, con un `README.md` que es el documento del estándar.
 
 ## Estándares disponibles
 
@@ -16,6 +16,7 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 |---|---|---|---|
 | Componente de carga (engranajes de pantalla completa) | [angular/componente-carga.md](angular/componente-carga.md) | [flutter/componente-carga.md](flutter/componente-carga.md) | 1.0.0 |
 | Barra de estado (usuario, estación, empresa, copyright y versión) | [angular/barra-estado.md](angular/barra-estado.md) | [flutter/barra-estado.md](flutter/barra-estado.md) | 1.0.0 |
+| Diseño del login (fondo animado, tarjeta, idioma y tema, modal de empresa y estación; incluye demo) | [angular/diseno-login/](angular/diseno-login/README.md) | — | 1.0.0 |
 
 ### Integración con el API
 
@@ -35,6 +36,7 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 
 ```
 ├── angular/     Estándares de interfaz e integración para aplicaciones web (Angular, con Tailwind o CSS puro)
+│   └── diseno-login/   Estándar en carpeta: README.md + código, traducciones, imágenes y demo
 ├── flutter/     Estándares de interfaz e integración para aplicaciones móviles (Flutter)
 └── backend/     Estándares de servidor que tocan SQL y API a la vez
     ├── sql/     Estándares solo de base de datos (SQL Server)
@@ -51,7 +53,7 @@ Cuando un estándar se apoya en otro, lo enlaza en lugar de repetir su contenido
 
 ## Cómo usar un estándar
 
-1. Abre el archivo del estándar que necesitas, en la carpeta de tu tecnología.
+1. Abre el archivo del estándar que necesitas, en la carpeta de tu tecnología (o el `README.md` de su carpeta).
 2. Lee la especificación (en interfaz: colores, medidas y comportamiento; en backend: piezas, nomenclatura y flujo) y las **reglas de uso**.
 3. Copia el código de referencia o las plantillas a tu proyecto. Los estándares de Angular traen dos versiones con el mismo resultado visual: con Tailwind y con CSS puro. Elige la que corresponda a tu proyecto.
 4. Anota en un comentario la versión del estándar que copiaste (por ejemplo `// Estándar componente de carga v1.0.0` o `-- Estandar procesos segundo plano v1.0.0`) para saber cuándo actualizar.

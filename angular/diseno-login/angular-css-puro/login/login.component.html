@@ -1,0 +1,419 @@
+<app-api-config
+  *ngIf="mostrarModalApi"
+  (modalCerrado)="onConfiguracionTerminada()"
+></app-api-config>
+
+<!-- Estándar diseño del login v1.0.0 — versión CSS puro (sin Tailwind) -->
+<ng-container *ngIf="!mostrarModalApi">
+  <!-- Contenedor principal con fondo animado -->
+  <div class="lg-contenedor">
+    <app-visual-background />
+
+    <!-- Barra superior: idioma y modo oscuro. Va con el scroll (absolute) para no tapar la tarjeta en pantallas bajas -->
+    <div
+      *ngIf="isIdiomaDialOpen"
+      class="lg-cerrar-menu"
+      (click)="isIdiomaDialOpen = false"
+    ></div>
+    <div class="lg-barra">
+      <div class="lg-idioma">
+        <button
+          type="button"
+          (click)="toggleIdiomaDial()"
+          class="lg-boton-idioma"
+          [title]="'common.idioma' | translate"
+          [attr.aria-label]="'common.idioma' | translate"
+          [attr.aria-expanded]="isIdiomaDialOpen"
+        >
+          <img [src]="idiomaActual.bandera" class="lg-bandera" alt="" />
+          <span class="lg-codigo-idioma">{{ idiomaActual.codigo }}</span>
+          <i
+            class="fa-solid fa-chevron-down lg-chevron"
+            [class.lg-chevron--abierto]="isIdiomaDialOpen"
+          ></i>
+        </button>
+
+        <!-- Menú de idiomas -->
+        <div
+          *ngIf="isIdiomaDialOpen"
+          [@idiomaDialAnimation]
+          class="lg-menu-idiomas"
+          role="menu"
+        >
+          <button
+            *ngFor="let idioma of idiomas"
+            type="button"
+            role="menuitem"
+            (click)="onCambioIdioma(idioma.codigo)"
+            class="lg-opcion-idioma"
+            [class.lg-opcion-idioma--activa]="idioma.codigo === idiomaActual.codigo"
+          >
+            <img [src]="idioma.bandera" class="lg-bandera" alt="" />
+            <span class="lg-nombre-idioma">{{ idioma.nombre }}</span>
+            <i
+              *ngIf="idioma.codigo === idiomaActual.codigo"
+              class="fa-solid fa-check lg-check-idioma"
+            ></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modo oscuro / claro -->
+      <button
+        type="button"
+        (click)="toggleModoOscuroElementLogin()"
+        class="lg-boton-tema"
+        [title]="(esModoOscuro ? 'shared.modoClaro' : 'shared.modoOscuro') | translate"
+        [attr.aria-label]="(esModoOscuro ? 'shared.modoClaro' : 'shared.modoOscuro') | translate"
+      >
+        <i
+          class="fa-solid"
+          [ngClass]="esModoOscuro ? 'fa-moon lg-icono-luna' : 'fa-sun lg-icono-sol'"
+        ></i>
+      </button>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="lg-contenido animate-login-enter">
+      <!-- Tarjeta con efecto glassmorphism: panel de bienvenida + formulario -->
+      <div class="lg-tarjeta">
+        <!-- SECCION: Panel de bienvenida (solo pantallas grandes) -->
+        <div class="panel-bienvenida">
+          <!-- Ilustración: órbitas alrededor del logo de la empresa (o del escudo si aún no hay logo guardado) -->
+          <div class="login-ilustracion">
+            <div class="orbita" aria-hidden="true">
+              <span class="anillo"></span>
+              <span class="anillo anillo-2"></span>
+              <span class="anillo anillo-3"></span>
+              <!-- Cada bola se puede arrastrar con el mouse sobre su propio anillo -->
+              <span class="satelite"><span class="bola" appBolaArrastrable></span></span>
+              <span class="satelite satelite-2"><span class="bola" appBolaArrastrable></span></span>
+              <span class="satelite satelite-3"><span class="bola" appBolaArrastrable></span></span>
+              @if (logoEmpresa$ | async; as logo) {
+                <span class="nucleo con-logo">
+                  <img [src]="logo" alt="" />
+                </span>
+              } @else {
+                <span class="nucleo">
+                  <i class="fa-solid fa-shield-halved"></i>
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="lg-bienvenida-texto">
+            <h2 class="lg-bienvenida-titulo">
+              {{ "labelsLogin.bienvenidaTitulo" | translate }}
+            </h2>
+            <p class="lg-bienvenida-parrafo">
+              {{ "labelsLogin.bienvenidaTexto" | translate }}
+            </p>
+          </div>
+        </div>
+
+        <!-- SECCION: Formulario -->
+        <div class="login-formulario">
+          <!-- Encabezado -->
+          <div class="login-encabezado">
+            <!-- Logo de la empresa (o escudo si aún no hay logo guardado); en pantallas grandes va en el panel de bienvenida -->
+            @if (logoEmpresa$ | async; as logo) {
+              <div class="login-icono login-icono--logo" aria-hidden="true">
+                <img [src]="logo" alt="" />
+              </div>
+            } @else {
+              <div class="login-icono login-icono--escudo" aria-hidden="true">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+            }
+            <h1 class="lg-titulo">
+              {{ "labelsLogin.iniciarSesion" | translate }}
+            </h1>
+            <p class="lg-subtitulo">
+              {{ "labelsLogin.subtituloLogin" | translate }}
+            </p>
+          </div>
+
+          <form class="lg-formulario">
+            <!-- Input: Usuario -->
+            <div class="lg-grupo">
+              <label for="usuario" class="lg-etiqueta">
+                {{ "labelsLogin.usuarioLogin" | translate }}
+              </label>
+              <div class="lg-campo-envoltura">
+                <span class="lg-campo-icono">
+                  <i class="fa-solid fa-user"></i>
+                </span>
+                <input
+                  id="usuario"
+                  #usuarioInput
+                  name="usuario"
+                  type="text"
+                  autocomplete="username"
+                  [(ngModel)]="usuario"
+                  (ngModelChange)="onUsuarioChange()"
+                  (keydown)="onKeyDown($event, 'usuario')"
+                  (keydown.enter)="verificarCampos()"
+                  placeholder="{{ 'labelsLogin.usuarioLogin' | translate }}"
+                  class="campo"
+                  [ngClass]="errores.usuario ? 'campo-error' : 'campo-normal'"
+                />
+              </div>
+              <p *ngIf="errores.usuario" class="lg-error-campo">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                {{ "labelsLogin.errorUsuarioLogin" | translate }}
+              </p>
+            </div>
+
+            <!-- Input: Contraseña -->
+            <div class="lg-grupo">
+              <label for="password" class="lg-etiqueta">
+                {{ "labelsLogin.contraseñaLogin" | translate }}
+              </label>
+              <div class="lg-campo-envoltura">
+                <span class="lg-campo-icono">
+                  <i class="fa-solid fa-lock"></i>
+                </span>
+                <input
+                  id="password"
+                  #passInput
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  [(ngModel)]="pass"
+                  (keydown)="onKeyDown($event, 'pass')"
+                  (keydown.enter)="verificarCampos()"
+                  placeholder="{{ 'labelsLogin.contraseñaLogin' | translate }}"
+                  class="campo"
+                  [ngClass]="errores.pass ? 'campo-error' : 'campo-normal'"
+                />
+              </div>
+              <p *ngIf="errores.pass" class="lg-error-campo">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                {{ "labelsLogin.errorContraseñaLogin" | translate }}
+              </p>
+            </div>
+
+            <!-- Switch para guardar sesión -->
+            <label class="lg-switch-fila">
+              <span class="lg-switch-texto">
+                {{ "labelsLogin.guardarDatosSesion" | translate }}
+              </span>
+              <span class="lg-switch">
+                <input
+                  type="checkbox"
+                  class="lg-switch-input"
+                  [checked]="guardarDatosSesion"
+                  (change)="onGuardarDatosSesionChange($event)"
+                />
+                <span
+                  class="lg-switch-pista"
+                  [class.lg-switch-pista--activa]="guardarDatosSesion"
+                ></span>
+                <!-- Bola blanca dentro del switch -->
+                <span
+                  class="lg-switch-bola"
+                  [class.lg-switch-bola--activa]="guardarDatosSesion"
+                ></span>
+              </span>
+            </label>
+
+            <!-- Botón Iniciar Sesión con lógica de carga -->
+            <button
+              (click)="verificarCampos()"
+              [disabled]="cargando"
+              type="submit"
+              class="boton-ingresar shine-button"
+              [class.loading]="cargando"
+            >
+              <ng-container *ngIf="cargando; else defaultText">
+                <i class="fa-solid fa-spinner fa-spin shine-text"></i>
+                <span class="shine-text">{{ ("labelsLogin.cargandoLogin" | translate) + "..." }}</span>
+              </ng-container>
+              <ng-template #defaultText>
+                <span>{{ "labelsLogin.iniciarSesion" | translate }}</span>
+                <i class="fa-solid fa-arrow-right lg-flecha"></i>
+              </ng-template>
+            </button>
+
+            <!-- Mensaje de carga de información adicional -->
+            <div *ngIf="cargandoEmpresas || cargandoEstaciones" class="lg-cargando-info">
+              <i class="fa-solid fa-circle-notch fa-spin"></i>
+              {{ "labelsLogin.cargandoInfoAdicional" | translate }}
+            </div>
+
+            <!-- Mensaje de error al autenticarse -->
+            <div *ngIf="errores.general" role="alert" class="lg-error-general">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>{{ errores.general | translate }}</span>
+            </div>
+          </form>
+
+          <!-- Pie: servidor de la API y versión de la app -->
+          <div class="login-pie">
+            <button
+              type="button"
+              (click)="alternarSeccionURL()"
+              class="lg-servidor"
+              [title]="'labelsLogin.cambiarServidor' | translate"
+            >
+              <span
+                class="lg-servidor-punto"
+                [class.lg-servidor-punto--valido]="esValido"
+              ></span>
+              <!-- Mundito: indica que aquí se configura la URL de la API -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="lg-servidor-mundo"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-1.5 0a6.5 6.5 0 1 1-11-4.69v.447a3.5 3.5 0 0 0 1.025 2.475L8.293 10 8 10.293a1 1 0 0 0 0 1.414l1.06 1.06a1.5 1.5 0 0 1 .44 1.061v.363a1 1 0 0 0 .553.894l.276.139a1 1 0 0 0 1.342-.448l1.454-2.908a1.5 1.5 0 0 0-.281-1.731l-.772-.772a1 1 0 0 0-1.023-.242l-.384.128a.5.5 0 0 1-.606-.25l-.296-.592a.481.481 0 0 1 .646-.646l.262.131a1 1 0 0 0 .447.106h.188a1 1 0 0 0 .949-1.316l-.068-.204a.5.5 0 0 1 .149-.538l1.44-1.234A6.492 6.492 0 0 1 16.5 10Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="lg-servidor-host">{{
+                hostServidor || ("labelsLogin.cambiarServidor" | translate)
+              }}</span>
+              <i class="fa-solid fa-pen lg-servidor-lapiz"></i>
+            </button>
+            <app-version-badge></app-version-badge>
+          </div>
+        </div>
+      </div>
+
+      <!-- Firma discreta (mismo texto del pie de los reportes) -->
+      <p class="login-firma">
+        Powered by {{ nombreEmpresa }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal para empresas y estaciones -->
+  <div *ngIf="mostrarModalEmpresaEstacion" class="lg-modal-fondo">
+    <!-- Cabecera y pie fijos; solo el cuerpo hace scroll (el modal nunca pasa del alto de la pantalla) -->
+    <div class="lg-modal animate-login-enter" (click)="$event.stopPropagation()">
+      <!-- Encabezado -->
+      <div class="lg-modal-cabecera">
+        <div class="lg-modal-icono" aria-hidden="true">
+          <i class="fa-solid fa-building-user"></i>
+        </div>
+        <div class="lg-modal-titulos">
+          <h2 class="lg-modal-titulo">
+            {{ "labelsLogin.menuAutenticacionLogin" | translate }}
+          </h2>
+          <p class="lg-modal-subtitulo">
+            {{ "labelsLogin.seleccionarInformacionAdicionalLogin" | translate }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Columnas: empresas y estaciones -->
+      <div class="lg-modal-cuerpo">
+        <!-- EMPRESAS -->
+        <section class="lg-seccion">
+          <div class="lg-seccion-cabecera">
+            <i class="fa-solid fa-building lg-seccion-icono"></i>
+            <h3 class="lg-seccion-titulo">
+              {{ "labelsLogin.empresasLogin" | translate }}
+            </h3>
+            <span *ngIf="!cargandoEmpresas" class="lg-contador">{{ empresa.length }}</span>
+          </div>
+
+          <div *ngIf="cargandoEmpresas" class="lg-seccion-cargando">
+            <app-spinner-carga></app-spinner-carga>
+          </div>
+
+          <ul *ngIf="!cargandoEmpresas" class="lista-seleccion">
+            <li *ngFor="let empresa of empresa">
+              <button
+                type="button"
+                (click)="seleccionarEmpresa(empresa)"
+                class="lg-opcion"
+                [class.lg-opcion--activa]="seleccionados['empresas'] === empresa"
+              >
+                <span class="lg-opcion-check">
+                  <i
+                    *ngIf="seleccionados['empresas'] === empresa"
+                    class="fa-solid fa-check"
+                  ></i>
+                </span>
+                <span class="lg-opcion-nombre">{{ empresa.empresa_Nombre }}</span>
+              </button>
+            </li>
+          </ul>
+        </section>
+
+        <!-- ESTACIONES -->
+        <section class="lg-seccion">
+          <div class="lg-seccion-cabecera">
+            <i class="fa-solid fa-desktop lg-seccion-icono"></i>
+            <h3 class="lg-seccion-titulo">
+              {{ "labelsLogin.estacionesTrabajoLogin" | translate }}
+            </h3>
+            <span
+              *ngIf="seleccionados['empresas'] && !cargandoEstaciones"
+              class="lg-contador"
+              >{{ estacionTrabajo.length }}</span
+            >
+          </div>
+
+          <div *ngIf="cargandoEstaciones" class="lg-seccion-cargando">
+            <app-spinner-carga></app-spinner-carga>
+          </div>
+
+          <!-- Las estaciones dependen de la empresa: sin empresa elegida todavía no hay lista -->
+          <div *ngIf="!seleccionados['empresas'] && !cargandoEstaciones" class="lg-aviso-vacio">
+            <i class="fa-solid fa-arrow-left lg-solo-columnas"></i>
+            <i class="fa-solid fa-arrow-up lg-solo-una-columna"></i>
+            <span>{{ "shared.seleccioneEmpresaPrimero" | translate }}</span>
+          </div>
+
+          <div *ngIf="empresaSinEstaciones" role="alert" class="lg-aviso-advertencia">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>{{ "shared.empresaSinEstaciones" | translate }}</span>
+          </div>
+
+          <ul *ngIf="!cargandoEstaciones" class="lista-seleccion">
+            <li *ngFor="let estacion of estacionTrabajo">
+              <button
+                type="button"
+                (click)="seleccionarItem('estaciones', estacion)"
+                class="lg-opcion"
+                [class.lg-opcion--activa]="seleccionados['estaciones'] === estacion"
+              >
+                <span class="lg-opcion-check">
+                  <i
+                    *ngIf="seleccionados['estaciones'] === estacion"
+                    class="fa-solid fa-check"
+                  ></i>
+                </span>
+                <span class="lg-opcion-nombre">{{ estacion.descripcion }}</span>
+              </button>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Pie con el botón de guardar -->
+      <div class="lg-modal-pie">
+        <button
+          type="button"
+          (click)="guardarCambios()"
+          [disabled]="!validarSeleccion()"
+          class="lg-boton-guardar"
+        >
+          <i class="fa-solid fa-check"></i>
+          {{ "labelsLogin.guardarCambiosBtnsLogin" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<app-messages
+  [mensajeAlerta]="isVisibleAlerta ? mensajeAlerta : ''"
+  [isVisibleAlerta]="isVisibleAlerta"
+></app-messages>

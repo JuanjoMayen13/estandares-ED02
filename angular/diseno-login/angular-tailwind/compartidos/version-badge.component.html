@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="inline-flex min-w-[4.5rem] items-center justify-center rounded-md bg-surface-raised px-2 py-1 text-sm font-medium text-secondary shadow-sm  hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+  [attr.aria-label]="'shared.copiarVersion' | translate: { version: version }"
+  [title]="detalle ? textoDetalle : ''"
+  (click)="copiar()"
+>
+  {{ copiado() ? ('shared.copiado' | translate) : version }}
+</button>
+
+<span class="sr-only" aria-live="polite">{{ copiado() ? ('shared.copiado' | translate) : '' }}</span>

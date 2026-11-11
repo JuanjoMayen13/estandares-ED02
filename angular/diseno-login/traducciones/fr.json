@@ -1,0 +1,37 @@
+{
+  "labelsLogin": {
+    "iniciarSesion": "Connexion",
+    "subtituloLogin": "Saisissez vos identifiants pour continuer",
+    "bienvenidaTitulo": "Bon retour",
+    "bienvenidaTexto": "Connectez-vous avec votre utilisateur pour reprendre là où vous vous étiez arrêté.",
+    "usuarioLogin": "Utilisateur",
+    "contraseñaLogin": "Mot de passe",
+    "errorUsuarioLogin": "Vous devez saisir le nom de l'utilisateur",
+    "errorContraseñaLogin": "Vous devez saisir le mot de passe",
+    "guardarDatosSesion": "Sauvegarder la session",
+    "cargandoLogin": "Chargement",
+    "cargandoInfoAdicional": "Chargement des informations supplémentaires, veuillez patienter...",
+    "cambiarServidor": "Changer de serveur",
+    "menuAutenticacionLogin": "Menu d'authentification",
+    "seleccionarInformacionAdicionalLogin": "Sélectionnez les informations requises",
+    "empresasLogin": "Entreprises",
+    "estacionesTrabajoLogin": "Postes de travail",
+    "guardarCambiosBtnsLogin": "Enregistrer les modifications",
+    "ErrorConexionAPI": "Vérifiez l'URL ou la connexion à l'API.",
+    "ErrorAutenticacion": "Erreur lors de l'authentification de l'utilisateur.",
+    "sinEmpresasAsignadas": "Aucune entreprise n'est attribuée à l'utilisateur.",
+    "errorServidorLogin": "Impossible de se connecter en raison d'une erreur du serveur. Réessayez ou contactez le support."
+  },
+  "common": {
+    "idioma": "Langue",
+    "cargandoPuntos": "Chargement..."
+  },
+  "shared": {
+    "modoClaro": "Clair",
+    "modoOscuro": "Sombre",
+    "seleccioneEmpresaPrimero": "Sélectionnez d'abord une entreprise",
+    "empresaSinEstaciones": "Aucun poste de travail n'est attribué à l'entreprise sélectionnée.",
+    "copiado": "Copié",
+    "copiarVersion": "Copier les informations de la version {{version}}"
+  }
+}

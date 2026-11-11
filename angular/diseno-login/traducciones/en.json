@@ -1,0 +1,37 @@
+{
+  "labelsLogin": {
+    "iniciarSesion": "Login",
+    "subtituloLogin": "Enter your credentials to continue",
+    "bienvenidaTitulo": "Welcome back",
+    "bienvenidaTexto": "Sign in with your user to pick up where you left off.",
+    "usuarioLogin": "User",
+    "contraseñaLogin": "Password",
+    "errorUsuarioLogin": "You must enter the user",
+    "errorContraseñaLogin": "You must enter the password",
+    "guardarDatosSesion": "Save session data",
+    "cargandoLogin": "Loading",
+    "cargandoInfoAdicional": "Loading additional information, please wait...",
+    "cambiarServidor": "Change server",
+    "menuAutenticacionLogin": "Authentication Menu",
+    "seleccionarInformacionAdicionalLogin": "Select the required information",
+    "empresasLogin": "Companies",
+    "estacionesTrabajoLogin": "Workstations",
+    "guardarCambiosBtnsLogin": "Save changes",
+    "ErrorConexionAPI": "Check the URL or the API connection.",
+    "ErrorAutenticacion": "Error authenticating the user.",
+    "sinEmpresasAsignadas": "The user has no companies assigned.",
+    "errorServidorLogin": "Could not sign in due to a server error. Try again or contact support."
+  },
+  "common": {
+    "idioma": "Language",
+    "cargandoPuntos": "Loading..."
+  },
+  "shared": {
+    "modoClaro": "Light",
+    "modoOscuro": "Dark",
+    "seleccioneEmpresaPrimero": "Select a company first",
+    "empresaSinEstaciones": "The selected company has no workstations assigned.",
+    "copiado": "Copied",
+    "copiarVersion": "Copy version information {{version}}"
+  }
+}

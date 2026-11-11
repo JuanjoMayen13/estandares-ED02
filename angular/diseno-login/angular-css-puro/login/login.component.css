@@ -1,0 +1,1369 @@
+/* Estándar diseño del login v1.0.0 — versión CSS puro (sin Tailwind).
+   Reproduce, propiedad por propiedad, el CSS que Tailwind 3.4 genera para las clases del original
+   más el CSS propio del componente (que se copia igual). */
+
+/* ─── Tokens de color (los mismos de src/styles.css del portal Business) ─── */
+:host {
+  --lg-surface: 255 255 255;
+  --lg-surface-alt: 255 255 255;
+  --lg-surface-raised: 243 244 246;
+  --lg-border: 209 213 219;
+  --lg-border-subtle: 229 231 235;
+  --lg-border-strong: 134 142 156;
+  --lg-text-primary: 17 24 39;
+  --lg-text-secondary: 55 65 81;
+  --lg-text-muted: 107 114 128;
+  --lg-brand: 37 99 235;
+  --lg-brand-hover: 29 78 216;
+  --lg-brand-active: 30 64 175;
+  --lg-on-brand: 255 255 255;
+  --lg-focus-ring: 59 130 246;
+  --lg-warning-soft: 255 251 235;
+  --lg-warning-line: 253 230 138;
+  --lg-warning-strong: 180 83 9;
+
+  /* Fuente y color base que el portal pone en <body> */
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgb(var(--lg-text-primary));
+}
+
+:host-context(.dark) {
+  --lg-surface: 23 29 38;
+  --lg-surface-alt: 31 40 53;
+  --lg-surface-raised: 31 40 53;
+  --lg-border: 49 63 84;
+  --lg-border-subtle: 40 51 69;
+  --lg-border-strong: 93 113 148;
+  --lg-text-primary: 243 244 246;
+  --lg-text-secondary: 209 213 219;
+  --lg-text-muted: 156 163 175;
+  --lg-brand: 96 165 250;
+  --lg-brand-hover: 59 130 246;
+  --lg-brand-active: 37 99 235;
+  --lg-on-brand: 15 19 25;
+  --lg-focus-ring: 96 165 250;
+  --lg-warning-soft: 52 46 34;
+  --lg-warning-line: 101 74 29;
+  --lg-warning-strong: 252 211 77;
+}
+
+/* ─── Base mínima (lo que el preflight de Tailwind aplica a estos elementos) ───
+   Selectores de elemento simples, como el preflight: así cualquier clase de abajo les gana.
+   No anteponer :host (con encapsulación emulada subiría la especificidad y pisaría las clases). */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: rgb(var(--lg-border));
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+form {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+button,
+input {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+  text-transform: none;
+  -webkit-appearance: button;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+img,
+svg {
+  display: block;
+  vertical-align: middle;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─── Contenedor y barra superior ─── */
+.lg-contenedor {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4.5rem 1rem 1.5rem;
+}
+
+.lg-cerrar-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.lg-barra {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background-color: rgb(15 23 42 / 0.4);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.lg-idioma {
+  position: relative;
+}
+
+.lg-boton-idioma {
+  display: flex;
+  height: 2.25rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  border-radius: 9999px;
+  color: rgb(226 232 240);
+}
+
+.lg-boton-idioma:hover {
+  background-color: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255);
+}
+
+.lg-boton-idioma:focus,
+.lg-boton-tema:focus,
+.lg-servidor:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.lg-boton-idioma:focus-visible,
+.lg-boton-tema:focus-visible,
+.lg-servidor:focus-visible {
+  box-shadow: 0 0 0 2px rgb(147 197 253 / 0.6);
+}
+
+.lg-bandera {
+  height: 0.875rem;
+  width: 1.25rem;
+  border-radius: 0.125rem;
+  object-fit: cover;
+}
+
+.lg-codigo-idioma {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.lg-chevron {
+  font-size: 10px;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.lg-chevron--abierto {
+  transform: rotate(180deg);
+}
+
+.lg-menu-idiomas {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 11rem;
+  padding: 0.375rem;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background-color: rgb(15 23 42 / 0.9);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+.lg-opcion-idioma {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(203 213 225);
+}
+
+.lg-opcion-idioma:hover,
+.lg-opcion-idioma--activa {
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.lg-opcion-idioma--activa {
+  color: rgb(255 255 255);
+}
+
+.lg-nombre-idioma {
+  flex: 1 1 0%;
+  text-align: left;
+}
+
+.lg-check-idioma {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(147 197 253);
+}
+
+.lg-boton-tema {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+}
+
+.lg-boton-tema:hover {
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.lg-icono-luna {
+  color: rgb(165 180 252);
+}
+
+.lg-icono-sol {
+  color: rgb(252 211 77);
+}
+
+/* ─── Tarjeta ─── */
+.lg-contenido {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.lg-tarjeta {
+  display: grid;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background-color: rgb(15 23 42 / 0.4);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+:host-context(.dark) .lg-tarjeta {
+  background-color: rgb(2 6 23 / 0.5);
+}
+
+/* ─── Panel de bienvenida ─── */
+.panel-bienvenida {
+  position: relative;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 2.5rem;
+}
+
+.login-ilustracion {
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
+.lg-bienvenida-texto {
+  position: relative;
+}
+
+.lg-bienvenida-titulo {
+  font-size: 1.875rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: rgb(255 255 255);
+}
+
+.lg-bienvenida-parrafo {
+  margin-top: 0.75rem;
+  max-width: 20rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: rgb(219 234 254 / 0.8);
+}
+
+/* ─── Formulario ─── */
+.login-formulario {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.login-encabezado {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.login-icono {
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgb(30 58 138 / 0.4), 0 4px 6px -4px rgb(30 58 138 / 0.4);
+}
+
+.login-icono--logo {
+  height: 4rem;
+  width: 4rem;
+  padding: 0.5rem;
+  background-color: rgb(255 255 255);
+}
+
+.login-icono--logo img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.login-icono--escudo {
+  height: 3.5rem;
+  width: 3.5rem;
+  background-image: linear-gradient(to bottom right, #3b82f6, #4f46e5);
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: rgb(255 255 255);
+}
+
+.lg-titulo {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: rgb(255 255 255);
+}
+
+.lg-subtitulo {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(203 213 225);
+}
+
+.lg-formulario > * + * {
+  margin-top: 1.25rem;
+}
+
+.lg-grupo > * + * {
+  margin-top: 0.5rem;
+}
+
+.lg-etiqueta {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: rgb(226 232 240);
+}
+
+.lg-campo-envoltura {
+  position: relative;
+}
+
+.lg-campo-icono {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+  color: rgb(148 163 184);
+  transition-duration: 300ms;
+}
+
+.lg-campo-envoltura:focus-within .lg-campo-icono {
+  color: rgb(147 197 253);
+}
+
+.campo {
+  height: 3rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border-width: 1px;
+  padding-left: 2.75rem;
+  padding-right: 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: rgb(255 255 255);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.campo::placeholder {
+  color: rgb(148 163 184);
+  opacity: 1;
+}
+
+.campo:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--lg-anillo-campo);
+}
+
+.lg-error-campo {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(252 165 165);
+}
+
+.lg-error-campo i {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+/* Switch "Guardar sesión" */
+.lg-switch-fila {
+  display: flex;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.lg-switch-texto {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: rgb(226 232 240);
+}
+
+.lg-switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.lg-switch-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.lg-switch-pista {
+  height: 1.5rem;
+  width: 2.75rem;
+  border-radius: 9999px;
+  background-color: rgb(255 255 255 / 0.15);
+  transition-duration: 300ms;
+}
+
+.lg-switch-pista--activa {
+  background-color: rgb(59 130 246);
+}
+
+.lg-switch-input:focus-visible ~ .lg-switch-pista {
+  box-shadow: 0 0 0 4px rgb(96 165 250 / 0.3);
+}
+
+.lg-switch-bola {
+  position: absolute;
+  left: 0.125rem;
+  top: 0.125rem;
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 9999px;
+  background-color: rgb(255 255 255);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.lg-switch-bola--activa {
+  transform: translateX(1.25rem);
+}
+
+/* Botón Iniciar sesión: estructura (las utilidades del original) */
+.boton-ingresar {
+  display: flex;
+  height: 3rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  color: rgb(255 255 255);
+}
+
+.boton-ingresar:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.lg-flecha {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.boton-ingresar:hover .lg-flecha {
+  transform: translateX(0.25rem);
+}
+
+.lg-cargando-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(203 213 225);
+}
+
+.lg-cargando-info i {
+  color: rgb(147 197 253);
+}
+
+.lg-error-general {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(248 113 113 / 0.3);
+  background-color: rgb(239 68 68 / 0.1);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(254 202 202);
+}
+
+.lg-error-general i {
+  margin-top: 0.125rem;
+}
+
+/* ─── Pie de la tarjeta ─── */
+.login-pie {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+  padding-top: 1.25rem;
+}
+
+.lg-servidor {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(203 213 225);
+}
+
+.lg-servidor:hover {
+  background-color: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255);
+}
+
+.lg-servidor-punto {
+  height: 0.5rem;
+  width: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: rgb(251 191 36);
+}
+
+.lg-servidor-punto--valido {
+  background-color: rgb(52 211 153);
+}
+
+.lg-servidor-mundo {
+  height: 1.25rem;
+  width: 1.25rem;
+  flex-shrink: 0;
+  color: rgb(96 165 250);
+  transition-duration: 300ms;
+}
+
+.lg-servidor:hover .lg-servidor-mundo {
+  color: rgb(147 197 253);
+}
+
+:host-context(.dark) .lg-servidor-mundo {
+  color: rgb(147 197 253);
+}
+
+:host-context(.dark) .lg-servidor:hover .lg-servidor-mundo {
+  color: rgb(191 219 254);
+}
+
+.lg-servidor-host {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lg-servidor-lapiz {
+  flex-shrink: 0;
+  font-size: 10px;
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.lg-servidor:hover .lg-servidor-lapiz {
+  opacity: 1;
+}
+
+.login-firma {
+  margin-top: 1.25rem;
+  -webkit-user-select: none;
+  user-select: none;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.025em;
+  color: rgb(255 255 255 / 0.4);
+  transition-duration: 300ms;
+}
+
+.login-firma:hover {
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* ─── Modal de empresa y estación (usa los tokens) ─── */
+.lg-modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background-color: rgb(2 6 23 / 0.6);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.lg-modal {
+  position: relative;
+  display: flex;
+  max-height: 100%;
+  width: 100%;
+  max-width: 28rem;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  border-width: 1px;
+  background-color: rgb(var(--lg-surface));
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+.lg-modal-cabecera {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1rem;
+  border-bottom-width: 1px;
+  border-color: rgb(var(--lg-border-subtle));
+  padding: 1rem 1.25rem;
+}
+
+.lg-modal-icono {
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-image: linear-gradient(to bottom right, #3b82f6, #4f46e5);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: rgb(255 255 255);
+  box-shadow: 0 10px 15px -3px rgb(59 130 246 / 0.3), 0 4px 6px -4px rgb(59 130 246 / 0.3);
+}
+
+.lg-modal-titulos {
+  min-width: 0;
+}
+
+.lg-modal-titulo {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: rgb(var(--lg-text-primary));
+}
+
+.lg-modal-subtitulo {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(var(--lg-text-muted));
+}
+
+.lg-modal-cuerpo {
+  display: grid;
+  min-height: 0;
+  flex: 1 1 0%;
+  align-content: flex-start;
+  gap: 1.25rem;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+.lg-seccion {
+  min-width: 0;
+}
+
+.lg-seccion-cabecera {
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lg-seccion-icono {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(var(--lg-brand));
+}
+
+.lg-seccion-titulo {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: rgb(var(--lg-text-primary));
+}
+
+.lg-contador {
+  margin-left: auto;
+  border-radius: 9999px;
+  background-color: rgb(var(--lg-surface-alt));
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(var(--lg-text-muted));
+}
+
+.lg-seccion-cargando {
+  padding: 1.5rem 0;
+}
+
+.lista-seleccion > * + * {
+  margin-top: 0.5rem;
+}
+
+.lg-opcion {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  border-width: 1px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-color: rgb(var(--lg-surface-alt));
+  color: rgb(var(--lg-text-secondary));
+}
+
+.lg-opcion:hover {
+  border-color: rgb(var(--lg-border-strong));
+  background-color: rgb(var(--lg-surface-raised));
+}
+
+.lg-opcion--activa,
+.lg-opcion--activa:hover {
+  border-color: rgb(var(--lg-brand));
+  background-color: rgb(var(--lg-brand) / 0.1);
+  font-weight: 500;
+  color: rgb(var(--lg-text-primary));
+}
+
+.lg-opcion-check {
+  display: flex;
+  height: 1.25rem;
+  width: 1.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border-width: 2px;
+  border-color: rgb(var(--lg-border-strong));
+}
+
+.lg-opcion-check i {
+  font-size: 10px;
+}
+
+.lg-opcion--activa .lg-opcion-check {
+  border-color: rgb(var(--lg-brand));
+  background-color: rgb(var(--lg-brand));
+  color: rgb(255 255 255);
+}
+
+.lg-opcion-nombre {
+  min-width: 0;
+  flex: 1 1 0%;
+  overflow-wrap: break-word;
+}
+
+.lg-aviso-vacio {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  border-width: 1px;
+  border-style: dashed;
+  padding: 1.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(var(--lg-text-muted));
+}
+
+.lg-solo-columnas {
+  display: none;
+}
+
+.lg-aviso-advertencia {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(var(--lg-warning-line));
+  background-color: rgb(var(--lg-warning-soft));
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(var(--lg-warning-strong));
+}
+
+.lg-aviso-advertencia i {
+  margin-top: 0.125rem;
+}
+
+.lg-modal-pie {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  border-top-width: 1px;
+  border-color: rgb(var(--lg-border-subtle));
+  background-color: rgb(var(--lg-surface-alt));
+  padding: 0.75rem 1.25rem;
+}
+
+/* Botón "Guardar cambios" (equivale a btn-primary del portal) */
+.lg-boton-guardar {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.375rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  background-color: rgb(var(--lg-brand));
+  color: rgb(var(--lg-on-brand));
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.lg-boton-guardar i {
+  margin-right: 0.5rem;
+}
+
+.lg-boton-guardar:hover {
+  background-color: rgb(var(--lg-brand-hover));
+}
+
+.lg-boton-guardar:active {
+  background-color: rgb(var(--lg-brand-active));
+}
+
+.lg-boton-guardar:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgb(var(--lg-surface)), 0 0 0 4px rgb(var(--lg-focus-ring));
+}
+
+.lg-boton-guardar:disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ─── Desde 640 px (sm) ─── */
+@media (min-width: 640px) {
+  .lg-contenedor {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .login-formulario {
+    padding: 2.5rem;
+  }
+
+  .lg-titulo {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  .lg-modal-fondo {
+    padding: 1.5rem;
+  }
+
+  .lg-modal {
+    max-width: 42rem;
+  }
+
+  .lg-modal-cabecera {
+    padding: 1.5rem 2rem;
+  }
+
+  .lg-modal-titulo {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .lg-modal-subtitulo {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .lg-modal-cuerpo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+  }
+
+  .lg-solo-columnas {
+    display: inline;
+  }
+
+  .lg-solo-una-columna {
+    display: none;
+  }
+
+  .lg-modal-pie {
+    padding: 1rem 2rem;
+  }
+
+  .lg-boton-guardar {
+    width: auto;
+  }
+}
+
+/* ─── Desde 1024 px (lg): tarjeta en dos columnas ─── */
+@media (min-width: 1024px) {
+  .lg-contenedor {
+    padding-top: 4rem;
+  }
+
+  .lg-contenido {
+    max-width: 56rem;
+  }
+
+  .lg-tarjeta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panel-bienvenida {
+    display: flex;
+  }
+
+  .login-encabezado {
+    text-align: left;
+  }
+
+  .login-icono {
+    display: none;
+  }
+
+  .lg-modal {
+    max-width: 56rem;
+  }
+}
+
+/* ═══ CSS propio del componente (igual al original) ═══ */
+
+/* Entrada de la tarjeta del login (y del modal de empresa/estación) */
+@keyframes login-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-login-enter {
+  animation: login-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Campos de usuario y contraseña sobre el vidrio
+   (en el original el color del anillo de foco es --tw-ring-color; aquí, --lg-anillo-campo) */
+.campo-normal {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  --lg-anillo-campo: rgba(59, 130, 246, 0.22);
+}
+
+.campo-normal:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.campo-normal:focus {
+  background-color: rgba(255, 255, 255, 0.09);
+  border-color: #60a5fa;
+}
+
+.campo-error {
+  background-color: rgba(239, 68, 68, 0.08);
+  border-color: rgba(248, 113, 113, 0.7);
+  --lg-anillo-campo: rgba(239, 68, 68, 0.2);
+}
+
+.campo-error:focus {
+  border-color: #f87171;
+}
+
+/* Botón Iniciar sesión */
+.boton-ingresar {
+  background: linear-gradient(135deg, #3b82f6, #4f46e5);
+  box-shadow: 0 12px 28px -12px rgba(59, 130, 246, 0.8);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.boton-ingresar:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px -12px rgba(79, 70, 229, 0.9);
+}
+
+.boton-ingresar:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.boton-ingresar:disabled {
+  cursor: wait;
+}
+
+/* Brillo que recorre el botón mientras se inicia sesión */
+.shine-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-button.loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: shine 1.5s infinite ease-in-out;
+  z-index: 0;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.shine-button .shine-text {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+/* Panel de bienvenida (columna izquierda en pantallas grandes) */
+.panel-bienvenida {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.16), transparent 45%),
+    linear-gradient(155deg, rgba(59, 130, 246, 0.92), rgba(79, 70, 229, 0.88) 55%, rgba(30, 27, 75, 0.92));
+}
+
+:host-context(.dark) .panel-bienvenida {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.1), transparent 45%),
+    linear-gradient(155deg, rgba(37, 99, 235, 0.75), rgba(67, 56, 202, 0.7) 55%, rgba(15, 13, 46, 0.9));
+}
+
+/* Ilustración: anillos concéntricos con puntos orbitando alrededor del escudo */
+.orbita {
+  position: relative;
+  width: 240px;
+  height: 240px;
+}
+
+.anillo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+}
+
+.anillo-2 {
+  inset: 34px;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.anillo-3 {
+  inset: 68px;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Cada órbita gira completa; no recibe el mouse para no tapar las bolas de las órbitas interiores */
+.satelite {
+  position: absolute;
+  inset: 0;
+  animation: girar 22s linear infinite;
+  pointer-events: none;
+}
+
+/* Bola que se puede arrastrar sobre su anillo (ver BolaArrastrableDirective) */
+.bola {
+  position: absolute;
+  top: -5px;
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.9);
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  transition: box-shadow 0.2s ease;
+}
+
+/* Área de agarre más grande que la bola, para que sea fácil tomarla */
+.bola::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+}
+
+.bola:hover {
+  box-shadow: 0 0 22px 4px rgba(255, 255, 255, 0.9);
+}
+
+/* Mientras se arrastra */
+.bola.arrastrando {
+  cursor: grabbing;
+  box-shadow: 0 0 26px 6px rgba(255, 255, 255, 0.95);
+}
+
+.satelite-2 {
+  inset: 34px;
+  animation-duration: 15s;
+  animation-direction: reverse;
+}
+
+/* Bola ámbar: el mismo tono del engranaje naranja del arranque */
+.satelite-2 .bola {
+  background: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.9);
+}
+
+.satelite-2 .bola:hover,
+.satelite-2 .bola.arrastrando {
+  box-shadow: 0 0 24px 5px rgba(251, 191, 36, 0.9);
+}
+
+.satelite-3 {
+  inset: 68px;
+  animation-duration: 10s;
+}
+
+.satelite-3 .bola {
+  width: 7px;
+  height: 7px;
+  top: -3.5px;
+  left: calc(50% - 3.5px);
+  background: #93c5fd;
+  box-shadow: 0 0 12px rgba(147, 197, 253, 0.9);
+}
+
+.satelite-3 .bola:hover,
+.satelite-3 .bola.arrastrando {
+  box-shadow: 0 0 22px 5px rgba(147, 197, 253, 0.9);
+}
+
+.nucleo {
+  position: absolute;
+  inset: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 1.6rem;
+  box-shadow: 0 0 40px rgba(147, 197, 253, 0.55);
+}
+
+/* Núcleo con el logo de la empresa: más grande y con fondo blanco para que cualquier logo se lea bien.
+   Sigue dejando espacio a la bola del anillo interior */
+.nucleo.con-logo {
+  inset: 78px;
+  padding: 14px;
+  background: #fff;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.nucleo.con-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pantallas bajas (celular horizontal, laptops de 600–720 px de alto): tarjeta más compacta
+   para que el formulario completo quepa sin scroll o con muy poco */
+@media (max-height: 740px) {
+  .login-icono {
+    display: none;
+  }
+
+  .login-formulario {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .login-encabezado {
+    margin-bottom: 1.25rem;
+  }
+
+  .login-pie {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+  }
+
+  .panel-bienvenida {
+    padding: 2rem;
+  }
+
+  .login-ilustracion {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .login-firma {
+    margin-top: 0.5rem;
+  }
+
+  .lg-contenedor {
+    padding-bottom: 1rem;
+  }
+}
+
+/* Listas del modal de empresa/estación: scroll propio solo con dos columnas y pantalla alta.
+   En celular (una columna) o pantallas bajas scrollea el cuerpo del modal completo, sin scroll anidado */
+@media (min-width: 640px) and (min-height: 640px) {
+  .lista-seleccion {
+    max-height: 14rem;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 640px) {
+  .lista-seleccion {
+    max-height: 16rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-login-enter,
+  .satelite {
+    animation: none;
+  }
+}

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login: demo del estándar</title>
+<!-- Demo del "Estándar: Diseño del login" v1.0.0. No es el login real: los datos son de ejemplo. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+<link rel="stylesheet" href="login.css" />
+<link rel="stylesheet" href="fondo.css" />
+<link rel="stylesheet" href="compartidos.css" />
+<link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+<div class="lg-host">
+  <div class="lg-contenedor">
+    <!-- Fondo (app-visual-background) -->
+    <div class="fondo" aria-hidden="true">
+      <div class="resplandor resplandor-1"></div>
+      <div class="resplandor resplandor-2"></div>
+      <div class="resplandor resplandor-3"></div>
+      <div class="rejilla"></div>
+    </div>
+
+    <!-- Barra superior: idioma y modo oscuro -->
+    <div class="lg-cerrar-menu" id="cerrarMenu" hidden></div>
+    <div class="lg-barra">
+      <div class="lg-idioma">
+        <button type="button" class="lg-boton-idioma" id="botonIdioma" aria-expanded="false" data-t-titulo="common.idioma">
+          <img class="lg-bandera" id="banderaActual" alt="" />
+          <span class="lg-codigo-idioma" id="codigoActual">es</span>
+          <i class="fa-solid fa-chevron-down lg-chevron" id="chevronIdioma"></i>
+        </button>
+        <div class="lg-menu-idiomas demo-entrada-menu" id="menuIdiomas" role="menu" hidden></div>
+      </div>
+      <button type="button" class="lg-boton-tema" id="botonTema">
+        <i class="fa-solid fa-sun lg-icono-sol" id="iconoTema"></i>
+      </button>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="lg-contenido animate-login-enter">
+      <div class="lg-tarjeta">
+        <!-- Panel de bienvenida (solo pantallas grandes) -->
+        <div class="panel-bienvenida">
+          <div class="login-ilustracion">
+            <div class="orbita" aria-hidden="true">
+              <span class="anillo"></span>
+              <span class="anillo anillo-2"></span>
+              <span class="anillo anillo-3"></span>
+              <span class="satelite"><span class="bola"></span></span>
+              <span class="satelite satelite-2"><span class="bola"></span></span>
+              <span class="satelite satelite-3"><span class="bola"></span></span>
+              <span class="nucleo" id="nucleo"><i class="fa-solid fa-shield-halved"></i></span>
+            </div>
+          </div>
+          <div class="lg-bienvenida-texto">
+            <h2 class="lg-bienvenida-titulo" data-t="labelsLogin.bienvenidaTitulo"></h2>
+            <p class="lg-bienvenida-parrafo" data-t="labelsLogin.bienvenidaTexto"></p>
+          </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="login-formulario">
+          <div class="login-encabezado">
+            <div class="login-icono login-icono--escudo" id="iconoEncabezado" aria-hidden="true">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h1 class="lg-titulo" data-t="labelsLogin.iniciarSesion"></h1>
+            <p class="lg-subtitulo" data-t="labelsLogin.subtituloLogin"></p>
+          </div>
+
+          <form class="lg-formulario" id="formulario" novalidate>
+            <div class="lg-grupo">
+              <label for="usuario" class="lg-etiqueta" data-t="labelsLogin.usuarioLogin"></label>
+              <div class="lg-campo-envoltura">
+                <span class="lg-campo-icono"><i class="fa-solid fa-user"></i></span>
+                <input id="usuario" name="usuario" type="text" autocomplete="username" class="campo campo-normal" data-t-placeholder="labelsLogin.usuarioLogin" />
+              </div>
+              <p class="lg-error-campo" id="errorUsuario" hidden>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span data-t="labelsLogin.errorUsuarioLogin"></span>
+              </p>
+            </div>
+
+            <div class="lg-grupo">
+              <label for="password" class="lg-etiqueta" data-t="labelsLogin.contraseñaLogin"></label>
+              <div class="lg-campo-envoltura">
+                <span class="lg-campo-icono"><i class="fa-solid fa-lock"></i></span>
+                <input id="password" name="password" type="password" autocomplete="current-password" class="campo campo-normal" data-t-placeholder="labelsLogin.contraseñaLogin" />
+              </div>
+              <p class="lg-error-campo" id="errorPassword" hidden>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span data-t="labelsLogin.errorContraseñaLogin"></span>
+              </p>
+            </div>
+
+            <label class="lg-switch-fila">
+              <span class="lg-switch-texto" data-t="labelsLogin.guardarDatosSesion"></span>
+              <span class="lg-switch">
+                <input type="checkbox" class="lg-switch-input" id="guardarSesion" />
+                <span class="lg-switch-pista" id="switchPista"></span>
+                <span class="lg-switch-bola" id="switchBola"></span>
+              </span>
+            </label>
+
+            <button type="submit" class="boton-ingresar shine-button" id="botonIngresar"></button>
+
+            <div class="lg-cargando-info" id="cargandoInfo" hidden>
+              <i class="fa-solid fa-circle-notch fa-spin"></i>
+              <span data-t="labelsLogin.cargandoInfoAdicional"></span>
+            </div>
+
+            <div class="lg-error-general" id="errorGeneral" role="alert" hidden>
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span data-t="labelsLogin.ErrorAutenticacion"></span>
+            </div>
+          </form>
+
+          <div class="login-pie">
+            <button type="button" class="lg-servidor" id="botonServidor" data-t-titulo="labelsLogin.cambiarServidor">
+              <span class="lg-servidor-punto lg-servidor-punto--valido" id="puntoServidor"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="lg-servidor-mundo" aria-hidden="true">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-1.5 0a6.5 6.5 0 1 1-11-4.69v.447a3.5 3.5 0 0 0 1.025 2.475L8.293 10 8 10.293a1 1 0 0 0 0 1.414l1.06 1.06a1.5 1.5 0 0 1 .44 1.061v.363a1 1 0 0 0 .553.894l.276.139a1 1 0 0 0 1.342-.448l1.454-2.908a1.5 1.5 0 0 0-.281-1.731l-.772-.772a1 1 0 0 0-1.023-.242l-.384.128a.5.5 0 0 1-.606-.25l-.296-.592a.481.481 0 0 1 .646-.646l.262.131a1 1 0 0 0 .447.106h.188a1 1 0 0 0 .949-1.316l-.068-.204a.5.5 0 0 1 .149-.538l1.44-1.234A6.492 6.492 0 0 1 16.5 10Z" clip-rule="evenodd" />
+              </svg>
+              <span class="lg-servidor-host">api.ejemplo.com</span>
+              <i class="fa-solid fa-pen lg-servidor-lapiz"></i>
+            </button>
+            <button type="button" class="vb-version">v1.0.0</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="login-firma">Powered by Desarrollo Moderno de Software S.A</p>
+    </div>
+  </div>
+
+  <!-- Modal de empresa y estación -->
+  <div class="lg-modal-fondo" id="modal" hidden>
+    <div class="lg-modal animate-login-enter">
+      <div class="lg-modal-cabecera">
+        <div class="lg-modal-icono" aria-hidden="true"><i class="fa-solid fa-building-user"></i></div>
+        <div class="lg-modal-titulos">
+          <h2 class="lg-modal-titulo" data-t="labelsLogin.menuAutenticacionLogin"></h2>
+          <p class="lg-modal-subtitulo" data-t="labelsLogin.seleccionarInformacionAdicionalLogin"></p>
+        </div>
+      </div>
+      <div class="lg-modal-cuerpo">
+        <section class="lg-seccion">
+          <div class="lg-seccion-cabecera">
+            <i class="fa-solid fa-building lg-seccion-icono"></i>
+            <h3 class="lg-seccion-titulo" data-t="labelsLogin.empresasLogin"></h3>
+            <span class="lg-contador" id="contadorEmpresas"></span>
+          </div>
+          <ul class="lista-seleccion" id="listaEmpresas"></ul>
+        </section>
+        <section class="lg-seccion">
+          <div class="lg-seccion-cabecera">
+            <i class="fa-solid fa-desktop lg-seccion-icono"></i>
+            <h3 class="lg-seccion-titulo" data-t="labelsLogin.estacionesTrabajoLogin"></h3>
+            <span class="lg-contador" id="contadorEstaciones" hidden></span>
+          </div>
+          <div class="lg-seccion-cargando" id="cargandoEstaciones" hidden>
+            <div class="sc-contenedor">
+              <div class="sc-circulo"></div>
+              <p class="sc-texto" data-t="common.cargandoPuntos"></p>
+            </div>
+          </div>
+          <div class="lg-aviso-vacio" id="avisoSinEmpresa">
+            <i class="fa-solid fa-arrow-left lg-solo-columnas"></i>
+            <i class="fa-solid fa-arrow-up lg-solo-una-columna"></i>
+            <span data-t="shared.seleccioneEmpresaPrimero"></span>
+          </div>
+          <div class="lg-aviso-advertencia" id="avisoSinEstaciones" role="alert" hidden>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span data-t="shared.empresaSinEstaciones"></span>
+          </div>
+          <ul class="lista-seleccion" id="listaEstaciones"></ul>
+        </section>
+      </div>
+      <div class="lg-modal-pie">
+        <button type="button" class="lg-boton-guardar" id="botonGuardar" disabled>
+          <i class="fa-solid fa-check"></i>
+          <span data-t="labelsLogin.guardarCambiosBtnsLogin"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel del demo (no es parte del estándar): cambia estados para revisar el diseño -->
+<aside class="demo-panel" id="panelDemo">
+  <button type="button" class="demo-panel-titulo" id="plegarPanel">
+    <i class="fa-solid fa-sliders"></i> Demo <i class="fa-solid fa-chevron-down demo-panel-chevron"></i>
+  </button>
+  <div class="demo-panel-cuerpo">
+    <label><input type="checkbox" id="demoLogo" /> Logo de la empresa guardado</label>
+    <label><input type="checkbox" id="demoServidor" checked /> Servidor validado</label>
+    <label><input type="checkbox" id="demoErrorGeneral" /> Error al autenticar</label>
+    <button type="button" id="demoModal">Abrir modal empresa/estación</button>
+    <p>Usuario y contraseña con cualquier texto: simula el inicio de sesión. Las bolas de la órbita se arrastran.</p>
+  </div>
+</aside>
+<div class="demo-aviso" id="avisoDemo" hidden></div>
+<script src="textos.js"></script>
+<script src="demo.js"></script>
+</body>
+</html>

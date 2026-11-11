@@ -1,0 +1,109 @@
+/* ─── Solo del demo (no es parte del estándar) ─── */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Entrada del menú de idiomas: en Angular la hace @angular/animations (150 ms) */
+.demo-entrada-menu {
+  animation: demo-menu 150ms cubic-bezier(0.35, 0, 0.25, 1);
+}
+
+@keyframes demo-menu {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.demo-panel {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 100;
+  width: 230px;
+  font: 12px/1.4 system-ui, sans-serif;
+  color: #1f2937;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.demo-panel-titulo {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.demo-panel-chevron {
+  margin-left: auto;
+}
+
+.demo-panel.plegado .demo-panel-cuerpo {
+  display: none;
+}
+
+.demo-panel.plegado .demo-panel-chevron {
+  transform: rotate(180deg);
+}
+
+.demo-panel-cuerpo {
+  display: grid;
+  gap: 6px;
+  padding: 0 10px 10px;
+}
+
+.demo-panel-cuerpo label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.demo-panel-cuerpo input {
+  margin: 0;
+  -webkit-appearance: checkbox;
+  appearance: checkbox;
+}
+
+.demo-panel-cuerpo button {
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+.demo-panel-cuerpo p {
+  color: #6b7280;
+}
+
+.demo-aviso {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 101;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font: 13px/1.4 system-ui, sans-serif;
+  color: #fff;
+  background: #15803d;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}

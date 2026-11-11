@@ -1,0 +1,9 @@
+<!-- Insignia de versión: un botón con la versión; un clic la copia al portapapeles -->
+<button
+  type="button"
+  class="vb-version"
+  [attr.aria-label]="'shared.copiarVersion' | translate: { version: version }"
+  (click)="copiar()"
+>
+  {{ copiado() ? ('shared.copiado' | translate) : version }}
+</button>

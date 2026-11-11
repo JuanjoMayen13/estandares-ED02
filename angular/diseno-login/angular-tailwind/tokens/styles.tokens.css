@@ -1,0 +1,70 @@
+/* Estándar diseño del login v1.0.0 — agregar al styles.css global, después de las directivas @tailwind */
+
+/* Tokens de diseño (colores). Ver el README del estándar, §2.9. */
+:root {
+  --color-surface: 255 255 255;
+  --color-surface-alt: 255 255 255;
+  --color-surface-raised: 243 244 246;
+  --color-surface-overlay: 255 255 255;
+  --color-page: 249 250 251;
+  --color-border: 209 213 219;
+  --color-border-subtle: 229 231 235;
+  --color-border-strong: 134 142 156;  /* #868e9c: 3,3:1 sobre blanco (antes #9ca3af, 2,5:1) */
+  --color-text-primary: 17 24 39;
+  --color-text-secondary: 55 65 81;
+  --color-text-muted: 107 114 128;
+  --color-brand: 37 99 235;
+  --color-brand-hover: 29 78 216;
+  --color-brand-active: 30 64 175;
+  --color-on-brand: 255 255 255;
+  --color-focus-ring: 59 130 246;
+
+  /* Estados: fondo tenue (soft), borde (line) y texto (strong). Los textos son los tonos 700 de
+     Tailwind: el 600 de verde y rojo no llega a 4,5:1 sobre blanco. */
+  --color-info-soft: 239 246 255;     --color-info-line: 191 219 254;     --color-info-strong: 29 78 216;
+  --color-success-soft: 240 253 244;  --color-success-line: 187 247 208;  --color-success-strong: 21 128 61;
+  --color-warning-soft: 255 251 235;  --color-warning-line: 253 230 138;  --color-warning-strong: 180 83 9;
+  --color-danger-soft: 254 242 242;   --color-danger-line: 254 202 202;   --color-danger-strong: 185 28 28;
+}
+/* Modo oscuro: una escalera de superficies sólidas, cada nivel más claro que el anterior
+   (página < superficie < elevada < superpuesta), con saltos parejos de ~5 puntos de L*, y el
+   mismo matiz azul grisáceo de la escala gray de Tailwind. Ver docs/colores-modo-oscuro.md.
+   Evitar translucidez en superficies neutras: el color real depende de lo que haya debajo. */
+.dark {
+  --color-surface: 23 29 38;          /* #171d26 tarjetas y paneles */
+  --color-surface-alt: 31 40 53;      /* #1f2835 inputs y botones sobre una superficie */
+  --color-surface-raised: 31 40 53;   /* #1f2835 cajas dentro de una tarjeta */
+  --color-surface-overlay: 40 51 69;  /* #283345 menús, popovers, hover */
+  --color-page: 15 19 25;             /* #0f1319 fondo de la pantalla */
+  --color-border: 49 63 84;           /* #313f54 */
+  --color-border-subtle: 40 51 69;    /* #283345 divisores tenues */
+  --color-border-strong: 93 113 148;  /* #5d7194 bordes de controles (3,4:1 sobre la superficie) */
+  --color-text-primary: 243 244 246;
+  --color-text-secondary: 209 213 219;
+  --color-text-muted: 156 163 175;
+  --color-brand: 96 165 250;
+  --color-brand-hover: 59 130 246;
+  --color-brand-active: 37 99 235;
+  --color-on-brand: 15 19 25;         /* texto oscuro sobre el azul claro: 7,3:1 (con blanco era 2,5:1) */
+  --color-focus-ring: 96 165 250;
+
+  /* Estados, sólidos y precalculados sobre la superficie (#171d26): el color 500 al 13 % de relleno
+     y al 35 % de borde, y el tono 300 para el texto (8 a 12:1 sobre el fondo tenue). Sólidos y no
+     translúcidos para que se vean igual en cualquier pantalla. */
+  --color-info-soft: 28 42 65;        --color-info-line: 36 64 111;       --color-info-strong: 147 197 253;
+  --color-success-soft: 24 51 45;     --color-success-line: 27 88 58;     --color-success-strong: 134 239 172;
+  --color-warning-soft: 52 46 34;     --color-warning-line: 101 74 29;    --color-warning-strong: 252 211 77;
+  --color-danger-soft: 51 34 42;      --color-danger-line: 99 43 49;      --color-danger-strong: 252 165 165;
+}
+
+/* Botón "Guardar cambios" del modal de empresa y estación */
+@layer components {
+  .btn-base {
+    @apply inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors
+      focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-surface
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn-base bg-brand text-on-brand hover:bg-brand-hover active:bg-brand-active;
+  }
+}

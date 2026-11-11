@@ -7,7 +7,7 @@ Pantalla de inicio de sesión de las aplicaciones web: fondo azul animado, tarje
 | **Versión** | 1.0.0 — 2026-11-10 |
 | **Origen** | Pantalla de login del portal *Business* (Angular 20 + Tailwind CSS 3.4) |
 | **Implementaciones** | 1) [Angular + Tailwind](angular-tailwind/) (original) · 2) [Angular + CSS puro](angular-css-puro/) (sin Tailwind) |
-| **Demo** | [`demo/index.html`](demo/index.html): HTML, CSS y JS, sin instalar nada ([§9](#9-demo)) |
+| **Demo** | [Ver en línea](https://juanjomayen13.github.io/estandares-ED02/angular/diseno-login/demo/index.html) · [`demo/index.html`](demo/index.html): HTML, CSS y JS, sin instalar nada ([§9](#9-demo)) |
 
 Las dos implementaciones producen **exactamente el mismo resultado visual**. La 1 es copia literal del portal. La 2 reproduce, propiedad por propiedad, el CSS que Tailwind 3.4 genera para esas clases. Se comprobó midiendo posición, tamaño y estilos calculados de cada pieza en las dos, en modo claro y oscuro, a 1280×800, 1024×600 (modo compacto) y 375×812, y con el modal abierto: no hubo diferencias. La demo usa el mismo CSS de la implementación 2.
 
@@ -492,7 +492,7 @@ Las claves que usa el login, en los cuatro idiomas del portal, están en [`tradu
 
 [`demo/index.html`](demo/index.html) muestra cómo se ve y se comporta el login hoy, sin Angular ni instalar nada. Usa el CSS de la implementación 2 y una copia en JavaScript de la lógica de las bolas; los datos son de ejemplo.
 
-**Cómo verla:** abrir `demo/index.html` en el navegador (doble clic) o publicar la carpeta `demo/` con GitHub Pages. Necesita internet para la fuente Roboto y los íconos de Font Awesome.
+**Cómo verla:** en línea, en <https://juanjomayen13.github.io/estandares-ED02/angular/diseno-login/demo/index.html> (GitHub Pages, se actualiza solo con cada cambio en `main`), o abriendo `demo/index.html` en el navegador (doble clic). Necesita internet para la fuente Roboto y los íconos de Font Awesome.
 
 - Usuario y contraseña con cualquier texto: simula el inicio de sesión, la carga y el modal de empresa y estación (la tercera empresa no tiene estaciones).
 - Idioma, modo oscuro y el arrastre de las bolas funcionan como en el portal.

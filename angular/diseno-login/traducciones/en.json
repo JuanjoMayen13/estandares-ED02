@@ -20,11 +20,20 @@
     "ErrorConexionAPI": "Check the URL or the API connection.",
     "ErrorAutenticacion": "Error authenticating the user.",
     "sinEmpresasAsignadas": "The user has no companies assigned.",
-    "errorServidorLogin": "Could not sign in due to a server error. Try again or contact support."
+    "errorServidorLogin": "Could not sign in due to a server error. Try again or contact support.",
+    "actualizarUrl": "Press to validate and update.",
+    "procesarBtnsLogin": "Validate and confirm URL",
+    "URLVacia": "Please enter a URL.",
+    "URLInvalidaFormato": "The URL format is incorrect. Make sure to use http:// or https://.",
+    "URLInvalida": "The base URL is invalid.",
+    "URLValida": "The URL is valid.",
+    "ErrorValidarURL": "Error verifying URL."
   },
   "common": {
     "idioma": "Language",
-    "cargandoPuntos": "Loading..."
+    "cargandoPuntos": "Loading...",
+    "estado": "Status",
+    "version": "Version"
   },
   "shared": {
     "modoClaro": "Light",
@@ -33,5 +42,17 @@
     "empresaSinEstaciones": "The selected company has no workstations assigned.",
     "copiado": "Copied",
     "copiarVersion": "Copy version information {{version}}"
+  },
+  "apiConfig": {
+    "configurarUrlApi": "Configure API URL",
+    "ingresaUrl": "Enter the API connection URL to continue.",
+    "urlApi": "API URL",
+    "placeholderUrl": "https://your-api.com/api/",
+    "conexionEstablecida": "Connection established",
+    "configuracionValidada": "Configuration validated successfully",
+    "servicios": "Services",
+    "fechaPublicacion": "Release date",
+    "fechaConfiguracion": "Configuration date",
+    "confirmarFinalizar": "Confirm and finish"
   }
 }

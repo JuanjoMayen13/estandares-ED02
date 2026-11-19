@@ -1,4 +1,4 @@
-/* Estándar diseño del login v1.0.0 — agregar al styles.css global, después de las directivas @tailwind */
+/* Estándar diseño del login v1.1.0 — agregar al styles.css global, después de las directivas @tailwind */
 
 /* Tokens de diseño (colores). Ver el README del estándar, §2.9. */
 :root {
@@ -57,8 +57,12 @@
   --color-danger-soft: 51 34 42;      --color-danger-line: 99 43 49;      --color-danger-strong: 252 165 165;
 }
 
-/* Botón "Guardar cambios" del modal de empresa y estación */
+/* Botón "Guardar cambios" del modal de empresa y estación (btn-primary) y botones del modal
+   de configuración de la URL de la API (color-primary, opcional) */
 @layer components {
+  .color-primary {
+    @apply bg-brand text-on-brand hover:bg-brand-hover active:bg-brand-active;
+  }
   .btn-base {
     @apply inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors
       focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2 focus:ring-offset-surface

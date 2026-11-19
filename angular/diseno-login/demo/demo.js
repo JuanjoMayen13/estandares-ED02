@@ -53,6 +53,10 @@
     $('botonTema').setAttribute('aria-label', tituloTema);
     document.documentElement.lang = estado.idioma;
     pintarBoton();
+    if (typeof pintarBotonValidar === 'function' && $('modalApi') && !$('modalApi').hidden) {
+      pintarBotonValidar();
+      pintarMensajeApi();
+    }
   }
 
   // ─── Menú de idiomas ───
@@ -174,8 +178,100 @@
   $('demoErrorGeneral').addEventListener('change', function (e) {
     if (!e.target.checked) $('errorGeneral').hidden = true;
   });
-  $('botonServidor').addEventListener('click', function () {
-    avisar('En el portal aquí se abre la configuración de la URL de la API.');
+  // ─── Modal de configuración de la URL de la API ───
+  var urlApi = 'https://api.ejemplo.com/';
+  var api = { verificando: false, mensaje: '', error: false };
+
+  function pintarBotonValidar() {
+    var boton = $('acValidar');
+    boton.disabled = !$('apiUrl').value || api.verificando;
+    boton.innerHTML = api.verificando
+      ? '<svg class="ac-spinner" fill="none" viewBox="0 0 24 24"><circle class="ac-spinner-pista" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="ac-spinner-arco" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>'
+      : texto('labelsLogin.procesarBtnsLogin');
+    $('apiUrl').disabled = api.verificando;
+    $('apiUrl').classList.toggle('ac-campo--verificando', api.verificando);
+  }
+
+  function pintarMensajeApi() {
+    $('acVerificacion').hidden = !api.mensaje;
+    $('acVerificacionTexto').textContent = api.mensaje ? texto(api.mensaje) : '';
+    $('acVerificacionTexto').classList.toggle('ac-mensaje--error', api.error);
+  }
+
+  function abrirModalApi() {
+    $('apiUrl').value = urlApi;
+    api = { verificando: false, mensaje: '', error: false };
+    $('acPaso1').hidden = false;
+    $('acPaso2').hidden = true;
+    $('acConfirmacion').hidden = true;
+    pintarMensajeApi();
+    pintarBotonValidar();
+    // En el portal el login se oculta mientras el modal está abierto (el modal tiene fondo opaco)
+    document.querySelector('.lg-contenedor').hidden = true;
+    $('modalApi').hidden = false;
+  }
+
+  function fecha(d) {
+    var dos = function (n) { return (n < 10 ? '0' : '') + n; };
+    return dos(d.getDate()) + '/' + dos(d.getMonth() + 1) + '/' + d.getFullYear() + ', ' + dos(d.getHours()) + ':' + dos(d.getMinutes());
+  }
+
+  function procesarUrl() {
+    if (api.verificando) return;
+    var url = $('apiUrl').value.trim();
+    if (!url) {
+      api.mensaje = 'labelsLogin.URLVacia';
+      api.error = true;
+      pintarMensajeApi();
+      return;
+    }
+    if (!/^https?:\/\/\S+$/i.test(url)) {
+      api.mensaje = 'labelsLogin.URLInvalidaFormato';
+      api.error = true;
+      pintarMensajeApi();
+      return;
+    }
+    // Simula la consulta al API
+    api.verificando = true;
+    api.mensaje = '';
+    pintarMensajeApi();
+    pintarBotonValidar();
+    setTimeout(function () {
+      api.verificando = false;
+      pintarBotonValidar();
+      if (/error/i.test(url)) {
+        api.mensaje = 'labelsLogin.URLInvalida';
+        api.error = true;
+        pintarMensajeApi();
+        return;
+      }
+      $('acUrl').textContent = url.replace(/\/?$/, '/');
+      $('acEstado').textContent = 'API en línea';
+      $('acVersion').textContent = '2.7.0';
+      $('acPublicacion').textContent = '03/11/2026, 18:30';
+      $('acFechaConfiguracion').textContent = fecha(new Date());
+      $('acPaso1').hidden = true;
+      $('acPaso2').hidden = false;
+    }, 1200);
+  }
+
+  $('botonServidor').addEventListener('click', abrirModalApi);
+  $('acValidar').addEventListener('click', procesarUrl);
+  $('apiUrl').addEventListener('keydown', function (e) { if (e.key === 'Enter') procesarUrl(); });
+  $('apiUrl').addEventListener('focus', function (e) { e.target.select(); });
+  $('apiUrl').addEventListener('input', function () {
+    $('acConfirmacion').hidden = false;
+    pintarBotonValidar();
+  });
+  $('acFinalizar').addEventListener('click', function () {
+    urlApi = $('acUrl').textContent;
+    var host = urlApi;
+    try { host = new URL(urlApi).host; } catch (e) {}
+    document.querySelector('.lg-servidor-host').textContent = host;
+    $('demoServidor').checked = true;
+    $('puntoServidor').classList.add('lg-servidor-punto--valido');
+    $('modalApi').hidden = true;
+    document.querySelector('.lg-contenedor').hidden = false;
   });
 
   // ─── Modal de empresa y estación ───

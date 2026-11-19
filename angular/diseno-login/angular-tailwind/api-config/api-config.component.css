@@ -1,0 +1,73 @@
+/* Animaciones personalizadas */
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes backdropAppear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fondo del modal: velo azul de la marca (mismos tonos de la pantalla de arranque), sin blur.
+   El blur sobre toda la pantalla es costoso y no aporta: el velo ya separa el modal del contenido */
+.fondo-api {
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(147, 197, 253, 0.12), transparent 60%),
+    linear-gradient(135deg, rgba(59, 75, 154, 0.82), rgba(23, 37, 84, 0.9));
+  animation: backdropAppear 0.2s ease-out;
+}
+
+/* Modo oscuro: capa extra que oscurece el velo (también aplica al fondo opaco del login) */
+.fondo-api::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+:host-context(.dark) .fondo-api::after {
+  background: rgba(2, 6, 23, 0.45);
+}
+
+/* En el login el modal reemplaza la pantalla completa (el login no se muestra mientras está abierto),
+   así que detrás no hay nada: fondo opaco igual al del login y sin fundido, para que no se vea
+   el blanco de la página al abrirlo */
+:host-context(app-login) .fondo-api {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(59, 130, 246, 0.45), transparent 42%),
+    radial-gradient(circle at 92% 96%, rgba(99, 102, 241, 0.4), transparent 42%),
+    radial-gradient(ellipse at 50% 35%, rgba(147, 197, 253, 0.16), transparent 60%),
+    linear-gradient(135deg, #3b4b9a, #172554);
+  animation: none;
+}
+
+/* Entrada de la tarjeta */
+.tarjeta-api {
+  animation: modalAppear 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hover effects mejorados */
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fondo-api,
+  .tarjeta-api {
+    animation: none;
+  }
+}

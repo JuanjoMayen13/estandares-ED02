@@ -1,4 +1,4 @@
-// Estándar diseño del login v1.0.0
+// Estándar diseño del login v1.1.0
 // Componente base: la parte visual es igual al login del portal Business. Lo marcado con "PROYECTO" es la lógica
 // de cada aplicación (inicio de sesión, empresas, estaciones, sesión): se reemplaza por la propia.
 import { animate, style, transition, trigger } from '@angular/animations';

@@ -1,0 +1,200 @@
+<!-- Estándar diseño del login v1.1.0 — modal de configuración de la URL de la API, versión CSS puro (sin Tailwind) -->
+<!-- Fondo del modal: velo azul de la marca, sin blur (estilos en el .css) -->
+<div class="fondo-api" aria-hidden="true"></div>
+
+<div class="ac-capa">
+  <div class="ac-centro">
+    <div class="tarjeta-api">
+      <!-- Ícono de engranaje que gira, sobre el borde superior de la tarjeta -->
+      <div class="ac-icono">
+        <div class="ac-icono-relativo">
+          <div class="ac-icono-circulo">
+            <svg class="ac-icono-engranaje" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </div>
+          <div class="ac-icono-pulso"></div>
+        </div>
+      </div>
+
+      <div class="ac-contenido">
+        <!-- Paso 1: ingresar y validar la URL -->
+        <ng-container *ngIf="!mostrarDetallesExito">
+          <h2 class="ac-titulo">{{ 'apiConfig.configurarUrlApi' | translate }}</h2>
+          <p class="ac-subtitulo">{{ 'apiConfig.ingresaUrl' | translate }}</p>
+
+          <div class="ac-grupo">
+            <label for="apiUrl" class="ac-etiqueta">{{ 'apiConfig.urlApi' | translate }}</label>
+            <div class="ac-campo-envoltura">
+              <div class="ac-campo-icono">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                type="text"
+                [(ngModel)]="urlApi"
+                [class.ac-campo--verificando]="isVerificando"
+                [disabled]="isVerificando"
+                (keydown.enter)="procesarUrl()"
+                (focus)="seleccionarTexto($event)"
+                (ngModelChange)="onUrlChange($event)"
+                [placeholder]="'apiConfig.placeholderUrl' | translate"
+                class="ac-campo"
+              />
+            </div>
+          </div>
+
+          <div *ngIf="mostrarMensajeUrlVerificacion" class="ac-mensaje">
+            <p
+              class="ac-mensaje-verificacion"
+              [class.ac-mensaje--error]="esError"
+              [class.ac-mensaje--valido]="esValido"
+            >
+              {{ mensajeErrorUrl | translate }}
+            </p>
+          </div>
+          <div *ngIf="mostrarMensajeUrlConfirmacion" class="ac-mensaje">
+            <p class="ac-mensaje-confirmacion">{{ 'labelsLogin.actualizarUrl' | translate }}</p>
+          </div>
+
+          <button
+            [disabled]="!urlApi || isVerificando"
+            (click)="procesarUrl()"
+            class="ac-boton ac-boton-validar"
+          >
+            <ng-container *ngIf="!isVerificando; else spinner">{{ 'labelsLogin.procesarBtnsLogin' | translate }}</ng-container>
+            <ng-template #spinner>
+              <svg class="ac-spinner" fill="none" viewBox="0 0 24 24">
+                <circle class="ac-spinner-pista" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="ac-spinner-arco" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+            </ng-template>
+          </button>
+        </ng-container>
+
+        <!-- Paso 2: conexión establecida, con los datos que devolvió el API -->
+        <ng-container *ngIf="mostrarDetallesExito">
+          <div class="ac-exito-cabecera">
+            <div class="ac-exito-icono">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="ac-exito-titulo">{{ 'apiConfig.conexionEstablecida' | translate }}</h2>
+              <p class="ac-exito-subtitulo">{{ 'apiConfig.configuracionValidada' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="ac-detalles">
+            <div class="ac-fila ac-fila--arriba">
+              <div class="ac-fila-icono ac-fila-icono--arriba">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ac-fila-texto ac-fila-texto--url">
+                <p class="ac-fila-etiqueta">{{ 'apiConfig.servicios' | translate }}</p>
+                <p class="ac-fila-valor ac-fila-valor--url">{{ urlApi }}</p>
+              </div>
+            </div>
+
+            <div class="ac-fila">
+              <div class="ac-fila-icono ac-fila-icono--ok">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div class="ac-fila-texto">
+                <p class="ac-fila-etiqueta">{{ 'common.estado' | translate }}</p>
+                <p class="ac-fila-valor ac-fila-valor--estado">{{ datosValidacion?.message }}</p>
+              </div>
+            </div>
+
+            <div class="ac-fila">
+              <div class="ac-fila-icono">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ac-fila-texto">
+                <p class="ac-fila-etiqueta">{{ 'common.version' | translate }}</p>
+                <p class="ac-fila-valor ac-fila-valor--version">{{ datosValidacion?.version }}</p>
+              </div>
+            </div>
+
+            <div class="ac-fila">
+              <div class="ac-fila-icono">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ac-fila-texto">
+                <p class="ac-fila-etiqueta">{{ 'apiConfig.fechaPublicacion' | translate }}</p>
+                <p class="ac-fila-valor ac-fila-valor--fecha">{{ datosValidacion?.releaseDate | date: "dd/MM/yyyy, HH:mm" }}</p>
+              </div>
+            </div>
+
+            <div class="ac-fila">
+              <div class="ac-fila-icono">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div class="ac-fila-texto">
+                <!-- En el original esta etiqueta tiene la clase inválida mb-0.55: no lleva margen inferior -->
+                <p class="ac-fila-etiqueta ac-fila-etiqueta--sin-margen">{{ 'apiConfig.fechaConfiguracion' | translate }}</p>
+                <p class="ac-fila-valor ac-fila-valor--fecha">{{ fechaConfiguracion }}</p>
+              </div>
+            </div>
+          </div>
+
+          <button (click)="finalizarConfiguracion()" class="ac-boton ac-boton-finalizar">
+            <span>{{ 'apiConfig.confirmarFinalizar' | translate }}</span>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

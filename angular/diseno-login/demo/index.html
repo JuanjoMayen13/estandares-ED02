@@ -4,13 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Login: demo del estándar</title>
-<!-- Demo del "Estándar: Diseño del login" v1.0.0. No es el login real: los datos son de ejemplo. -->
+<!-- Demo del "Estándar: Diseño del login" v1.1.0. No es el login real: los datos son de ejemplo. -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 <link rel="stylesheet" href="login.css" />
 <link rel="stylesheet" href="fondo.css" />
 <link rel="stylesheet" href="compartidos.css" />
+<link rel="stylesheet" href="api-config.css" />
 <link rel="stylesheet" href="demo.css" />
 </head>
 <body>
@@ -188,6 +189,133 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de configuración de la URL de la API (app-api-config, opcional) -->
+  <div id="modalApi" hidden>
+    <div class="fondo-api" aria-hidden="true"></div>
+    <div class="ac-capa">
+      <div class="ac-centro">
+        <div class="tarjeta-api">
+          <div class="ac-icono">
+            <div class="ac-icono-relativo">
+              <div class="ac-icono-circulo">
+                <svg class="ac-icono-engranaje" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div class="ac-icono-pulso"></div>
+            </div>
+          </div>
+
+          <div class="ac-contenido">
+            <!-- Paso 1: ingresar y validar la URL -->
+            <div id="acPaso1">
+              <h2 class="ac-titulo" data-t="apiConfig.configurarUrlApi"></h2>
+              <p class="ac-subtitulo" data-t="apiConfig.ingresaUrl"></p>
+              <div class="ac-grupo">
+                <label for="apiUrl" class="ac-etiqueta" data-t="apiConfig.urlApi"></label>
+                <div class="ac-campo-envoltura">
+                  <div class="ac-campo-icono">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                  </div>
+                  <input id="apiUrl" type="text" class="ac-campo" data-t-placeholder="apiConfig.placeholderUrl" />
+                </div>
+              </div>
+              <div class="ac-mensaje" id="acVerificacion" hidden>
+                <p class="ac-mensaje-verificacion" id="acVerificacionTexto"></p>
+              </div>
+              <div class="ac-mensaje" id="acConfirmacion" hidden>
+                <p class="ac-mensaje-confirmacion" data-t="labelsLogin.actualizarUrl"></p>
+              </div>
+              <button type="button" class="ac-boton ac-boton-validar" id="acValidar"></button>
+            </div>
+
+            <!-- Paso 2: conexión establecida -->
+            <div id="acPaso2" hidden>
+              <div class="ac-exito-cabecera">
+                <div class="ac-exito-icono">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="ac-exito-titulo" data-t="apiConfig.conexionEstablecida"></h2>
+                  <p class="ac-exito-subtitulo" data-t="apiConfig.configuracionValidada"></p>
+                </div>
+              </div>
+              <div class="ac-detalles">
+                <div class="ac-fila ac-fila--arriba">
+                  <div class="ac-fila-icono ac-fila-icono--arriba">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                  </div>
+                  <div class="ac-fila-texto ac-fila-texto--url">
+                    <p class="ac-fila-etiqueta" data-t="apiConfig.servicios"></p>
+                    <p class="ac-fila-valor ac-fila-valor--url" id="acUrl"></p>
+                  </div>
+                </div>
+                <div class="ac-fila">
+                  <div class="ac-fila-icono ac-fila-icono--ok">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                  <div class="ac-fila-texto">
+                    <p class="ac-fila-etiqueta" data-t="common.estado"></p>
+                    <p class="ac-fila-valor ac-fila-valor--estado" id="acEstado"></p>
+                  </div>
+                </div>
+                <div class="ac-fila">
+                  <div class="ac-fila-icono">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                    </svg>
+                  </div>
+                  <div class="ac-fila-texto">
+                    <p class="ac-fila-etiqueta" data-t="common.version"></p>
+                    <p class="ac-fila-valor ac-fila-valor--version" id="acVersion"></p>
+                  </div>
+                </div>
+                <div class="ac-fila">
+                  <div class="ac-fila-icono">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                  <div class="ac-fila-texto">
+                    <p class="ac-fila-etiqueta" data-t="apiConfig.fechaPublicacion"></p>
+                    <p class="ac-fila-valor ac-fila-valor--fecha" id="acPublicacion"></p>
+                  </div>
+                </div>
+                <div class="ac-fila">
+                  <div class="ac-fila-icono">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div class="ac-fila-texto">
+                    <p class="ac-fila-etiqueta ac-fila-etiqueta--sin-margen" data-t="apiConfig.fechaConfiguracion"></p>
+                    <p class="ac-fila-valor ac-fila-valor--fecha" id="acFechaConfiguracion"></p>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="ac-boton ac-boton-finalizar" id="acFinalizar">
+                <span data-t="apiConfig.confirmarFinalizar"></span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Panel del demo (no es parte del estándar): cambia estados para revisar el diseño -->
@@ -201,6 +329,7 @@
     <label><input type="checkbox" id="demoErrorGeneral" /> Error al autenticar</label>
     <button type="button" id="demoModal">Abrir modal empresa/estación</button>
     <p>Usuario y contraseña con cualquier texto: simula el inicio de sesión. Las bolas de la órbita se arrastran.</p>
+    <p>El mundito abre el modal de la URL de la API: una URL con "error" simula un servidor que no responde.</p>
   </div>
 </aside>
 <div class="demo-aviso" id="avisoDemo" hidden></div>

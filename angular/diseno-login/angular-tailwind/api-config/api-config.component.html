@@ -1,0 +1,368 @@
+<!-- Fondo del modal: velo azul de la marca, sin blur (estilos en el .css) -->
+<div class="fondo-api fixed inset-0 z-[60]" aria-hidden="true"></div>
+
+<div class="fixed inset-0 z-[60] p-4 overflow-y-auto">
+  <div class="flex min-h-full items-center justify-center py-4 sm:py-8">
+    <div
+      class="tarjeta-api relative bg-white/90 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-[95%] sm:max-w-md border border-white/20 dark:border-slate-700/50 transition-all duration-300"
+    >
+      <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+        <div class="relative">
+          <div
+            class="bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-full p-4 shadow-xl ring-4 ring-white/20 dark:ring-slate-700/40"
+          >
+            <svg
+              class="w-6 h-6 text-white animate-spin"
+              style="animation-duration: 3s"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </div>
+          <div
+            class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/30 to-transparent animate-pulse"
+          ></div>
+        </div>
+      </div>
+
+      <div class="pt-8">
+        <ng-container *ngIf="!mostrarDetallesExito">
+          <h2
+            class="text-xl font-semibold text-center text-gray-800 dark:text-slate-200 mb-2"
+          >
+            {{ 'apiConfig.configurarUrlApi' | translate }}
+          </h2>
+          <p
+            class="text-sm text-gray-500 dark:text-slate-400 text-center mb-6 px-2"
+          >
+            {{ 'apiConfig.ingresaUrl' | translate }}
+          </p>
+
+          <div class="mb-4">
+            <label
+              for="apiUrl"
+              class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1"
+              >{{ 'apiConfig.urlApi' | translate }}</label
+            >
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <svg
+                  class="h-5 w-5 text-gray-400 dark:text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                type="text"
+                [(ngModel)]="urlApi"
+                [ngClass]="{
+                  'cursor-not-allowed': isVerificando,
+                  'bg-gray-300 dark:bg-slate-600': isVerificando,
+                }"
+                [disabled]="isVerificando"
+                (keydown.enter)="procesarUrl()"
+                (focus)="seleccionarTexto($event)"
+                (ngModelChange)="onUrlChange($event)"
+                [placeholder]="'apiConfig.placeholderUrl' | translate"
+                class="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm transition-all"
+              />
+            </div>
+          </div>
+
+          <div *ngIf="mostrarMensajeUrlVerificacion" class="px-1">
+            <p
+              class="text-xs mt-1 font-medium italic"
+              [ngClass]="{
+                'text-red-500': esError,
+                'text-green-600': esValido,
+              }"
+            >
+              {{ mensajeErrorUrl | translate }}
+            </p>
+          </div>
+          <div *ngIf="mostrarMensajeUrlConfirmacion" class="px-1">
+            <p class="text-xs text-red-500 mt-1 animate-pulse">
+              {{ 'labelsLogin.actualizarUrl' | translate }}
+            </p>
+          </div>
+
+          <button
+            [disabled]="!urlApi || isVerificando"
+            (click)="procesarUrl()"
+            class="mt-5 w-full color-primary text-sm font-bold py-2.5 rounded-lg active:scale-[0.98] flex items-center justify-center transition-all disabled:opacity-50"
+          >
+            <ng-container *ngIf="!isVerificando; else spinner"
+              >{{ 'labelsLogin.procesarBtnsLogin' | translate }}</ng-container
+            >
+            <ng-template #spinner>
+              <svg
+                class="animate-spin h-4 w-4 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+            </ng-template>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="mostrarDetallesExito">
+          <div class="flex items-center space-x-3 mb-5 px-1">
+            <div
+              class="flex-shrink-0 w-11 h-11 bg-success-soft rounded-xl flex items-center justify-center shadow-sm"
+            >
+              <svg
+                class="w-7 h-7 text-success-strong"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h2
+                class="text-xl font-bold text-gray-800 dark:text-slate-200 leading-tight"
+              >
+                {{ 'apiConfig.conexionEstablecida' | translate }}
+              </h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                {{ 'apiConfig.configuracionValidada' | translate }}
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm"
+          >
+            <div
+              class="flex items-start p-3.5 border-b border-slate-200/60 dark:border-slate-700/50"
+            >
+              <div class="mt-1 mr-3 text-slate-400 flex-shrink-0">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  ></path>
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p
+                  class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5"
+                >
+                  {{ 'apiConfig.servicios' | translate }}
+                </p>
+                <p
+                  class="text-sm font-semibold text-slate-700 dark:text-slate-200 break-all leading-snug"
+                >
+                  {{ urlApi }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center p-3.5 border-b border-slate-200/60 dark:border-slate-700/50"
+            >
+              <div class="mr-3 text-green-500 flex-shrink-0">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p
+                  class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5"
+                >
+                  {{ 'common.estado' | translate }}
+                </p>
+                <p
+                  class="text-sm font-bold text-success-strong uppercase"
+                >
+                  {{ datosValidacion?.message }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center p-3.5 border-b border-slate-200/60 dark:border-slate-700/50"
+            >
+              <div class="mr-3 text-slate-400 flex-shrink-0">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p
+                  class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5"
+                >
+                  {{ 'common.version' | translate }}
+                </p>
+                <p
+                  class="text-sm font-mono font-bold text-slate-700 dark:text-slate-300"
+                >
+                  {{ datosValidacion?.version }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center p-3.5 border-b border-slate-200/60 dark:border-slate-700/50"
+            >
+              <div class="mr-3 text-slate-400 flex-shrink-0">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p
+                  class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5"
+                >
+                  {{ 'apiConfig.fechaPublicacion' | translate }}
+                </p>
+                <p
+                  class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  {{ datosValidacion?.releaseDate | date: "dd/MM/yyyy, HH:mm" }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center p-3.5 border-b border-slate-200/60 dark:border-slate-700/50"
+            >
+              <div class="mr-3 text-slate-400 flex-shrink-0">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p
+                  class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.55"
+                >
+                  {{ 'apiConfig.fechaConfiguracion' | translate }}
+                </p>
+                <p
+                  class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  {{ fechaConfiguracion }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            (click)="finalizarConfiguracion()"
+            class="mt-6 w-full color-primary text-base font-bold py-3.5 rounded-xl transition-all active:scale-[0.97] shadow-lg shadow-blue-900/20 flex items-center justify-center space-x-2"
+          >
+            <span>{{ 'apiConfig.confirmarFinalizar' | translate }}</span>
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

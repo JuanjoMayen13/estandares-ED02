@@ -4,14 +4,17 @@ Pantalla de inicio de sesión de las aplicaciones web: fondo azul animado, tarje
 
 | | |
 |---|---|
-| **Versión** | 1.0.0 — 2026-11-10 |
+| **Versión** | 1.1.0 — 2026-11-19 |
 | **Origen** | Pantalla de login del portal *Business* (Angular 20 + Tailwind CSS 3.4) |
 | **Implementaciones** | 1) [Angular + Tailwind](angular-tailwind/) (original) · 2) [Angular + CSS puro](angular-css-puro/) (sin Tailwind) |
+| **Opcional** | Logo de la empresa ([§7.2](#72-logo-de-la-empresa-opcional)) y modal de configuración de la URL de la API ([§7.3](#73-modal-de-configuración-de-la-url-de-la-api-opcional)) |
 | **Demo** | [Ver en línea](https://juanjomayen13.github.io/estandares-ED02/angular/diseno-login/demo/index.html) · [`demo/index.html`](demo/index.html): HTML, CSS y JS, sin instalar nada ([§9](#9-demo)) |
 
-Las dos implementaciones producen **exactamente el mismo resultado visual**. La 1 es copia literal del portal. La 2 reproduce, propiedad por propiedad, el CSS que Tailwind 3.4 genera para esas clases. Se comprobó midiendo posición, tamaño y estilos calculados de cada pieza en las dos, en modo claro y oscuro, a 1280×800, 1024×600 (modo compacto) y 375×812, y con el modal abierto: no hubo diferencias. La demo usa el mismo CSS de la implementación 2.
+Las dos implementaciones producen **exactamente el mismo resultado visual**. La 1 es copia literal del portal. La 2 reproduce, propiedad por propiedad, el CSS que Tailwind 3.4 genera para esas clases. Se comprobó midiendo posición, tamaño y estilos calculados de cada pieza en las dos: el login en modo claro y oscuro a 1280×800, 1024×600 (modo compacto) y 375×812, el modal de empresa y estación, y los dos pasos del modal de la URL de la API en claro y oscuro a 1280×800. No hubo diferencias. La demo usa el mismo CSS de la implementación 2.
 
-**Qué no incluye:** la lógica de inicio de sesión (llamadas al API, tokens, almacenamiento de la sesión) es de cada proyecto; el componente base la deja marcada con `PROYECTO` ([§5.3](#53-contrato-del-componente)). Tampoco incluye el modal de configuración de la URL de la API, que es otro componente. Si la aplicación usa la sesión única, esa lógica debe cumplir también el estándar [Sesión única](../sesion-unica.md) (login con `pPlataforma: 'WEB'` y sin `Authorization`).
+**Qué no incluye:** la lógica de inicio de sesión (llamadas al API, tokens, almacenamiento de la sesión) ni la validación de la URL contra el API son del estándar: son de cada proyecto y los componentes base las dejan marcadas con `PROYECTO` ([§5.3](#53-contrato-del-componente)). Si la aplicación usa la sesión única, esa lógica debe cumplir también el estándar [Sesión única](../sesion-unica.md) (login con `pPlataforma: 'WEB'` y sin `Authorization`).
+
+**Qué es opcional:** el logo de la empresa y el modal de configuración de la URL de la API. Cada equipo decide si los usa; el login funciona igual sin ellos.
 
 ---
 
@@ -23,7 +26,7 @@ Las dos implementaciones producen **exactamente el mismo resultado visual**. La 
 4. [Contenido de la carpeta](#4-contenido-de-la-carpeta)
 5. [Implementación 1 — Angular + Tailwind (original)](#5-implementación-1--angular--tailwind-original)
 6. [Implementación 2 — Angular + CSS puro (sin Tailwind)](#6-implementación-2--angular--css-puro-sin-tailwind)
-7. [Componentes compartidos y logo de la empresa](#7-componentes-compartidos-y-logo-de-la-empresa)
+7. [Componentes compartidos y opcionales](#7-componentes-compartidos-y-opcionales)
 8. [Traducciones](#8-traducciones)
 9. [Demo](#9-demo)
 10. [Checklist de QA](#10-checklist-de-qa)
@@ -296,6 +299,7 @@ El modo oscuro se activa con la clase `dark` en `<html>`. En el login cambian: e
 │   ├── login.css                      ← CSS del login (implementación 2, sin :host)
 │   ├── fondo.css                      ← fondo animado
 │   ├── compartidos.css                ← insignia de versión y spinner
+│   ├── api-config.css                 ← modal de la URL de la API (opcional)
 │   ├── demo.css                       ← solo del panel de la demo
 │   ├── textos.js                      ← textos en los 4 idiomas
 │   ├── demo.js                        ← comportamiento (idioma, tema, validación, modal, órbitas)
@@ -307,13 +311,15 @@ El modo oscuro se activa con la clase `dark` en `<html>`. En el login cambian: e
 │   │   ├── login.component.ts         ← componente base (lógica del proyecto marcada con PROYECTO)
 │   │   └── bola-arrastrable.directive.ts
 │   ├── visual-background/             ← fondo animado (.ts, .html, .css)
+│   ├── api-config/                    ← modal de la URL de la API (opcional, §7.3)
 │   ├── tokens/
 │   │   ├── tailwind.config.colores.js ← colores para theme.extend
-│   │   └── styles.tokens.css          ← variables de color y clase btn-primary
+│   │   └── styles.tokens.css          ← variables de color y clases btn-primary y color-primary
 │   └── compartidos/                   ← plantillas de la insignia de versión y del spinner
 ├── angular-css-puro/                  ← implementación 2
 │   ├── login/                         ← mismo .ts y directiva; .html y .css propios
 │   ├── visual-background/             ← igual que en la implementación 1
+│   ├── api-config/                    ← modal de la URL de la API en CSS puro (opcional)
 │   └── compartidos/                   ← insignia de versión y spinner en CSS puro
 ├── logo-empresa/
 │   └── logo-empresa.service.ts        ← opcional (§7.2)
@@ -351,7 +357,7 @@ Fuente en `index.html`:
 3. Copiar las banderas de [`assets/images/`](assets/images/) a `src/assets/images/`.
 4. Agregar las claves de [`traducciones/`](traducciones/) a los JSON de ngx-translate del proyecto.
 5. Ajustar en `login.component.ts` las rutas de los componentes propios (`app-api-config`, `app-version-badge`, `app-messages`, `app-spinner-carga`) y completar la lógica marcada con `PROYECTO`.
-6. Opcional: el logo de la empresa ([§7.2](#72-logo-de-la-empresa-opcional)).
+6. Opcional: el logo de la empresa ([§7.2](#72-logo-de-la-empresa-opcional)) y el modal de configuración de la URL de la API ([§7.3](#73-modal-de-configuración-de-la-url-de-la-api-opcional)).
 
 ### 5.3 Contrato del componente
 
@@ -437,18 +443,18 @@ Solo la plantilla y el CSS del componente. Son **iguales** a la implementación 
 
 ---
 
-## 7. Componentes compartidos y logo de la empresa
+## 7. Componentes compartidos y opcionales
 
 ### 7.1 Componentes compartidos
 
-La plantilla usa cuatro componentes del portal; cada proyecto usa los suyos o una réplica:
+La plantilla usa cuatro componentes del portal; cada proyecto usa los suyos, una réplica o, en el caso del modal de la URL, el de este estándar:
 
 | Componente | Qué es | En esta carpeta |
 |---|---|---|
 | `<app-version-badge>` | Botón con la versión de la aplicación; un clic la copia al portapapeles | Plantilla del portal en [`angular-tailwind/compartidos/`](angular-tailwind/compartidos/); réplica en CSS puro en [`angular-css-puro/compartidos/`](angular-css-puro/compartidos/) |
 | `<app-spinner-carga>` | Spinner de sección (`@Input() mensaje = 'common.cargandoPuntos'`) | Ídem |
 | `<app-messages>` | Notificaciones del portal (alerta) | No incluido |
-| `<app-api-config>` | Modal de configuración de la URL de la API | No incluido |
+| `<app-api-config>` | Modal de configuración de la URL de la API | Opcional: [§7.3](#73-modal-de-configuración-de-la-url-de-la-api-opcional) |
 
 ### 7.2 Logo de la empresa (opcional)
 
@@ -478,13 +484,42 @@ if (logoEmpresa) {
 
 4. El servidor de las imágenes debe permitir que el navegador lea la imagen: mismo dominio que la web o encabezado `Access-Control-Allow-Origin`. Si no, la descarga falla en silencio y se ve el escudo.
 
+### 7.3 Modal de configuración de la URL de la API (opcional)
+
+**No es obligatorio.** Es el modal que abre el mundito del pie del login para validar y guardar la URL del servidor de la API. Si la aplicación configura la URL de otra forma, se puede quitar del login (paso 4) y hacer que el botón del servidor abra la configuración propia, o quitar el botón.
+
+**Archivos:** [`angular-tailwind/api-config/`](angular-tailwind/api-config/) (copia del portal; usa la clase global `color-primary`, incluida en [`tokens/styles.tokens.css`](angular-tailwind/tokens/styles.tokens.css)) y [`angular-css-puro/api-config/`](angular-css-puro/api-config/). En las dos, [`api-config.component.ts`](angular-tailwind/api-config/api-config.component.ts) es un componente base: la validación contra el API y el guardado de la URL están marcados con `PROYECTO`.
+
+| Pieza | Medidas |
+|---|---|
+| Fondo | **En el login:** opaco, con el mismo degradado azul del login y dos brillos; el login se oculta mientras el modal está abierto, así que no hay destello blanco. **En otras pantallas:** velo azul `rgba(59,75,154,.82) → rgba(23,37,84,.9)` sin blur, con fundido de 0.2 s. En oscuro se agrega una capa `rgba(2,6,23,.45)`. `z-index: 60` |
+| Tarjeta | Ancho 95 % (máx. 448 px desde 640 px), relleno 24 px (32 px desde 640 px), radio 16 px, fondo blanco al 90 % (`slate-900` al 80 % en oscuro), borde blanco al 20 % (`slate-700` al 50 %), `blur(12px)`, sombra `shadow-xl`. Entra en 0.35 s (opacidad, escala 0.96 y 8 px más arriba) |
+| Ícono | Círculo de 56 px centrado sobre el borde superior (24 px hacia afuera): degradado `#3b82f6 → #4f46e5` (`#2563eb → #4338ca` en oscuro), anillo de 4 px blanco al 20 %, engranaje blanco que gira cada 3 s y un brillo que late |
+| Paso 1 | Título de 20 px (600), subtítulo de 14 px gris, etiqueta de 14 px (500), campo de 38 px con ícono de enlace (radio 8 px, borde `#d1d5db`; en oscuro fondo `#334155` y borde `#475569`) y botón «Validar y confirmar URL» a lo ancho (14 px, 700, radio 8 px, color `brand`) |
+| Mientras valida | Campo deshabilitado (gris en claro) y botón al 50 % con un spinner |
+| Mensajes | Resultado de la validación en 12 px cursiva (rojo `#ef4444` o verde `#16a34a`). Al cambiar la URL, «Presionar para validar y actualizar.» en rojo, latiendo |
+| Paso 2 | ✓ en un cuadro `success-soft`, «Conexión establecida» (20 px, 700) y una caja con filas: servicios (la URL), estado, versión, fecha de publicación y fecha de configuración. Etiquetas de 10 px en mayúsculas y valores de 14 px. Botón «Confirmar y finalizar» (16 px, 700, radio 12 px) |
+
+**Comportamiento:**
+
+1. El campo arranca con la URL actual; al enfocarlo se selecciona todo el texto.
+2. Enter o el botón validan la URL. Validar **no** la aplica: solo comprueba que el servidor responde y muestra sus datos.
+3. «Confirmar y finalizar» guarda la URL y cierra el modal (evento `modalCerrado`); el login vuelve a mostrarse con el servidor nuevo en el pie.
+
+**Pasos para usarlo:**
+
+1. Copiar la carpeta `api-config/` de la implementación elegida.
+2. Completar `procesarUrl()` y `finalizarConfiguracion()` en `api-config.component.ts` (marcados con `PROYECTO`).
+3. La plantilla del login ya lo incluye: `<app-api-config *ngIf="mostrarModalApi" (modalCerrado)="onConfiguracionTerminada()">`, con el resto del login dentro de `*ngIf="!mostrarModalApi"`.
+4. **Para no usarlo:** quitar `<app-api-config>` de `login.component.html` y `ApiConfigComponent` de los `imports` de `login.component.ts`.
+
 ---
 
 ## 8. Traducciones
 
 Las claves que usa el login, en los cuatro idiomas del portal, están en [`traducciones/`](traducciones/): [`es.json`](traducciones/es.json), [`en.json`](traducciones/en.json), [`fr.json`](traducciones/fr.json) y [`de.json`](traducciones/de.json). Tienen la misma estructura que los JSON de ngx-translate (`labelsLogin`, `common`, `shared`), así que se combinan con los del proyecto.
 
-`labelsLogin.ErrorConexionAPI`, `ErrorAutenticacion`, `sinEmpresasAsignadas` y `errorServidorLogin` son los mensajes generales que el flujo pone en `errores.general`.
+`labelsLogin.ErrorConexionAPI`, `ErrorAutenticacion`, `sinEmpresasAsignadas` y `errorServidorLogin` son los mensajes generales que el flujo pone en `errores.general`. La sección `apiConfig`, `common.estado`, `common.version` y las claves `labelsLogin.URL…`, `actualizarUrl`, `procesarBtnsLogin` y `ErrorValidarURL` son del modal de la URL de la API (opcional).
 
 ---
 
@@ -496,9 +531,10 @@ Las claves que usa el login, en los cuatro idiomas del portal, están en [`tradu
 
 - Usuario y contraseña con cualquier texto: simula el inicio de sesión, la carga y el modal de empresa y estación (la tercera empresa no tiene estaciones).
 - Idioma, modo oscuro y el arrastre de las bolas funcionan como en el portal.
+- El mundito del pie abre el modal de configuración de la URL de la API (opcional, [§7.3](#73-modal-de-configuración-de-la-url-de-la-api-opcional)). La validación es simulada: una URL vacía o sin `http://`/`https://` da su mensaje de error, una URL que contenga «error» simula un servidor que no responde y cualquier otra pasa a «Conexión establecida».
 - El panel **Demo** (abajo a la izquierda, no es parte del diseño) muestra el logo de la empresa, cambia el estado del servidor y fuerza el error de autenticación.
 
-`demo/login.css`, `fondo.css` y `compartidos.css` son los CSS de la implementación 2 con `:host` cambiado por el contenedor `.lg-host` de la página (y `:host-context(.dark)` por `.dark .lg-host`). Si cambia el CSS de la implementación 2, se regeneran igual.
+`demo/login.css`, `fondo.css`, `compartidos.css` y `api-config.css` son los CSS de la implementación 2 con `:host` cambiado por el contenedor `.lg-host` de la página (`:host-context(.dark)` por `.dark .lg-host` y `:host-context(app-login)` por `.lg-host`). Si cambia el CSS de la implementación 2, se regeneran igual.
 
 ---
 
@@ -518,6 +554,8 @@ Las claves que usa el login, en los cuatro idiomas del portal, están en [`tradu
 - [ ] Modal: cabecera y pie fijos; un solo scroll en celular; «Guardar cambios» deshabilitado hasta elegir empresa y estación; aviso de empresa sin estaciones.
 - [ ] Textos en el idioma activo (incluidos `title` y `aria-label`).
 - [ ] Con logo guardado: el logo reemplaza al escudo sin deformarse; sin logo, el escudo.
+- [ ] Si se usa el modal de la URL de la API: al abrirlo desde el login no hay destello blanco y el fondo es igual al del login; en otras pantallas se ve el velo azul.
+- [ ] Si se usa el modal de la URL de la API: validar no cambia la URL hasta «Confirmar y finalizar»; un error deja su mensaje en rojo y se puede corregir.
 
 ---
 
@@ -536,6 +574,10 @@ El estándar replica el original **tal cual**, incluidas estas particularidades 
 | 7 | En modo compacto se oculta el ícono del encabezado | En celulares de 740 px de alto o menos no se ve el logo de la empresa | Mostrarlo más pequeño en lugar de ocultarlo |
 | 8 | El menú de idiomas usa `@angular/animations` | Ese paquete está marcado como obsoleto desde Angular 20.2 | Pasar la entrada/salida a `animate.enter` / `animate.leave` o a CSS |
 | 9 | El texto del spinner de sección usa `text-gray-600 dark:text-white` | No sigue los tokens de color | Usar `text-muted` |
+| 10 | Modal de la URL: la regla `input:focus` del CSS del componente pisa `focus:ring-2 focus:ring-blue-600` | El campo muestra un halo de 3 px azul al 10 % en lugar del anillo azul de 2 px | Quitar la regla `input:focus` del CSS |
+| 11 | Modal de la URL: `button:active { transform: scale(0.98) }` pisa `active:scale-[0.97]` | Los dos botones se encogen igual (0.98) al presionarlos | Quitar la regla o el `active:scale-*` |
+| 12 | Modal de la URL: la etiqueta «Fecha de configuración» tiene la clase inválida `mb-0.55` | No lleva el margen de 2 px de las otras etiquetas | Cambiar a `mb-0.5` |
+| 13 | Modal de la URL: usa colores sueltos (`gray-*`, `slate-*`, `text-red-500`, `text-green-600`) y la clase antigua `color-primary` | No sigue del todo los tokens de color | Migrar a los tokens (`text-primary`, `text-muted`, `text-danger-strong`…) y `btn-primary` |
 
 ---
 
@@ -544,10 +586,11 @@ El estándar replica el original **tal cual**, incluidas estas particularidades 
 - **Versionado** [SemVer](https://semver.org/lang/es/): MAJOR = cambia el aspecto, MINOR = agrega opciones compatibles, PATCH = corrige sin cambiar el aspecto.
 - Todo cambio se aplica a las **dos** implementaciones, a la [especificación](#2-especificación-visual) y al [demo](#9-demo) en el mismo cambio.
 - El trazo SVG del mundito (`d="…"`) no se edita a mano; es copia exacta del original.
-- Cada equipo, al copiar el diseño, anota en un comentario la versión del estándar usada (`<!-- Estándar diseño del login v1.0.0 -->`).
+- Cada equipo, al copiar el diseño, anota en un comentario la versión del estándar usada (`<!-- Estándar diseño del login v1.1.0 -->`).
 
 ### Historial
 
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 1.0.0 | 2026-11-10 | Primera versión. Réplica exacta del login del portal Business: Angular + Tailwind, Angular + CSS puro y demo HTML. |
+| 1.1.0 | 2026-11-19 | Se agrega, como opcional, el modal de configuración de la URL de la API: Angular + Tailwind, Angular + CSS puro y demo. |

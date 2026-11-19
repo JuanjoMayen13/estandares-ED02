@@ -20,11 +20,20 @@
     "ErrorConexionAPI": "Revisa la URL o la conexión a la API.",
     "ErrorAutenticacion": "Error al autenticar el usuario.",
     "sinEmpresasAsignadas": "El usuario no tiene empresas asignadas.",
-    "errorServidorLogin": "No se pudo iniciar sesión por un error en el servidor. Intente de nuevo o contacte a soporte."
+    "errorServidorLogin": "No se pudo iniciar sesión por un error en el servidor. Intente de nuevo o contacte a soporte.",
+    "actualizarUrl": "Presionar para validar y actualizar.",
+    "procesarBtnsLogin": "Validar y confirmar URL",
+    "URLVacia": "Por favor, ingresa una URL.",
+    "URLInvalidaFormato": "El formato de la URL es incorrecto. Asegúrate de usar http:// o https://.",
+    "URLInvalida": "La URL base no es válida.",
+    "URLValida": "La URL es válida.",
+    "ErrorValidarURL": "Error al verificar la URL."
   },
   "common": {
     "idioma": "Idioma",
-    "cargandoPuntos": "Cargando..."
+    "cargandoPuntos": "Cargando...",
+    "estado": "Estado",
+    "version": "Versión"
   },
   "shared": {
     "modoClaro": "Claro",
@@ -33,5 +42,17 @@
     "empresaSinEstaciones": "La empresa seleccionada no tiene estaciones de trabajo asignadas.",
     "copiado": "Copiado",
     "copiarVersion": "Copiar la información de la versión {{version}}"
+  },
+  "apiConfig": {
+    "configurarUrlApi": "Configurar URL de API",
+    "ingresaUrl": "Ingresa la URL de conexión a la API para poder continuar.",
+    "urlApi": "URL de la API",
+    "placeholderUrl": "https://tu-api.com/api/",
+    "conexionEstablecida": "Conexión establecida",
+    "configuracionValidada": "Configuración validada exitosamente",
+    "servicios": "Servicios",
+    "fechaPublicacion": "Fecha de publicación",
+    "fechaConfiguracion": "Fecha de configuración",
+    "confirmarFinalizar": "Confirmar y finalizar"
   }
 }

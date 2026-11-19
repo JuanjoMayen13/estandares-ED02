@@ -1,0 +1,613 @@
+/* Estándar diseño del login v1.1.0 — modal de configuración de la URL de la API, versión CSS puro (sin Tailwind).
+   Reproduce, propiedad por propiedad, el CSS que Tailwind 3.4 genera para las clases del original
+   más el CSS propio del componente. */
+
+/* ─── Tokens de color (los mismos de src/styles.css del portal Business) ─── */
+:host {
+  --ac-border: 209 213 219;
+  --ac-brand: 37 99 235;
+  --ac-brand-hover: 29 78 216;
+  --ac-brand-active: 30 64 175;
+  --ac-on-brand: 255 255 255;
+  --ac-success-soft: 240 253 244;
+  --ac-success-strong: 21 128 61;
+
+  /* Fuente y color base que el portal pone en <body> */
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgb(17 24 39);
+}
+
+:host-context(.dark) {
+  --ac-border: 49 63 84;
+  --ac-brand: 96 165 250;
+  --ac-brand-hover: 59 130 246;
+  --ac-brand-active: 37 99 235;
+  --ac-on-brand: 15 19 25;
+  --ac-success-soft: 24 51 45;
+  --ac-success-strong: 134 239 172;
+
+  color: rgb(243 244 246);
+}
+
+/* ─── Base mínima (lo que el preflight de Tailwind aplica a estos elementos) ───
+   Selectores de elemento simples, como el preflight: así cualquier clase de abajo les gana. */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: rgb(var(--ac-border));
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+h2 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+button,
+input {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+  text-transform: none;
+  -webkit-appearance: button;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+svg {
+  display: block;
+  vertical-align: middle;
+}
+
+/* ─── Fondo y capas ─── */
+.fondo-api {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+
+.ac-capa {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.ac-centro {
+  display: flex;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+/* ─── Tarjeta ─── */
+.tarjeta-api {
+  position: relative;
+  width: 100%;
+  max-width: 95%;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background-color: rgb(255 255 255 / 0.9);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+:host-context(.dark) .tarjeta-api {
+  border-color: rgb(51 65 85 / 0.5);
+  background-color: rgb(15 23 42 / 0.8);
+}
+
+/* Ícono de engranaje sobre el borde superior */
+.ac-icono {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ac-icono-relativo {
+  position: relative;
+}
+
+.ac-icono-circulo {
+  padding: 1rem;
+  border-radius: 9999px;
+  background-image: linear-gradient(to bottom right, #3b82f6, #4f46e5);
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.2), 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+:host-context(.dark) .ac-icono-circulo {
+  background-image: linear-gradient(to bottom right, #2563eb, #4338ca);
+  box-shadow: 0 0 0 4px rgb(51 65 85 / 0.4), 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.ac-icono-engranaje {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: rgb(255 255 255);
+  animation: ac-girar 3s linear infinite;
+}
+
+.ac-icono-pulso {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-image: linear-gradient(to bottom right, rgb(96 165 250 / 0.3), transparent);
+  animation: ac-pulso 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.ac-contenido {
+  padding-top: 2rem;
+}
+
+/* ─── Paso 1: ingresar la URL ─── */
+.ac-titulo {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: rgb(31 41 55);
+}
+
+.ac-subtitulo {
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  color: rgb(107 114 128);
+}
+
+.ac-grupo {
+  margin-bottom: 1rem;
+}
+
+.ac-etiqueta {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: rgb(55 65 81);
+}
+
+.ac-campo-envoltura {
+  position: relative;
+}
+
+.ac-campo-icono {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 0.75rem;
+  color: rgb(156 163 175);
+}
+
+.ac-campo-icono svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.ac-campo {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(209 213 219);
+  background-color: rgb(255 255 255);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* En el original el CSS del componente (input:focus) pisa el anillo de Tailwind: queda este halo */
+.ac-campo:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ac-campo--verificando {
+  cursor: not-allowed;
+  background-color: rgb(209 213 219);
+}
+
+.ac-mensaje {
+  padding: 0 0.25rem;
+}
+
+.ac-mensaje-verificacion {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.ac-mensaje--error {
+  color: rgb(239 68 68);
+}
+
+.ac-mensaje--valido {
+  color: rgb(22 163 74);
+}
+
+.ac-mensaje-confirmacion {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(239 68 68);
+  animation: ac-pulso 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Botones (en el original: clase global color-primary) */
+.ac-boton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background-color: rgb(var(--ac-brand));
+  color: rgb(var(--ac-on-brand));
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.ac-boton:hover {
+  background-color: rgb(var(--ac-brand-hover));
+}
+
+/* En el original el CSS del componente (button:active) pisa el active:scale de Tailwind: los dos botones quedan en 0.98 */
+.ac-boton:active {
+  background-color: rgb(var(--ac-brand-active));
+  transform: scale(0.98);
+}
+
+.ac-boton:disabled {
+  opacity: 0.5;
+}
+
+.ac-boton-validar {
+  margin-top: 1.25rem;
+  padding: 0.625rem 0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.ac-spinner {
+  width: 1rem;
+  height: 1rem;
+  color: rgb(255 255 255);
+  animation: ac-girar 1s linear infinite;
+}
+
+.ac-spinner-pista {
+  opacity: 0.25;
+}
+
+.ac-spinner-arco {
+  opacity: 0.75;
+}
+
+/* ─── Paso 2: conexión establecida ─── */
+.ac-exito-cabecera {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.25rem;
+}
+
+.ac-exito-cabecera > * + * {
+  margin-left: 0.75rem;
+}
+
+.ac-exito-icono {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background-color: rgb(var(--ac-success-soft));
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.ac-exito-icono svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: rgb(var(--ac-success-strong));
+}
+
+.ac-exito-titulo {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: rgb(31 41 55);
+}
+
+.ac-exito-subtitulo {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(100 116 139);
+}
+
+.ac-detalles {
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(226 232 240);
+  background-color: rgb(248 250 252);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.ac-fila {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem;
+  border-bottom-width: 1px;
+  border-color: rgb(226 232 240 / 0.6);
+}
+
+.ac-fila--arriba {
+  align-items: flex-start;
+}
+
+.ac-fila-icono {
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  color: rgb(148 163 184);
+}
+
+.ac-fila-icono--arriba {
+  margin-top: 0.25rem;
+}
+
+.ac-fila-icono--ok {
+  color: rgb(34 197 94);
+}
+
+.ac-fila-icono svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.ac-fila-texto {
+  flex: 1 1 0%;
+}
+
+.ac-fila-texto--url {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.ac-fila-etiqueta {
+  margin-bottom: 0.125rem;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(148 163 184);
+}
+
+.ac-fila-etiqueta--sin-margen {
+  margin-bottom: 0;
+}
+
+.ac-fila-valor {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: rgb(51 65 85);
+}
+
+.ac-fila-valor--url {
+  word-break: break-all;
+  line-height: 1.375;
+}
+
+.ac-fila-valor--estado {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgb(var(--ac-success-strong));
+}
+
+.ac-fila-valor--version {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 700;
+}
+
+.ac-boton-finalizar {
+  margin-top: 1.5rem;
+  padding: 0.875rem 0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgb(30 58 138 / 0.2), 0 4px 6px -4px rgb(30 58 138 / 0.2);
+}
+
+.ac-boton-finalizar > * + * {
+  margin-left: 0.5rem;
+}
+
+.ac-boton-finalizar svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ─── Modo oscuro (colores sueltos del original: dark:text-slate-*, dark:bg-slate-*) ─── */
+:host-context(.dark) .ac-titulo,
+:host-context(.dark) .ac-exito-titulo {
+  color: rgb(226 232 240);
+}
+
+:host-context(.dark) .ac-subtitulo,
+:host-context(.dark) .ac-exito-subtitulo {
+  color: rgb(148 163 184);
+}
+
+:host-context(.dark) .ac-etiqueta {
+  color: rgb(203 213 225);
+}
+
+:host-context(.dark) .ac-campo-icono {
+  color: rgb(100 116 139);
+}
+
+:host-context(.dark) .ac-campo {
+  border-color: rgb(71 85 105);
+  background-color: rgb(51 65 85);
+  color: rgb(226 232 240);
+}
+
+:host-context(.dark) .ac-detalles {
+  border-color: rgb(51 65 85);
+  background-color: rgb(30 41 59 / 0.4);
+}
+
+:host-context(.dark) .ac-fila {
+  border-color: rgb(51 65 85 / 0.5);
+}
+
+:host-context(.dark) .ac-fila-etiqueta {
+  color: rgb(100 116 139);
+}
+
+:host-context(.dark) .ac-fila-valor {
+  color: rgb(203 213 225);
+}
+
+:host-context(.dark) .ac-fila-valor--url {
+  color: rgb(226 232 240);
+}
+
+:host-context(.dark) .ac-fila-valor--estado {
+  color: rgb(var(--ac-success-strong));
+}
+
+/* Desde 640 px (sm) */
+@media (min-width: 640px) {
+  .ac-centro {
+    padding: 2rem 0;
+  }
+
+  .tarjeta-api {
+    max-width: 28rem;
+    padding: 2rem;
+  }
+}
+
+/* ═══ CSS propio del componente (igual al original) ═══ */
+
+/* Animaciones personalizadas */
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes backdropAppear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ac-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ac-pulso {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Fondo del modal: velo azul de la marca (mismos tonos de la pantalla de arranque), sin blur.
+   El blur sobre toda la pantalla es costoso y no aporta: el velo ya separa el modal del contenido */
+.fondo-api {
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(147, 197, 253, 0.12), transparent 60%),
+    linear-gradient(135deg, rgba(59, 75, 154, 0.82), rgba(23, 37, 84, 0.9));
+  animation: backdropAppear 0.2s ease-out;
+}
+
+/* Modo oscuro: capa extra que oscurece el velo (también aplica al fondo opaco del login) */
+.fondo-api::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+:host-context(.dark) .fondo-api::after {
+  background: rgba(2, 6, 23, 0.45);
+}
+
+/* En el login el modal reemplaza la pantalla completa (el login no se muestra mientras está abierto),
+   así que detrás no hay nada: fondo opaco igual al del login y sin fundido, para que no se vea
+   el blanco de la página al abrirlo */
+:host-context(app-login) .fondo-api {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(59, 130, 246, 0.45), transparent 42%),
+    radial-gradient(circle at 92% 96%, rgba(99, 102, 241, 0.4), transparent 42%),
+    radial-gradient(ellipse at 50% 35%, rgba(147, 197, 253, 0.16), transparent 60%),
+    linear-gradient(135deg, #3b4b9a, #172554);
+  animation: none;
+}
+
+/* Entrada de la tarjeta */
+.tarjeta-api {
+  animation: modalAppear 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fondo-api,
+  .tarjeta-api {
+    animation: none;
+  }
+}

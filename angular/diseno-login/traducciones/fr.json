@@ -20,11 +20,20 @@
     "ErrorConexionAPI": "Vérifiez l'URL ou la connexion à l'API.",
     "ErrorAutenticacion": "Erreur lors de l'authentification de l'utilisateur.",
     "sinEmpresasAsignadas": "Aucune entreprise n'est attribuée à l'utilisateur.",
-    "errorServidorLogin": "Impossible de se connecter en raison d'une erreur du serveur. Réessayez ou contactez le support."
+    "errorServidorLogin": "Impossible de se connecter en raison d'une erreur du serveur. Réessayez ou contactez le support.",
+    "actualizarUrl": "Appuyez pour valider et mettre à jour.",
+    "procesarBtnsLogin": "Valider et confirmer l'URL",
+    "URLVacia": "Veuillez entrer une URL.",
+    "URLInvalidaFormato": "Le format de l'URL est incorrect. Assurez-vous d'utiliser http:// ou https://.",
+    "URLInvalida": "L'URL de base n'est pas valide.",
+    "URLValida": "L'URL est valide.",
+    "ErrorValidarURL": "Échec de la vérification de l'URL."
   },
   "common": {
     "idioma": "Langue",
-    "cargandoPuntos": "Chargement..."
+    "cargandoPuntos": "Chargement...",
+    "estado": "Statut",
+    "version": "Version"
   },
   "shared": {
     "modoClaro": "Clair",
@@ -33,5 +42,17 @@
     "empresaSinEstaciones": "Aucun poste de travail n'est attribué à l'entreprise sélectionnée.",
     "copiado": "Copié",
     "copiarVersion": "Copier les informations de la version {{version}}"
+  },
+  "apiConfig": {
+    "configurarUrlApi": "Configurer l'URL de l'API",
+    "ingresaUrl": "Saisissez l'URL de connexion à l'API pour continuer.",
+    "urlApi": "URL de l'API",
+    "placeholderUrl": "https://votre-api.com/api/",
+    "conexionEstablecida": "Connexion établie",
+    "configuracionValidada": "Configuration validée avec succès",
+    "servicios": "Services",
+    "fechaPublicacion": "Date de publication",
+    "fechaConfiguracion": "Date de configuration",
+    "confirmarFinalizar": "Confirmer et terminer"
   }
 }

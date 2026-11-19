@@ -20,11 +20,20 @@
     "ErrorConexionAPI": "Überprüfen Sie die URL oder die API-Verbindung.",
     "ErrorAutenticacion": "Fehler bei der Authentifizierung des Benutzers.",
     "sinEmpresasAsignadas": "Dem Benutzer sind keine Unternehmen zugewiesen.",
-    "errorServidorLogin": "Anmeldung aufgrund eines Serverfehlers nicht möglich. Versuchen Sie es erneut oder wenden Sie sich an den Support."
+    "errorServidorLogin": "Anmeldung aufgrund eines Serverfehlers nicht möglich. Versuchen Sie es erneut oder wenden Sie sich an den Support.",
+    "actualizarUrl": "Drücken, um zu validieren und zu aktualisieren.",
+    "procesarBtnsLogin": "URL validieren und bestätigen",
+    "URLVacia": "Bitte geben Sie eine URL ein.",
+    "URLInvalidaFormato": "Das URL-Format ist ungültig. Stellen Sie sicher, dass Sie http:// oder https:// verwenden.",
+    "URLInvalida": "Die Basis-URL ist ungültig.",
+    "URLValida": "Die URL ist gültig.",
+    "ErrorValidarURL": "Die URL konnte nicht überprüft werden."
   },
   "common": {
     "idioma": "Sprache",
-    "cargandoPuntos": "Wird geladen..."
+    "cargandoPuntos": "Wird geladen...",
+    "estado": "Status",
+    "version": "Version"
   },
   "shared": {
     "modoClaro": "Hell",
@@ -33,5 +42,17 @@
     "empresaSinEstaciones": "Dem ausgewählten Unternehmen sind keine Arbeitsstationen zugewiesen.",
     "copiado": "Kopiert",
     "copiarVersion": "Versionsinformationen {{version}} kopieren"
+  },
+  "apiConfig": {
+    "configurarUrlApi": "API-URL konfigurieren",
+    "ingresaUrl": "Geben Sie die API-Verbindungs-URL ein, um fortzufahren.",
+    "urlApi": "API-URL",
+    "placeholderUrl": "https://ihre-api.com/api/",
+    "conexionEstablecida": "Verbindung hergestellt",
+    "configuracionValidada": "Konfiguration erfolgreich validiert",
+    "servicios": "Dienste",
+    "fechaPublicacion": "Veröffentlichungsdatum",
+    "fechaConfiguracion": "Konfigurationsdatum",
+    "confirmarFinalizar": "Bestätigen und abschließen"
   }
 }

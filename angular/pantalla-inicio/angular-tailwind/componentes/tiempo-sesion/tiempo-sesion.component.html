@@ -1,0 +1,37 @@
+@if (visible()) {
+  <div [title]="'inicio.sesionVenceA' | translate: { hora: horaVence() }">
+    <div class="mb-1.5 flex items-baseline justify-between gap-3 text-xs">
+      <span class="text-muted">{{ 'inicio.sesionRestante' | translate }}</span>
+      <span
+        class="font-medium tabular-nums"
+        [class]="nivel() === 'critico' || nivel() === 'vencida' ? 'text-danger-strong' : 'text-secondary'"
+      >
+        {{ nivel() === 'vencida' ? ('inicio.sesionVencida' | translate) : texto() }}
+      </span>
+    </div>
+
+    @if (porcentaje() !== null) {
+      <div
+        class="h-1.5 w-full overflow-hidden rounded-full bg-surface-raised"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="porcentajeRedondeado()"
+        [attr.aria-label]="'inicio.sesionRestante' | translate"
+      >
+        <!-- Tonos suaves a propósito: la barra acompaña, no llama la atención hasta que importa -->
+        <div
+          class="h-full rounded-full transition-[width] duration-1000 ease-linear motion-reduce:transition-none"
+          [class]="
+            nivel() === 'ok'
+              ? 'bg-success-400/70 dark:bg-success-600/70'
+              : nivel() === 'aviso'
+                ? 'bg-warning-400/70 dark:bg-warning-600/70'
+                : 'bg-danger-400/70 dark:bg-danger-600/70'
+          "
+          [style.width.%]="porcentaje()"
+        ></div>
+      </div>
+    }
+  </div>
+}

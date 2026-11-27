@@ -1,0 +1,123 @@
+<!-- Un solo contenedor para los dos estados, como el panel de módulos: solo cambia su ancho (200 ms) -->
+<aside
+  class="pi-panel pi-panel--preferencias"
+  [class.pi-panel--compacto]="esCompacto()"
+  [class.pi-panel--capa]="!esCompacto() && variante() === 'capa'"
+  [attr.aria-label]="'inicio.preferencias' | translate"
+>
+  @if (esCompacto()) {
+    <!-- ===== Compacto: barra de íconos ===== -->
+    <div class="pi-barra-extremo pi-barra-extremo--arriba">
+      <button
+        type="button"
+        class="pi-boton-icono pi-boton-icono--36"
+        [attr.aria-label]="'inicio.expandirPreferencias' | translate"
+        [title]="'inicio.expandirPreferencias' | translate"
+        (click)="cambiarEstado.emit('expandido')"
+      >
+        <i class="fa-solid fa-angles-left pi-icono-14" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="pi-barra-iconos">
+      @if (accionRapida(); as accion) {
+        <!-- Acción directa: un clic, sin panel de por medio -->
+        <button
+          type="button"
+          class="pi-icono-barra pi-foco"
+          [attr.aria-label]="accion.etiqueta | translate"
+          [title]="accion.etiqueta | translate"
+          (click)="accionRapidaElegida.emit()"
+        >
+          <i [class]="accion.icono" aria-hidden="true"></i>
+        </button>
+      }
+
+      @for (seccion of secciones(); track seccion.id) {
+        <button
+          type="button"
+          class="pi-icono-barra pi-foco"
+          [class.pi-icono-barra--activo]="flotante()?.seccion?.id === seccion.id"
+          [attr.aria-label]="seccion.etiqueta | translate"
+          [attr.aria-expanded]="flotante()?.seccion?.id === seccion.id"
+          [title]="seccion.etiqueta | translate"
+          (click)="alternarFlotante(seccion, $event)"
+        >
+          <i [class]="seccion.icono" aria-hidden="true"></i>
+        </button>
+      }
+    </div>
+
+    <div class="pi-barra-extremo pi-barra-extremo--abajo">
+      <button
+        type="button"
+        class="pi-boton-icono pi-boton-icono--36"
+        [attr.aria-label]="'inicio.ocultarPanel' | translate"
+        [title]="'inicio.ocultarPanel' | translate"
+        (click)="cambiarEstado.emit('oculto')"
+      >
+        <i class="fa-solid fa-eye-slash pi-icono-14" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    @if (flotante(); as f) {
+      <div
+        class="pi-flotante pi-flotante--preferencias"
+        [style.top.px]="f.top"
+        [style.left.px]="f.left"
+        [style.max-height.px]="f.maxAlto"
+        role="dialog"
+        [attr.aria-label]="f.seccion.etiqueta | translate"
+      >
+        <div class="pi-flotante-cuerpo pi-flotante-cuerpo--amplio">
+          <span class="pi-seccion-titulo pi-seccion-titulo--flotante">{{ f.seccion.etiqueta | translate }}</span>
+          <ng-container *ngTemplateOutlet="f.seccion.plantilla"></ng-container>
+        </div>
+      </div>
+    }
+  } @else {
+    <!-- ===== Expandido (y variante capa) ===== -->
+    <div class="pi-panel-encabezado pi-panel-encabezado--preferencias">
+      <h2 class="pi-panel-titulo">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        {{ 'inicio.preferencias' | translate }}
+      </h2>
+
+      <div class="pi-panel-botones">
+        @if (variante() === 'capa') {
+          <button type="button" class="pi-boton-icono pi-boton-icono--32" [attr.aria-label]="'inicio.cerrar' | translate" (click)="cerrar.emit()">
+            <i class="fa-solid fa-xmark pi-icono-14" aria-hidden="true"></i>
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="pi-boton-icono pi-boton-icono--32"
+            [attr.aria-label]="'inicio.compactarPreferencias' | translate"
+            [title]="'inicio.compactarPreferencias' | translate"
+            (click)="cambiarEstado.emit('compacto')"
+          >
+            <i class="fa-solid fa-angles-right pi-icono-14" aria-hidden="true"></i>
+          </button>
+          <button
+            type="button"
+            class="pi-boton-icono pi-boton-icono--32"
+            [attr.aria-label]="'inicio.ocultarPanel' | translate"
+            [title]="'inicio.ocultarPanel' | translate"
+            (click)="cambiarEstado.emit('oculto')"
+          >
+            <i class="fa-solid fa-eye-slash pi-icono-14" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="pi-preferencias-cuerpo">
+      @for (seccion of secciones(); track seccion.id) {
+        <div [class.pi-seccion--separada]="seccion.separada">
+          <span class="pi-seccion-titulo">{{ seccion.etiqueta | translate }}</span>
+          <ng-container *ngTemplateOutlet="seccion.plantilla"></ng-container>
+        </div>
+      }
+    </div>
+  }
+</aside>

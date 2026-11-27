@@ -1,0 +1,58 @@
+<!-- Círculo del saludo: los colores llegan como variables (temporada o momento del día) -->
+<ng-template #circulo let-chico="chico">
+  <span
+    class="pi-circulo"
+    [class.pi-circulo--chico]="chico"
+    [class.pi-circulo--grande]="!chico"
+    [class.pi-circulo--neutro]="!colores()"
+    [style.--pi-fondo]="colores()?.fondo"
+    [style.--pi-color]="colores()?.color"
+    [style.--pi-fondo-oscuro]="colores()?.fondoOscuro"
+    [style.--pi-color-oscuro]="colores()?.colorOscuro"
+    aria-hidden="true"
+  >
+    @if (temporada(); as t) {
+      @switch (t.emblema) {
+        @case ('banderaGT') {
+          <app-bandera-guatemala [style.width.px]="chico ? 16 : 32"></app-bandera-guatemala>
+        }
+        @case ('anio') {
+          <!-- En 24 px no caben cuatro cifras legibles: las dos últimas («27») -->
+          <span class="pi-anio" [class.pi-anio--chico]="chico">{{ chico ? anio() % 100 : anio() }}</span>
+        }
+        @default {
+          <i [class]="t.icono"></i>
+        }
+      }
+    } @else {
+      <i [class]="periodo().icono"></i>
+    }
+  </span>
+</ng-template>
+
+<ng-template #texto>
+  @if (temporada(); as t) {
+    {{ t.saludo | translate: { usuario: usuario() } }}
+  } @else if (saludoContexto(); as clave) {
+    {{ clave | translate: { usuario: usuario() } }}
+  } @else {
+    {{ periodo().clave | translate }}, {{ usuario() }}
+  }
+</ng-template>
+
+@if (variante() === 'linea') {
+  <h1 class="pi-saludo-linea">
+    @if (temporada()) {
+      <ng-container *ngTemplateOutlet="circulo; context: { chico: true }"></ng-container>
+    }
+    <ng-container *ngTemplateOutlet="texto"></ng-container>
+  </h1>
+} @else {
+  <div class="pi-saludo">
+    <ng-container *ngTemplateOutlet="circulo; context: { chico: false }"></ng-container>
+    <div class="pi-saludo-textos">
+      <h2 class="pi-saludo-titulo"><ng-container *ngTemplateOutlet="texto"></ng-container></h2>
+      <p class="pi-saludo-fecha">{{ fecha() }}</p>
+    </div>
+  </div>
+}

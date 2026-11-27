@@ -1,0 +1,14 @@
+<app-widget-card titulo="inicio.atajos" icono="fa-solid fa-keyboard">
+  <dl class="pi-widget-filas">
+    @for (atajo of atajos; track atajo.texto) {
+      <div class="pi-widget-fila">
+        <dt class="pi-atajo-texto">{{ atajo.texto | translate }}</dt>
+        <dd class="pi-teclas">
+          @for (tecla of atajo.teclas; track $index) {
+            <kbd class="pi-tecla pi-tecla--elevada">{{ tecla }}</kbd>
+          }
+        </dd>
+      </div>
+    }
+  </dl>
+</app-widget-card>

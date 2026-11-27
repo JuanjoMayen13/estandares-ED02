@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pantalla de inicio: demo del estándar</title>
+<!-- Demo del "Estándar: Pantalla de inicio" v1.0.0. No es la pantalla real: los datos son de ejemplo.
+     Usa la hoja de la implementación 2 (CSS puro) tal cual. Se abre sola o dentro de index.html. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+<link rel="stylesheet" href="../angular-css-puro/estilos/pantalla-inicio.css" />
+<link rel="stylesheet" href="decoracion.css" />
+<style>
+  /* Solo de la demo: lo que en el portal pone su styles.css global */
+  html, body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.5; }
+  body { background-color: rgb(var(--pi-page)); color: rgb(var(--pi-text-primary)); }
+  /* Secciones de ejemplo del panel de preferencias: la opción elegida */
+  .demo-elegido { border-color: rgb(var(--pi-brand)); color: rgb(var(--pi-brand)); }
+  .demo-codigo { font-size: 0.75rem; font-weight: 700; }
+  /* Aviso de la demo: explica lo que en la aplicación haría el proyecto (no es parte del diseño) */
+  .demo-nota {
+    position: fixed; top: 12px; left: 50%; z-index: 70; transform: translateX(-50%);
+    max-width: min(32rem, calc(100vw - 2rem)); padding: 8px 14px; border-radius: 8px;
+    background: #111827; color: #f9fafb; font-size: 13px; line-height: 1.4; box-shadow: 0 10px 25px rgb(0 0 0 / 0.3);
+  }
+  .demo-nota strong { margin-right: 6px; padding: 1px 6px; border-radius: 4px; background: #2563eb; font-size: 11px; text-transform: uppercase; }
+  .demo-nota[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="textos.js"></script>
+<script src="datos.js"></script>
+<script src="pantalla.js"></script>
+</body>
+</html>

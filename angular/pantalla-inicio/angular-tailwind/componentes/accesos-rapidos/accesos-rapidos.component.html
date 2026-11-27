@@ -1,0 +1,121 @@
+<section class="rounded-lg border border-subtle bg-surface p-4">
+  <header class="mb-3 flex items-center gap-2">
+    <i class="fa-solid fa-bolt text-sm text-brand" aria-hidden="true"></i>
+    <h2 class="text-sm font-semibold text-primary">{{ 'inicio.accesosRapidos' | translate }}</h2>
+  </header>
+
+  @if (!cargado()) {
+    <!-- Mientras se resuelven contra las pantallas: siluetas del mismo tamaño, para que nada salte -->
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-2" aria-hidden="true">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="h-[3.75rem] animate-pulse rounded-lg bg-surface-raised motion-reduce:animate-none"></div>
+      }
+    </div>
+  } @else if (fijados().length === 0 && recientes().length === 0) {
+    <div class="flex items-center gap-3 rounded-lg border border-dashed border-strong px-4 py-4">
+      <i class="fa-solid fa-thumbtack text-lg text-muted" aria-hidden="true"></i>
+      <p class="text-sm text-secondary">{{ 'inicio.accesosVacio' | translate }}</p>
+    </div>
+  } @else {
+    <div class="space-y-4">
+      @if (fijados().length > 0) {
+        <div>
+          <h3 class="mb-2 text-xs font-medium uppercase tracking-wide text-muted">{{ 'inicio.fijados' | translate }}</h3>
+          <ng-container *ngTemplateOutlet="lista; context: { $implicit: fijados(), esFijado: true }"></ng-container>
+        </div>
+      }
+
+      @if (recientes().length > 0) {
+        <div>
+          <div class="mb-2 flex items-center justify-between gap-2">
+            <h3 class="text-xs font-medium uppercase tracking-wide text-muted">{{ 'inicio.recientes' | translate }}</h3>
+            <button
+              type="button"
+              class="rounded px-1.5 py-0.5 text-xs text-muted hover:text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              (click)="borrarRecientes.emit()"
+            >
+              {{ 'inicio.borrarRecientes' | translate }}
+            </button>
+          </div>
+          <ng-container *ngTemplateOutlet="lista; context: { $implicit: recientes(), esFijado: false }"></ng-container>
+        </div>
+      }
+    </div>
+  }
+</section>
+
+<!-- Lista: cuadrícula; en celular (horizontal) una tira deslizable por debajo de 640 px.
+     Las clases van completas en cada rama: Tailwind solo genera las que encuentra tal cual. -->
+<ng-template #lista let-items let-esFijado="esFijado">
+  @if (horizontal()) {
+    <div
+      class="flex snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain [scrollbar-width:none] sm:grid sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] sm:overflow-visible [&::-webkit-scrollbar]:hidden"
+    >
+      @for (item of items; track item.clave; let i = $index) {
+        <ng-container *ngTemplateOutlet="tarjeta; context: { $implicit: item, esFijado: esFijado, indice: esFijado ? i : -1 }"></ng-container>
+      }
+    </div>
+  } @else {
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-2">
+      @for (item of items; track item.clave; let i = $index) {
+        <ng-container *ngTemplateOutlet="tarjeta; context: { $implicit: item, esFijado: esFijado, indice: esFijado ? i : -1 }"></ng-container>
+      }
+    </div>
+  }
+</ng-template>
+
+<!-- Una tarjeta: el botón grande abre la pantalla; el pequeño la fija o la quita de fijados.
+     - Sube 2 px al pasar el mouse (solo transform: los colores cambian sin transición).
+     - view-transition-name: al fijar o quitar, el navegador la desliza de una lista a la otra.
+     - Los fijados 1 a 8 muestran su atajo (Alt+1…8) al pasar el mouse o al llegar con el teclado. -->
+<ng-template #tarjeta let-item let-esFijado="esFijado" let-indice="indice">
+  <div
+    class="group flex min-w-0 items-center rounded-lg border border-subtle bg-surface-raised transition-transform duration-150 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-sm active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+    [class]="horizontal() ? 'w-[15rem] max-w-[80%] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink' : ''"
+    [style.view-transition-name]="'acceso-' + item.clave"
+  >
+    <button
+      type="button"
+      class="flex min-w-0 flex-1 items-center gap-3 rounded-l-lg py-2.5 pl-3 pr-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      [title]="item.ubicacion + ' › ' + item.nombre"
+      [attr.aria-keyshortcuts]="esFijado && indice < 8 ? 'Alt+' + (indice + 1) : null"
+      (click)="abrir.emit(item)"
+    >
+      <span
+        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-surface text-sm"
+        [class]="esFijado ? 'text-brand' : 'text-secondary'"
+        aria-hidden="true"
+      >
+        <i [class]="esFijado ? 'fa-solid fa-thumbtack' : 'fa-solid fa-clock-rotate-left'"></i>
+      </span>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate text-sm font-medium text-primary">{{ item.nombre }}</span>
+        <span class="block truncate text-xs text-secondary">{{ item.aplicativo.nombre }}</span>
+      </span>
+      @if (esFijado && indice < 8 && !horizontal()) {
+        <kbd
+          class="shrink-0 rounded border border-subtle bg-surface px-1.5 py-0.5 text-[11px] leading-none text-secondary opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+          aria-hidden="true"
+        >Alt+{{ indice + 1 }}</kbd>
+      }
+    </button>
+
+    <button
+      type="button"
+      class="mr-1.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-xs hover:bg-surface hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+      [class]="esFijado ? 'text-brand' : 'text-secondary'"
+      [disabled]="!esFijado && totalFijados() >= maximoFijados()"
+      [attr.aria-label]="(esFijado ? 'inicio.quitarFijado' : 'inicio.fijar') | translate"
+      [title]="
+        esFijado
+          ? ('inicio.quitarFijado' | translate)
+          : totalFijados() >= maximoFijados()
+            ? ('inicio.maximoFijados' | translate: { max: maximoFijados() })
+            : ('inicio.fijar' | translate)
+      "
+      (click)="esFijado ? quitarFijado.emit(item) : fijar.emit(item)"
+    >
+      <i [class]="esFijado ? 'fa-solid fa-xmark' : 'fa-solid fa-thumbtack rotate-45'" aria-hidden="true"></i>
+    </button>
+  </div>
+</ng-template>

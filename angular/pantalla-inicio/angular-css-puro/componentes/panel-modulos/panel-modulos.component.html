@@ -1,0 +1,228 @@
+<!-- Un solo contenedor para los dos estados: al compactar o expandir solo cambia su ancho (200 ms) -->
+<aside
+  class="pi-panel pi-panel--modulos"
+  [class.pi-panel--compacto]="compacto()"
+  [class.pi-panel--capa]="!compacto() && variante() === 'capa'"
+  [attr.aria-label]="'inicio.modulos' | translate"
+>
+  @if (compacto()) {
+    <!-- ===== Compacto: barra de íconos ===== -->
+    <div class="pi-barra-extremo pi-barra-extremo--arriba">
+      <button
+        type="button"
+        class="pi-boton-icono pi-boton-icono--36"
+        [attr.aria-label]="'inicio.expandirPanel' | translate"
+        [title]="('inicio.expandirPanel' | translate) + ' (Ctrl+B)'"
+        (click)="cambiarEstado.emit('expandido')"
+      >
+        <i class="fa-solid fa-angles-right pi-icono-14" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <nav class="pi-barra-iconos" (scroll)="cerrarFlotante()">
+      @if (carga() === 'cargando') {
+        <span class="pi-sr-only" role="status">{{ 'inicio.cargando' | translate }}</span>
+        @for (i of SILUETAS; track i) {
+          <div class="pi-silueta-cuadro pi-pulso" aria-hidden="true"></div>
+        }
+      }
+      @for (aplicativo of aplicativos(); track aplicativo.id) {
+        <button
+          type="button"
+          class="pi-icono-barra pi-icono-barra--texto pi-foco"
+          [class.pi-icono-barra--activo]="flotante()?.aplicativo === aplicativo"
+          [attr.aria-label]="aplicativo.nombre"
+          [attr.aria-expanded]="flotante()?.aplicativo === aplicativo"
+          [title]="aplicativo.nombre"
+          (click)="alternarFlotante(aplicativo, $event)"
+        >
+          {{ iniciales(aplicativo.nombre) }}
+        </button>
+      }
+    </nav>
+
+    <div class="pi-barra-extremo pi-barra-extremo--abajo">
+      <button
+        type="button"
+        class="pi-boton-icono pi-boton-icono--36"
+        [attr.aria-label]="'inicio.ocultarPanel' | translate"
+        [title]="'inicio.ocultarPanel' | translate"
+        (click)="cambiarEstado.emit('oculto')"
+      >
+        <i class="fa-solid fa-eye-slash pi-icono-14" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Árbol del aplicativo elegido, flotando junto a la barra -->
+    @if (flotante(); as f) {
+      <div
+        class="pi-flotante"
+        [style.top.px]="f.top"
+        [style.left.px]="f.left"
+        [style.max-height.px]="f.maxAlto"
+        role="dialog"
+        [attr.aria-label]="f.aplicativo.nombre"
+      >
+        <div class="pi-flotante-encabezado">
+          <span class="pi-flotante-titulo">{{ f.aplicativo.nombre }}</span>
+          <button type="button" class="pi-boton-icono pi-boton-icono--28" [attr.aria-label]="'inicio.cerrar' | translate" (click)="cerrarFlotante()">
+            <i class="fa-solid fa-xmark pi-icono-14" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="pi-flotante-cuerpo">
+          @if (arbolDe(f.aplicativo).length > 0) {
+            <app-arbol-pantallas
+              [nodos]="arbolDe(f.aplicativo)"
+              [puedeAbrir]="puedeAbrir()"
+              (seleccionado)="elegirNodo(f.aplicativo, $event)"
+            ></app-arbol-pantallas>
+          } @else {
+            <p class="pi-flotante-vacio">{{ 'inicio.sinPantallas' | translate }}</p>
+          }
+        </div>
+      </div>
+    }
+  } @else {
+    <!-- ===== Expandido (y variante capa) ===== -->
+    <div class="pi-panel-encabezado">
+      <h2 class="pi-panel-titulo">{{ 'inicio.modulos' | translate }}</h2>
+
+      <div class="pi-panel-botones">
+        @if (variante() === 'capa') {
+          <button type="button" class="pi-boton-icono pi-boton-icono--32" [attr.aria-label]="'inicio.cerrarPanel' | translate" (click)="cerrar.emit()">
+            <i class="fa-solid fa-xmark pi-icono-14" aria-hidden="true"></i>
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="pi-boton-icono pi-boton-icono--32"
+            [attr.aria-label]="'inicio.ocultarPanel' | translate"
+            [title]="'inicio.ocultarPanel' | translate"
+            (click)="cambiarEstado.emit('oculto')"
+          >
+            <i class="fa-solid fa-eye-slash pi-icono-14" aria-hidden="true"></i>
+          </button>
+          <button
+            type="button"
+            class="pi-boton-icono pi-boton-icono--32"
+            [attr.aria-label]="'inicio.compactarPanel' | translate"
+            [title]="('inicio.compactarPanel' | translate) + ' (Ctrl+B)'"
+            (click)="cambiarEstado.emit('compacto')"
+          >
+            <i class="fa-solid fa-angles-left pi-icono-14" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Filtro: mientras tiene texto, el árbol se reemplaza por la lista de pantallas que coinciden -->
+    <div class="pi-filtro">
+      <label class="pi-filtro-campo">
+        <span class="pi-sr-only">{{ 'inicio.filtrarPantallas' | translate }}</span>
+        <i class="fa-solid fa-magnifying-glass pi-filtro-lupa" aria-hidden="true"></i>
+        <input
+          type="text"
+          class="pi-filtro-input"
+          [placeholder]="'inicio.filtrarPantallas' | translate"
+          [value]="filtro()"
+          (input)="filtro.set($any($event.target).value)"
+          (keydown.escape)="limpiarFiltro(); $event.stopPropagation()"
+          [disabled]="carga() !== 'listo'"
+        />
+        @if (filtro()) {
+          <button type="button" class="pi-filtro-limpiar pi-foco" [attr.aria-label]="'inicio.limpiar' | translate" (click)="limpiarFiltro()">
+            <i class="fa-solid fa-xmark pi-icono-12" aria-hidden="true"></i>
+          </button>
+        }
+      </label>
+    </div>
+
+    <nav class="pi-lista-panel">
+      @if (carga() === 'cargando') {
+        <!-- Siluetas con la forma de las filas: el panel no «salta» al llegar los datos -->
+        <span class="pi-sr-only" role="status">{{ 'inicio.cargando' | translate }}</span>
+        <ul class="pi-lista" aria-hidden="true">
+          @for (i of SILUETAS; track i) {
+            <li class="pi-silueta-fila">
+              <span class="pi-silueta-insignia pi-pulso"></span>
+              <span class="pi-silueta-barra pi-pulso" [style.width.%]="55 + ((i * 17) % 35)"></span>
+            </li>
+          }
+        </ul>
+      } @else if (carga() === 'error') {
+        <div class="pi-estado-centro">
+          <p class="pi-estado-texto">{{ 'inicio.errorCarga' | translate }}</p>
+          <button type="button" class="pi-boton-secundario" (click)="reintentar.emit()">
+            <i class="fa-solid fa-rotate-right pi-icono-12" aria-hidden="true"></i>
+            {{ 'inicio.reintentar' | translate }}
+          </button>
+        </div>
+      } @else if (aplicativos().length === 0) {
+        <div class="pi-estado-centro">
+          <div class="pi-vacio-circulo">
+            <i class="fa-solid fa-inbox pi-icono-18" aria-hidden="true"></i>
+          </div>
+          <p class="pi-vacio-titulo">{{ 'inicio.noAplicaciones' | translate }}</p>
+          <p class="pi-vacio-ayuda">{{ 'inicio.contacteAdmin' | translate }}</p>
+        </div>
+      } @else if (filtro().trim()) {
+        @if (resultados().length === 0) {
+          <p class="pi-sin-resultados">{{ 'inicio.sinCoincidencias' | translate }}</p>
+        } @else {
+          <ul class="pi-lista">
+            @for (p of resultados(); track p.aplicativo.id + '-' + p.nodo.id) {
+              <li>
+                <button type="button" class="pi-resultado pi-foco" (click)="elegir(p)">
+                  <span class="pi-resultado-nombre">{{ p.nombre }}</span>
+                  <span class="pi-resultado-ubicacion">{{ p.ubicacion }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      } @else {
+        <!-- Acordeón de aplicativos -->
+        <ul class="pi-lista">
+          @for (aplicativo of aplicativos(); track aplicativo.id) {
+            <li>
+              <button
+                type="button"
+                class="pi-app-fila pi-foco"
+                [class.pi-app-fila--abierta]="aplicativoAbierto() === aplicativo.id"
+                [attr.aria-expanded]="aplicativoAbierto() === aplicativo.id"
+                (click)="alternarAplicativo.emit(aplicativo.id)"
+              >
+                <span class="pi-app-insignia" [class.pi-app-insignia--abierta]="aplicativoAbierto() === aplicativo.id" aria-hidden="true">
+                  {{ iniciales(aplicativo.nombre) }}
+                </span>
+                <span class="pi-app-nombre">{{ aplicativo.nombre }}</span>
+                @if (cantidadPorAplicativo()[aplicativo.id]; as cantidad) {
+                  <span class="pi-app-cantidad">{{ cantidad }}</span>
+                }
+                <i
+                  class="fa-solid fa-chevron-right pi-app-chevron"
+                  [class.pi-app-chevron--abierto]="aplicativoAbierto() === aplicativo.id"
+                  aria-hidden="true"
+                ></i>
+              </button>
+
+              @if (aplicativoAbierto() === aplicativo.id) {
+                <div class="pi-app-hijos">
+                  @if (arbolDe(aplicativo).length > 0) {
+                    <app-arbol-pantallas
+                      [nodos]="arbolDe(aplicativo)"
+                      [puedeAbrir]="puedeAbrir()"
+                      (seleccionado)="elegirNodo(aplicativo, $event)"
+                    ></app-arbol-pantallas>
+                  } @else {
+                    <p class="pi-app-sin-pantallas">{{ 'inicio.sinPantallas' | translate }}</p>
+                  }
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </nav>
+  }
+</aside>

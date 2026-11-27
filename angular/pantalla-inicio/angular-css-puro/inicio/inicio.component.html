@@ -1,0 +1,324 @@
+<!-- Estándar pantalla de inicio v1.0.0 — implementación 2 (CSS puro). Estilos en estilos/pantalla-inicio.css -->
+<div class="pi-inicio">
+  <div class="pi-pantalla">
+    <!-- ===== Header ===== -->
+    <header class="pi-header">
+      <div class="pi-header-fila">
+        <!-- Módulos: solo si el panel está oculto (en celular se llega desde la barra inferior) -->
+        @if (!esMovil() && paneles.modulos() === 'oculto') {
+          <button
+            type="button"
+            class="pi-boton-icono pi-boton-icono--40"
+            [attr.aria-label]="'inicio.mostrarModulos' | translate"
+            [title]="('inicio.mostrarModulos' | translate) + ' (Ctrl+B)'"
+            (click)="mostrarPanel('modulos')"
+          >
+            <i class="fa-solid fa-bars pi-icono-16" aria-hidden="true"></i>
+          </button>
+        }
+
+        <!-- Empresa -->
+        <div class="pi-empresa">
+          @if (logoEmpresa(); as logo) {
+            <img [src]="logo" [alt]="empresa()" class="pi-logo" (error)="logoEmpresa.set(null)" draggable="false" />
+          } @else {
+            <span class="pi-logo pi-logo--generico" aria-hidden="true"><i class="fa-solid fa-building"></i></span>
+          }
+          @if (empresa()) {
+            <span class="pi-empresa-nombre">{{ empresa() }}</span>
+          }
+        </div>
+
+        <!-- Buscador (en celular está en la barra inferior) -->
+        <div class="pi-header-centro">
+          @if (!esMovil()) {
+            <button type="button" class="pi-boton-buscar pi-foco" (click)="abrirBuscador()">
+              <i class="fa-solid fa-magnifying-glass pi-icono-12" aria-hidden="true"></i>
+              <span class="pi-boton-buscar-texto">{{ 'inicio.buscarPantalla' | translate }}</span>
+              <kbd class="pi-tecla">Ctrl K</kbd>
+            </button>
+          }
+        </div>
+
+        @if (!esMovil()) {
+          <!-- Vista limpia: compacta los dos paneles y deja solo lo esencial; al apagarla todo vuelve -->
+          <button
+            type="button"
+            class="pi-boton-icono pi-boton-icono--40"
+            [class.pi-boton-icono--activo]="paneles.limpio()"
+            [attr.aria-pressed]="paneles.limpio()"
+            [attr.aria-label]="'inicio.vistaLimpia' | translate"
+            [title]="(paneles.limpio() ? 'inicio.salirVistaLimpia' : 'inicio.vistaLimpia') | translate"
+            (click)="paneles.alternarLimpio()"
+          >
+            <i
+              class="pi-icono-16"
+              [class]="paneles.limpio() ? 'fa-solid fa-up-right-and-down-left-from-center' : 'fa-solid fa-down-left-and-up-right-to-center'"
+              aria-hidden="true"
+            ></i>
+          </button>
+
+          @if (paneles.preferencias() === 'oculto') {
+            <button
+              type="button"
+              class="pi-boton-icono pi-boton-icono--40"
+              [attr.aria-label]="'inicio.mostrarPreferencias' | translate"
+              [title]="'inicio.mostrarPreferencias' | translate"
+              (click)="mostrarPanel('preferencias')"
+            >
+              <i class="fa-solid fa-sliders pi-icono-16" aria-hidden="true"></i>
+            </button>
+          }
+        }
+
+        <app-menu-usuario
+          [usuario]="usuario()"
+          [empresa]="empresa()"
+          [estacion]="estacion()"
+          [acciones]="accionesMenu"
+          [ambientacion]="temporadas.activada()"
+          (accion)="alElegirAccion($event)"
+          (cambiarAmbientacion)="temporadas.cambiarActivada($event)"
+          (cerrarSesion)="cerrarSesion()"
+        ></app-menu-usuario>
+      </div>
+    </header>
+
+    <!-- PROYECTO: aviso propio debajo del header, si lo hay (p. ej. conexión perdida), con margen de 12 px arriba y 16/24 px a los lados -->
+
+    <!-- ===== Cuerpo: módulos · contenido · preferencias ===== -->
+    <div class="pi-cuerpo">
+      @if (paneles.modulos() !== 'oculto') {
+        <app-panel-modulos
+          class="pi-panel-lateral"
+          [estado]="paneles.modulos()"
+          [aplicativos]="aplicativos()"
+          [arboles]="arboles()"
+          [pantallas]="pantallas()"
+          [carga]="carga()"
+          [puedeAbrir]="puedeAbrir"
+          [aplicativoAbierto]="paneles.aplicativoAbierto()"
+          (abrir)="abrirPantalla($event)"
+          (cambiarEstado)="cambiarPanel('modulos', $event)"
+          (alternarAplicativo)="paneles.alternarAplicativo($event)"
+          (reintentar)="cargarCatalogo()"
+        ></app-panel-modulos>
+      }
+
+      <!-- Centro: lo del día. Es lo único que crece al compactar u ocultar un panel. -->
+      <main #contenido class="pi-centro" [class.pi-centro--movil]="esMovil()" [class.pi-centro--escritorio]="!esMovil()">
+        <div class="pi-centro-contenido">
+          @if (paneles.limpio() || esMovil()) {
+            <!-- Bienvenida en una línea -->
+            <div class="pi-bienvenida-linea">
+              <app-saludo-inicio
+                variante="linea"
+                [usuario]="usuario()"
+                [saludoContexto]="saludoContexto()"
+                [temporada]="temporadas.temporada()"
+                [anio]="temporadas.anioQueEmpieza()"
+              ></app-saludo-inicio>
+              @if (estacion()) {
+                <span class="pi-estacion-linea">
+                  <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                  <span class="pi-sr-only">{{ 'inicio.estacion' | translate }}:</span>
+                  {{ estacion() }}
+                </span>
+              }
+              <app-tiempo-sesion class="pi-tiempo-linea" [vence]="venceSesion()" [inicio]="inicioSesion()"></app-tiempo-sesion>
+            </div>
+          } @else {
+            <!-- Bienvenida completa: saludo, tiempo de sesión y dónde se está trabajando -->
+            <section class="pi-bienvenida">
+              @if (temporadas.temporada(); as t) {
+                <div class="pi-franja" [style.background]="t.franja" aria-hidden="true"></div>
+                @if (t.decoracion) {
+                  <app-decoracion-temporada [tipo]="t.decoracion" [temporada]="t.id"></app-decoracion-temporada>
+                }
+              }
+
+              <div class="pi-bienvenida-fila">
+                <app-saludo-inicio
+                  class="pi-saludo-caja"
+                  [usuario]="usuario()"
+                  [saludoContexto]="saludoContexto()"
+                  [temporada]="temporadas.temporada()"
+                  [anio]="temporadas.anioQueEmpieza()"
+                ></app-saludo-inicio>
+                <app-tiempo-sesion class="pi-tiempo-tarjeta" [vence]="venceSesion()" [inicio]="inicioSesion()"></app-tiempo-sesion>
+              </div>
+
+              <!-- Cada etiqueta lleva su nombre en el tooltip y para lectores de pantalla -->
+              @if (horaInicioSesion() || estacion() || empresa()) {
+                <ul class="pi-etiquetas">
+                  @if (horaInicioSesion()) {
+                    <li class="pi-etiqueta" [title]="('inicio.horaInicioSesion' | translate) + ': ' + horaInicioSesion()">
+                      <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                      <span class="pi-sr-only">{{ 'inicio.horaInicioSesion' | translate }}:</span>
+                      <span class="pi-truncar">{{ horaInicioSesion() }}</span>
+                    </li>
+                  }
+                  @if (estacion()) {
+                    <li class="pi-etiqueta" [title]="('inicio.estacion' | translate) + ': ' + estacion()">
+                      <i class="fa-solid fa-location-dot pi-etiqueta-icono--marca" aria-hidden="true"></i>
+                      <span class="pi-sr-only">{{ 'inicio.estacion' | translate }}:</span>
+                      <span class="pi-truncar">{{ estacion() }}</span>
+                    </li>
+                  }
+                  @if (empresa()) {
+                    <li class="pi-etiqueta" [title]="('inicio.empresa' | translate) + ': ' + empresa()">
+                      <i class="fa-solid fa-building pi-etiqueta-icono--empresa" aria-hidden="true"></i>
+                      <span class="pi-sr-only">{{ 'inicio.empresa' | translate }}:</span>
+                      <span class="pi-truncar">{{ empresa() }}</span>
+                    </li>
+                  }
+                </ul>
+              }
+            </section>
+          }
+
+          <app-accesos-rapidos
+            [fijados]="fijados()"
+            [recientes]="recientes()"
+            [totalFijados]="totalFijados()"
+            [maximoFijados]="maximoFijados"
+            [cargado]="carga() === 'listo'"
+            [horizontal]="esMovil()"
+            (abrir)="abrirPantalla($event)"
+            (fijar)="fijar($event)"
+            (quitarFijado)="quitarFijado($event)"
+            (borrarRecientes)="borrarRecientes()"
+          ></app-accesos-rapidos>
+
+          <!-- Información del día. PROYECTO: cada widget con datos reales entra aquí. -->
+          <div class="pi-widgets">
+            <app-widget-conexion
+              [conectado]="conexion().conectado"
+              [url]="conexion().url"
+              [versionWeb]="conexion().versionWeb"
+              [versionApi]="conexion().versionApi"
+              (cambiar)="alElegirAccion('servidor')"
+            ></app-widget-conexion>
+
+            <!-- Lo que no es información del momento no se muestra en vista limpia ni en celular -->
+            @if (!paneles.limpio() && !esMovil()) {
+              <app-widget-atajos></app-widget-atajos>
+            }
+          </div>
+        </div>
+      </main>
+
+      @if (paneles.preferencias() !== 'oculto') {
+        <app-panel-preferencias
+          class="pi-panel-lateral"
+          [estado]="paneles.preferencias()"
+          [secciones]="secciones()"
+          [accionRapida]="accionRapida()"
+          (cambiarEstado)="cambiarPanel('preferencias', $event)"
+          (accionRapidaElegida)="alElegirAccionRapida()"
+        ></app-panel-preferencias>
+      }
+    </div>
+
+    <!-- ===== Celular: barra inferior, donde llega el pulgar ===== -->
+    @if (esMovil()) {
+      <nav class="pi-barra-inferior" [attr.aria-label]="'inicio.navegacion' | translate">
+        @for (
+          item of [
+            { id: 'inicio', icono: 'fa-solid fa-house', etiqueta: 'inicio.inicio' },
+            { id: 'modulos', icono: 'fa-solid fa-sitemap', etiqueta: 'inicio.modulos' },
+            { id: 'buscar', icono: 'fa-solid fa-magnifying-glass', etiqueta: 'inicio.buscar' },
+            { id: 'preferencias', icono: 'fa-solid fa-sliders', etiqueta: 'inicio.preferencias' }
+          ];
+          track item.id
+        ) {
+          <button
+            type="button"
+            class="pi-barra-boton"
+            [class.pi-barra-boton--activo]="(item.id === 'inicio' && !capa()) || capa() === item.id"
+            [attr.aria-current]="(item.id === 'inicio' && !capa()) || capa() === item.id ? 'page' : null"
+            (click)="item.id === 'inicio' ? irAlInicio() : item.id === 'buscar' ? abrirBuscador() : alternarCapa($any(item.id))"
+          >
+            <i class="pi-icono-18" [class]="item.icono" aria-hidden="true"></i>
+            {{ item.etiqueta | translate }}
+          </button>
+        }
+      </nav>
+    }
+  </div>
+
+  <!-- ===== Capas (tablet y celular): el panel completo encima del contenido ===== -->
+  @if (capa() === 'modulos') {
+    <div class="pi-capa" [class.pi-capa--movil]="esMovil()">
+      <div class="pi-velo" (click)="capa.set(null)" aria-hidden="true"></div>
+      <app-panel-modulos
+        class="pi-capa-panel"
+        variante="capa"
+        [aplicativos]="aplicativos()"
+        [arboles]="arboles()"
+        [pantallas]="pantallas()"
+        [carga]="carga()"
+        [puedeAbrir]="puedeAbrir"
+        [aplicativoAbierto]="paneles.aplicativoAbierto()"
+        (abrir)="abrirPantalla($event)"
+        (alternarAplicativo)="paneles.alternarAplicativo($event)"
+        (reintentar)="cargarCatalogo()"
+        (cerrar)="capa.set(null)"
+      ></app-panel-modulos>
+    </div>
+  }
+
+  @if (capa() === 'preferencias') {
+    <div class="pi-capa pi-capa--derecha" [class.pi-capa--movil]="esMovil()">
+      <div class="pi-velo" (click)="capa.set(null)" aria-hidden="true"></div>
+      <app-panel-preferencias
+        class="pi-capa-panel pi-capa-panel--preferencias"
+        variante="capa"
+        [secciones]="secciones()"
+        (cerrar)="capa.set(null)"
+      ></app-panel-preferencias>
+    </div>
+  }
+
+  <app-buscador-pantallas
+    [(abierto)]="buscadorAbierto"
+    [pantallas]="pantallas()"
+    [sugeridas]="sugeridas()"
+    (abrir)="abrirPantalla($event)"
+  ></app-buscador-pantallas>
+
+  <!-- Aviso 10 minutos antes de que venza la sesión (nivel 4) -->
+  <app-aviso-sesion
+    class="pi-posicion-aviso"
+    [class.pi-posicion-aviso--movil]="esMovil()"
+    [vence]="venceSesion()"
+    [hayCambios]="hayCambios"
+  ></app-aviso-sesion>
+
+  <!-- «Deshacer» después de quitar un fijado: abajo al centro (encima de la barra inferior en celular) -->
+  @if (deshacer(); as d) {
+    <div class="pi-deshacer" [class.pi-deshacer--movil]="esMovil()" role="status">
+      <span class="pi-deshacer-texto">{{ 'inicio.fijadoQuitado' | translate: { nombre: d.nombre } }}</span>
+      <button type="button" class="pi-deshacer-boton pi-foco" [attr.aria-keyshortcuts]="'Control+Z'" (click)="deshacerQuitarFijado()">
+        {{ 'inicio.deshacer' | translate }}
+      </button>
+      <button type="button" class="pi-boton-icono pi-boton-icono--28" [attr.aria-label]="'inicio.cerrar' | translate" (click)="cerrarDeshacer()">
+        <i class="fa-solid fa-xmark pi-icono-12" aria-hidden="true"></i>
+      </button>
+    </div>
+  }
+
+  <!-- ===== PROYECTO: contenido de las secciones de preferencias =====
+       Cada sección es una plantilla; `secciones` (en el .ts) dice su título, ícono y orden.
+       Ejemplo: mosaicos de acciones de configuración (README §2.6). -->
+  <ng-template #seccionConfiguracion>
+    <div class="pi-mosaicos">
+      <button type="button" class="pi-mosaico pi-foco" (click)="alElegirAccion('servidor')">
+        <span class="pi-mosaico-icono pi-mosaico-icono--info" aria-hidden="true">
+          <i class="fa-solid fa-server pi-icono-14"></i>
+        </span>
+        <span class="pi-mosaico-texto">{{ 'inicio.configurarServidor' | translate }}</span>
+      </button>
+    </div>
+  </ng-template>
+</div>

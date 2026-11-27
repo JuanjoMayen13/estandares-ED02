@@ -1,0 +1,363 @@
+<!-- Estándar pantalla de inicio v1.0.0 -->
+<!-- h-dvh: en celular 100vh incluye la barra del navegador y recortaba el final de la página -->
+<div class="flex h-screen h-dvh flex-col overflow-hidden bg-page">
+  <!-- ===== Header ===== -->
+  <header class="flex-shrink-0 border-b border-subtle bg-surface">
+    <div class="flex items-center gap-2 px-4 py-2.5 sm:gap-3 sm:px-6">
+      <!-- Módulos: solo si el panel está oculto (en celular se llega desde la barra inferior) -->
+      @if (!esMovil() && paneles.modulos() === 'oculto') {
+        <button
+          type="button"
+          class="btn-icon h-10 w-10 p-0"
+          [attr.aria-label]="'inicio.mostrarModulos' | translate"
+          [title]="('inicio.mostrarModulos' | translate) + ' (Ctrl+B)'"
+          (click)="mostrarPanel('modulos')"
+        >
+          <i class="fa-solid fa-bars text-base" aria-hidden="true"></i>
+        </button>
+      }
+
+      <!-- Empresa -->
+      <div class="flex min-w-0 items-center gap-3">
+        @if (logoEmpresa(); as logo) {
+          <img [src]="logo" [alt]="empresa()" class="h-10 w-10 shrink-0 rounded-lg object-contain" (error)="logoEmpresa.set(null)" draggable="false" />
+        } @else {
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-raised text-muted" aria-hidden="true">
+            <i class="fa-solid fa-building"></i>
+          </span>
+        }
+        @if (empresa()) {
+          <span class="hidden max-w-[16rem] truncate text-sm font-semibold text-primary md:inline">{{ empresa() }}</span>
+        }
+      </div>
+
+      <!-- Buscador (en celular está en la barra inferior) -->
+      <div class="flex min-w-0 flex-1 justify-center px-2">
+        @if (!esMovil()) {
+          <button
+            type="button"
+            class="flex w-full max-w-md items-center gap-3 rounded-md border border-strong bg-surface-alt px-3 py-2 text-sm text-muted hover:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            (click)="abrirBuscador()"
+          >
+            <i class="fa-solid fa-magnifying-glass text-xs" aria-hidden="true"></i>
+            <span class="flex-1 truncate text-left">{{ 'inicio.buscarPantalla' | translate }}</span>
+            <kbd class="hidden rounded border border-subtle px-1.5 py-0.5 text-[11px] text-secondary md:inline">Ctrl K</kbd>
+          </button>
+        }
+      </div>
+
+      @if (!esMovil()) {
+        <!-- Vista limpia: compacta los dos paneles y deja solo lo esencial; al apagarla todo vuelve -->
+        <button
+          type="button"
+          class="btn-icon h-10 w-10 p-0"
+          [class]="paneles.limpio() ? 'bg-brand/10 text-brand hover:text-brand' : ''"
+          [attr.aria-pressed]="paneles.limpio()"
+          [attr.aria-label]="'inicio.vistaLimpia' | translate"
+          [title]="(paneles.limpio() ? 'inicio.salirVistaLimpia' : 'inicio.vistaLimpia') | translate"
+          (click)="paneles.alternarLimpio()"
+        >
+          <i
+            class="text-base"
+            [class]="paneles.limpio() ? 'fa-solid fa-up-right-and-down-left-from-center' : 'fa-solid fa-down-left-and-up-right-to-center'"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        @if (paneles.preferencias() === 'oculto') {
+          <button
+            type="button"
+            class="btn-icon h-10 w-10 p-0"
+            [attr.aria-label]="'inicio.mostrarPreferencias' | translate"
+            [title]="'inicio.mostrarPreferencias' | translate"
+            (click)="mostrarPanel('preferencias')"
+          >
+            <i class="fa-solid fa-sliders text-base" aria-hidden="true"></i>
+          </button>
+        }
+      }
+
+      <app-menu-usuario
+        [usuario]="usuario()"
+        [empresa]="empresa()"
+        [estacion]="estacion()"
+        [acciones]="accionesMenu"
+        [ambientacion]="temporadas.activada()"
+        (accion)="alElegirAccion($event)"
+        (cambiarAmbientacion)="temporadas.cambiarActivada($event)"
+        (cerrarSesion)="cerrarSesion()"
+      ></app-menu-usuario>
+    </div>
+  </header>
+
+  <!-- PROYECTO: aviso propio debajo del header, si lo hay (p. ej. conexión perdida), con mx-4 sm:mx-6 mt-3 -->
+
+  <!-- ===== Cuerpo: módulos · contenido · preferencias ===== -->
+  <div class="flex min-h-0 flex-1">
+    @if (paneles.modulos() !== 'oculto') {
+      <app-panel-modulos
+        class="flex-shrink-0"
+        [estado]="paneles.modulos()"
+        [aplicativos]="aplicativos()"
+        [arboles]="arboles()"
+        [pantallas]="pantallas()"
+        [carga]="carga()"
+        [puedeAbrir]="puedeAbrir"
+        [aplicativoAbierto]="paneles.aplicativoAbierto()"
+        (abrir)="abrirPantalla($event)"
+        (cambiarEstado)="cambiarPanel('modulos', $event)"
+        (alternarAplicativo)="paneles.alternarAplicativo($event)"
+        (reintentar)="cargarCatalogo()"
+      ></app-panel-modulos>
+    }
+
+    <!-- Centro: lo del día. Es lo único que crece al compactar u ocultar un panel.
+         16 px de margen en celular y 32 px desde sm. En celular deja lugar a la barra inferior. -->
+    <main
+      #contenido
+      class="min-w-0 flex-1 overflow-y-auto p-4 sm:p-8"
+      [class]="esMovil() ? 'pb-24' : 'pb-[max(1rem,env(safe-area-inset-bottom))]'"
+    >
+      <div class="w-full space-y-6">
+        @if (paneles.limpio() || esMovil()) {
+          <!-- Bienvenida en una línea -->
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <app-saludo-inicio
+              variante="linea"
+              [usuario]="usuario()"
+              [saludoContexto]="saludoContexto()"
+              [temporada]="temporadas.temporada()"
+              [anio]="temporadas.anioQueEmpieza()"
+            ></app-saludo-inicio>
+            @if (estacion()) {
+              <span class="flex items-center gap-1.5 text-sm text-secondary">
+                <i class="fa-solid fa-location-dot text-xs text-brand" aria-hidden="true"></i>
+                <span class="sr-only">{{ 'inicio.estacion' | translate }}:</span>
+                {{ estacion() }}
+              </span>
+            }
+            <app-tiempo-sesion class="block w-full empty:hidden sm:ml-auto sm:w-56" [vence]="venceSesion()" [inicio]="inicioSesion()"></app-tiempo-sesion>
+          </div>
+        } @else {
+          <!-- Bienvenida completa: saludo, tiempo de sesión y dónde se está trabajando -->
+          <section class="relative overflow-hidden rounded-lg border border-subtle bg-surface p-4 sm:p-5">
+            @if (temporadas.temporada(); as t) {
+              <div class="absolute inset-x-0 top-0 h-1" [style.background]="t.franja" aria-hidden="true"></div>
+              @if (t.decoracion) {
+                <app-decoracion-temporada [tipo]="t.decoracion" [temporada]="t.id"></app-decoracion-temporada>
+              }
+            }
+
+            <div class="relative flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+              <app-saludo-inicio
+                class="min-w-0 flex-1 basis-64"
+                [usuario]="usuario()"
+                [saludoContexto]="saludoContexto()"
+                [temporada]="temporadas.temporada()"
+                [anio]="temporadas.anioQueEmpieza()"
+              ></app-saludo-inicio>
+              <app-tiempo-sesion class="block w-full empty:hidden sm:w-72" [vence]="venceSesion()" [inicio]="inicioSesion()"></app-tiempo-sesion>
+            </div>
+
+            <!-- Cada etiqueta lleva su nombre en el tooltip y para lectores de pantalla -->
+            @if (horaInicioSesion() || estacion() || empresa()) {
+              <ul class="mt-4 flex flex-wrap gap-2 border-t border-subtle pt-4">
+                @if (horaInicioSesion()) {
+                  <li
+                    class="inline-flex max-w-full items-center gap-2 rounded-lg border border-subtle bg-surface-raised px-3 py-1.5 text-sm text-secondary"
+                    [title]="('inicio.horaInicioSesion' | translate) + ': ' + horaInicioSesion()"
+                  >
+                    <i class="fa-regular fa-clock shrink-0 text-secondary" aria-hidden="true"></i>
+                    <span class="sr-only">{{ 'inicio.horaInicioSesion' | translate }}:</span>
+                    <span class="truncate">{{ horaInicioSesion() }}</span>
+                  </li>
+                }
+                @if (estacion()) {
+                  <li
+                    class="inline-flex max-w-full items-center gap-2 rounded-lg border border-subtle bg-surface-raised px-3 py-1.5 text-sm text-secondary"
+                    [title]="('inicio.estacion' | translate) + ': ' + estacion()"
+                  >
+                    <i class="fa-solid fa-location-dot shrink-0 text-brand" aria-hidden="true"></i>
+                    <span class="sr-only">{{ 'inicio.estacion' | translate }}:</span>
+                    <span class="truncate">{{ estacion() }}</span>
+                  </li>
+                }
+                @if (empresa()) {
+                  <li
+                    class="inline-flex max-w-full items-center gap-2 rounded-lg border border-subtle bg-surface-raised px-3 py-1.5 text-sm text-secondary"
+                    [title]="('inicio.empresa' | translate) + ': ' + empresa()"
+                  >
+                    <i class="fa-solid fa-building shrink-0 text-warning-strong" aria-hidden="true"></i>
+                    <span class="sr-only">{{ 'inicio.empresa' | translate }}:</span>
+                    <span class="truncate">{{ empresa() }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+
+        <app-accesos-rapidos
+          [fijados]="fijados()"
+          [recientes]="recientes()"
+          [totalFijados]="totalFijados()"
+          [maximoFijados]="maximoFijados"
+          [cargado]="carga() === 'listo'"
+          [horizontal]="esMovil()"
+          (abrir)="abrirPantalla($event)"
+          (fijar)="fijar($event)"
+          (quitarFijado)="quitarFijado($event)"
+          (borrarRecientes)="borrarRecientes()"
+        ></app-accesos-rapidos>
+
+        <!-- Información del día. Las columnas dependen del ancho real del centro (que cambia con los
+             paneles), no del de la ventana. PROYECTO: cada widget con datos reales entra aquí. -->
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-4">
+          <app-widget-conexion
+            [conectado]="conexion().conectado"
+            [url]="conexion().url"
+            [versionWeb]="conexion().versionWeb"
+            [versionApi]="conexion().versionApi"
+            (cambiar)="alElegirAccion('servidor')"
+          ></app-widget-conexion>
+
+          <!-- Lo que no es información del momento no se muestra en vista limpia ni en celular -->
+          @if (!paneles.limpio() && !esMovil()) {
+            <app-widget-atajos></app-widget-atajos>
+          }
+        </div>
+      </div>
+    </main>
+
+    @if (paneles.preferencias() !== 'oculto') {
+      <app-panel-preferencias
+        class="flex-shrink-0"
+        [estado]="paneles.preferencias()"
+        [secciones]="secciones()"
+        [accionRapida]="accionRapida()"
+        (cambiarEstado)="cambiarPanel('preferencias', $event)"
+        (accionRapidaElegida)="alElegirAccionRapida()"
+      ></app-panel-preferencias>
+    }
+  </div>
+
+  <!-- ===== Celular: barra inferior, donde llega el pulgar ===== -->
+  @if (esMovil()) {
+    <nav
+      class="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-subtle bg-surface pb-[env(safe-area-inset-bottom)]"
+      [attr.aria-label]="'inicio.navegacion' | translate"
+    >
+      @for (
+        item of [
+          { id: 'inicio', icono: 'fa-solid fa-house', etiqueta: 'inicio.inicio' },
+          { id: 'modulos', icono: 'fa-solid fa-sitemap', etiqueta: 'inicio.modulos' },
+          { id: 'buscar', icono: 'fa-solid fa-magnifying-glass', etiqueta: 'inicio.buscar' },
+          { id: 'preferencias', icono: 'fa-solid fa-sliders', etiqueta: 'inicio.preferencias' }
+        ];
+        track item.id
+      ) {
+        <button
+          type="button"
+          class="flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium focus:outline-none focus-visible:bg-surface-raised"
+          [class]="(item.id === 'inicio' && !capa()) || capa() === item.id ? 'text-brand' : 'text-secondary hover:text-primary'"
+          [attr.aria-current]="(item.id === 'inicio' && !capa()) || capa() === item.id ? 'page' : null"
+          (click)="item.id === 'inicio' ? irAlInicio() : item.id === 'buscar' ? abrirBuscador() : alternarCapa($any(item.id))"
+        >
+          <i [class]="item.icono + ' text-lg'" aria-hidden="true"></i>
+          {{ item.etiqueta | translate }}
+        </button>
+      }
+    </nav>
+  }
+</div>
+
+<!-- ===== Capas (tablet y celular): el panel completo encima del contenido ===== -->
+@if (capa() === 'modulos') {
+  <div class="fixed inset-0 z-40 flex" [class.bottom-16]="esMovil()">
+    <div class="absolute inset-0 bg-black/40 dark:bg-black/60" (click)="capa.set(null)" aria-hidden="true"></div>
+    <app-panel-modulos
+      class="relative h-full w-80 max-w-[85vw] shadow-xl"
+      variante="capa"
+      [aplicativos]="aplicativos()"
+      [arboles]="arboles()"
+      [pantallas]="pantallas()"
+      [carga]="carga()"
+      [puedeAbrir]="puedeAbrir"
+      [aplicativoAbierto]="paneles.aplicativoAbierto()"
+      (abrir)="abrirPantalla($event)"
+      (alternarAplicativo)="paneles.alternarAplicativo($event)"
+      (reintentar)="cargarCatalogo()"
+      (cerrar)="capa.set(null)"
+    ></app-panel-modulos>
+  </div>
+}
+
+@if (capa() === 'preferencias') {
+  <div class="fixed inset-0 z-40 flex justify-end" [class.bottom-16]="esMovil()">
+    <div class="absolute inset-0 bg-black/40 dark:bg-black/60" (click)="capa.set(null)" aria-hidden="true"></div>
+    <app-panel-preferencias
+      class="relative h-full w-[22rem] max-w-[90vw] shadow-xl"
+      variante="capa"
+      [secciones]="secciones()"
+      (cerrar)="capa.set(null)"
+    ></app-panel-preferencias>
+  </div>
+}
+
+<app-buscador-pantallas
+  [(abierto)]="buscadorAbierto"
+  [pantallas]="pantallas()"
+  [sugeridas]="sugeridas()"
+  (abrir)="abrirPantalla($event)"
+></app-buscador-pantallas>
+
+<!-- Aviso 10 minutos antes de que venza la sesión (nivel 4) -->
+<app-aviso-sesion
+  class="fixed right-4 z-50"
+  [class]="esMovil() ? 'bottom-20' : 'bottom-6'"
+  [vence]="venceSesion()"
+  [hayCambios]="hayCambios"
+></app-aviso-sesion>
+
+<!-- «Deshacer» después de quitar un fijado: abajo al centro (encima de la barra inferior en celular) -->
+@if (deshacer(); as d) {
+  <div
+    class="fixed left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 rounded-lg border border-subtle bg-surface-overlay py-2 pl-4 pr-2 text-sm text-primary shadow-lg"
+    [class]="esMovil() ? 'bottom-20' : 'bottom-6'"
+    role="status"
+  >
+    <span class="min-w-0 truncate">{{ 'inicio.fijadoQuitado' | translate: { nombre: d.nombre } }}</span>
+    <button
+      type="button"
+      class="shrink-0 rounded px-2 py-1 font-medium text-brand hover:bg-brand/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      [attr.aria-keyshortcuts]="'Control+Z'"
+      (click)="deshacerQuitarFijado()"
+    >
+      {{ 'inicio.deshacer' | translate }}
+    </button>
+    <button type="button" class="btn-icon h-7 w-7 shrink-0 p-0" [attr.aria-label]="'inicio.cerrar' | translate" (click)="cerrarDeshacer()">
+      <i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
+    </button>
+  </div>
+}
+
+<!-- ===== PROYECTO: contenido de las secciones de preferencias =====
+     Cada sección es una plantilla; `secciones` (en el .ts) dice su título, ícono y orden.
+     Ejemplo: mosaicos de acciones de configuración (README §2.6). -->
+<ng-template #seccionConfiguracion>
+  <div class="grid grid-cols-2 gap-2">
+    <button
+      type="button"
+      class="group flex h-20 w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-subtle bg-surface-raised text-secondary hover:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      (click)="alElegirAccion('servidor')"
+    >
+      <span
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-info-soft transition-transform group-hover:scale-110 motion-reduce:transition-none"
+        aria-hidden="true"
+      >
+        <i class="fa-solid fa-server text-sm text-info-strong"></i>
+      </span>
+      <span class="px-1 text-center text-xs font-medium leading-tight">{{ 'inicio.configurarServidor' | translate }}</span>
+    </button>
+  </div>
+</ng-template>

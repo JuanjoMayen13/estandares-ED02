@@ -1,0 +1,153 @@
+/* Solo del panel de la demo (index.html). No es parte del estándar. */
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2937;
+  background: #e5e7eb;
+}
+
+.demo-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #d1d5db;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  z-index: 1;
+}
+
+.demo-titulo {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.demo-titulo i {
+  color: #2563eb;
+}
+
+.demo-version {
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.demo-grupo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-etiqueta {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #6b7280;
+}
+
+.demo-segmentos {
+  display: inline-flex;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.demo-segmentos button {
+  border: 0;
+  border-right: 1px solid #d1d5db;
+  background: #ffffff;
+  padding: 4px 9px;
+  font: inherit;
+  color: #374151;
+  cursor: pointer;
+}
+
+.demo-segmentos button:last-child {
+  border-right: 0;
+}
+
+.demo-segmentos button:hover {
+  background: #f3f4f6;
+}
+
+.demo-segmentos button[aria-pressed='true'] {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.demo-grupo select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font: inherit;
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.demo-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.demo-tamano {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.demo-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 9px;
+  background: #ffffff;
+  font: inherit;
+  color: #374151;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.demo-boton:hover {
+  background: #f3f4f6;
+}
+
+/* Escenario: el marco toma el tamaño elegido y se achica (escala) si no cabe */
+.demo-escenario {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.demo-marco {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.demo-marco--dispositivo {
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+  overflow: hidden;
+}
+
+.demo-marco iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}

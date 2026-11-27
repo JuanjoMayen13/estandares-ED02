@@ -1,0 +1,30 @@
+@if (visible()) {
+  <div [title]="'inicio.sesionVenceA' | translate: { hora: horaVence() }">
+    <div class="pi-tiempo-fila">
+      <span class="pi-tiempo-etiqueta">{{ 'inicio.sesionRestante' | translate }}</span>
+      <span class="pi-tiempo-valor" [class.pi-tiempo-valor--critico]="nivel() === 'critico' || nivel() === 'vencida'">
+        {{ nivel() === 'vencida' ? ('inicio.sesionVencida' | translate) : texto() }}
+      </span>
+    </div>
+
+    @if (porcentaje() !== null) {
+      <div
+        class="pi-tiempo-barra"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="porcentajeRedondeado()"
+        [attr.aria-label]="'inicio.sesionRestante' | translate"
+      >
+        <!-- Tonos suaves a propósito: la barra acompaña, no llama la atención hasta que importa -->
+        <div
+          class="pi-tiempo-relleno"
+          [class.pi-tiempo-relleno--ok]="nivel() === 'ok'"
+          [class.pi-tiempo-relleno--aviso]="nivel() === 'aviso'"
+          [class.pi-tiempo-relleno--critico]="nivel() === 'critico' || nivel() === 'vencida'"
+          [style.width.%]="porcentaje()"
+        ></div>
+      </div>
+    }
+  </div>
+}

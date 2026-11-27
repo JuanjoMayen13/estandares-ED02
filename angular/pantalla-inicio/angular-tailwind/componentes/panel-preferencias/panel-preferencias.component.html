@@ -1,0 +1,130 @@
+<!-- Un solo contenedor para los dos estados, como el panel de módulos: solo cambia su ancho (200 ms) -->
+<aside
+  class="flex h-full flex-col overflow-hidden bg-surface transition-[width] duration-200 ease-out motion-reduce:transition-none"
+  [class]="esCompacto() ? 'w-16 border-l border-subtle' : variante() === 'capa' ? 'w-full' : 'w-[22rem] border-l border-subtle 2xl:w-96'"
+  [attr.aria-label]="'inicio.preferencias' | translate"
+>
+  @if (esCompacto()) {
+    <!-- ===== Compacto: barra de íconos ===== -->
+    <div class="flex justify-center border-b border-subtle py-3">
+      <button
+        type="button"
+        class="btn-icon h-9 w-9"
+        [attr.aria-label]="'inicio.expandirPreferencias' | translate"
+        [title]="'inicio.expandirPreferencias' | translate"
+        (click)="cambiarEstado.emit('expandido')"
+      >
+        <i class="fa-solid fa-angles-left text-sm" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="flex flex-1 flex-col items-center gap-1.5 overflow-y-auto py-3">
+      @if (accionRapida(); as accion) {
+        <!-- Acción directa: un clic, sin panel de por medio -->
+        <button
+          type="button"
+          class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-raised text-secondary hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          [attr.aria-label]="accion.etiqueta | translate"
+          [title]="accion.etiqueta | translate"
+          (click)="accionRapidaElegida.emit()"
+        >
+          <i [class]="accion.icono" aria-hidden="true"></i>
+        </button>
+      }
+
+      @for (seccion of secciones(); track seccion.id) {
+        <button
+          type="button"
+          class="flex h-10 w-10 items-center justify-center rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          [class]="
+            flotante()?.seccion?.id === seccion.id
+              ? 'bg-brand text-on-brand'
+              : 'bg-surface-raised text-secondary hover:bg-brand/10 hover:text-brand'
+          "
+          [attr.aria-label]="seccion.etiqueta | translate"
+          [attr.aria-expanded]="flotante()?.seccion?.id === seccion.id"
+          [title]="seccion.etiqueta | translate"
+          (click)="alternarFlotante(seccion, $event)"
+        >
+          <i [class]="seccion.icono" aria-hidden="true"></i>
+        </button>
+      }
+    </div>
+
+    <div class="flex justify-center border-t border-subtle py-3">
+      <button
+        type="button"
+        class="btn-icon h-9 w-9"
+        [attr.aria-label]="'inicio.ocultarPanel' | translate"
+        [title]="'inicio.ocultarPanel' | translate"
+        (click)="cambiarEstado.emit('oculto')"
+      >
+        <i class="fa-solid fa-eye-slash text-sm" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    @if (flotante(); as f) {
+      <div
+        class="fixed z-40 flex w-[19rem] flex-col overflow-hidden rounded-lg border border-subtle bg-surface-overlay shadow-lg"
+        [style.top.px]="f.top"
+        [style.left.px]="f.left"
+        [style.max-height.px]="f.maxAlto"
+        role="dialog"
+        [attr.aria-label]="f.seccion.etiqueta | translate"
+      >
+        <div class="flex-1 overflow-y-auto p-4">
+          <span class="mb-3 block text-xs font-semibold uppercase tracking-wide text-secondary">
+            {{ f.seccion.etiqueta | translate }}
+          </span>
+          <ng-container *ngTemplateOutlet="f.seccion.plantilla"></ng-container>
+        </div>
+      </div>
+    }
+  } @else {
+    <!-- ===== Expandido (y variante capa) ===== -->
+    <div class="flex items-center justify-between gap-2 px-5 pb-3 pt-4">
+      <h2 class="flex items-center gap-2 text-sm font-semibold text-primary">
+        <i class="fa-solid fa-sliders text-brand" aria-hidden="true"></i>
+        {{ 'inicio.preferencias' | translate }}
+      </h2>
+
+      <div class="flex items-center gap-1">
+        @if (variante() === 'capa') {
+          <button type="button" class="btn-icon h-8 w-8 p-0" [attr.aria-label]="'inicio.cerrar' | translate" (click)="cerrar.emit()">
+            <i class="fa-solid fa-xmark text-sm" aria-hidden="true"></i>
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="btn-icon h-8 w-8 p-0"
+            [attr.aria-label]="'inicio.compactarPreferencias' | translate"
+            [title]="'inicio.compactarPreferencias' | translate"
+            (click)="cambiarEstado.emit('compacto')"
+          >
+            <i class="fa-solid fa-angles-right text-sm" aria-hidden="true"></i>
+          </button>
+          <button
+            type="button"
+            class="btn-icon h-8 w-8 p-0"
+            [attr.aria-label]="'inicio.ocultarPanel' | translate"
+            [title]="'inicio.ocultarPanel' | translate"
+            (click)="cambiarEstado.emit('oculto')"
+          >
+            <i class="fa-solid fa-eye-slash text-sm" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="flex-1 space-y-6 overflow-y-auto border-t border-subtle px-5 pb-6 pt-5">
+      @for (seccion of secciones(); track seccion.id) {
+        <div [class.border-t]="seccion.separada" [class.border-subtle]="seccion.separada" [class.pt-6]="seccion.separada">
+          <span class="mb-3 block text-xs font-semibold uppercase tracking-wide text-muted">
+            {{ seccion.etiqueta | translate }}
+          </span>
+          <ng-container *ngTemplateOutlet="seccion.plantilla"></ng-container>
+        </div>
+      }
+    </div>
+  }
+</aside>

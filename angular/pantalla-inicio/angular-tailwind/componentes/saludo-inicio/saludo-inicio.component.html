@@ -1,0 +1,63 @@
+<!-- Círculo del saludo: los colores llegan como variables (temporada o momento del día) -->
+<ng-template #circulo let-chico="chico">
+  <span
+    class="flex shrink-0 items-center justify-center rounded-full"
+    [class]="
+      (chico ? 'h-6 w-6 text-xs ' : 'h-12 w-12 text-xl ') +
+      (colores()
+        ? 'bg-[var(--pi-fondo)] text-[var(--pi-color)] dark:bg-[var(--pi-fondo-oscuro)] dark:text-[var(--pi-color-oscuro)]'
+        : 'bg-surface-raised')
+    "
+    [style.--pi-fondo]="colores()?.fondo"
+    [style.--pi-color]="colores()?.color"
+    [style.--pi-fondo-oscuro]="colores()?.fondoOscuro"
+    [style.--pi-color-oscuro]="colores()?.colorOscuro"
+    aria-hidden="true"
+  >
+    @if (temporada(); as t) {
+      @switch (t.emblema) {
+        @case ('banderaGT') {
+          <app-bandera-guatemala [style.width.px]="chico ? 16 : 32"></app-bandera-guatemala>
+        }
+        @case ('anio') {
+          <!-- En 24 px no caben cuatro cifras legibles: las dos últimas («27») -->
+          <span class="font-bold tabular-nums tracking-tight" [class]="chico ? 'text-[11px]' : 'text-[13px]'">
+            {{ chico ? anio() % 100 : anio() }}
+          </span>
+        }
+        @default {
+          <i [class]="t.icono"></i>
+        }
+      }
+    } @else {
+      <i [class]="periodo().icono"></i>
+    }
+  </span>
+</ng-template>
+
+<ng-template #texto>
+  @if (temporada(); as t) {
+    {{ t.saludo | translate: { usuario: usuario() } }}
+  } @else if (saludoContexto(); as clave) {
+    {{ clave | translate: { usuario: usuario() } }}
+  } @else {
+    {{ periodo().clave | translate }}, {{ usuario() }}
+  }
+</ng-template>
+
+@if (variante() === 'linea') {
+  <h1 class="flex items-center gap-2 text-base font-semibold text-primary">
+    @if (temporada()) {
+      <ng-container *ngTemplateOutlet="circulo; context: { chico: true }"></ng-container>
+    }
+    <ng-container *ngTemplateOutlet="texto"></ng-container>
+  </h1>
+} @else {
+  <div class="flex items-center gap-4">
+    <ng-container *ngTemplateOutlet="circulo; context: { chico: false }"></ng-container>
+    <div class="min-w-0">
+      <h2 class="truncate text-lg font-semibold text-primary"><ng-container *ngTemplateOutlet="texto"></ng-container></h2>
+      <p class="truncate text-sm text-muted">{{ fecha() }}</p>
+    </div>
+  </div>
+}

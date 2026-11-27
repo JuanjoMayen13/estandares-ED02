@@ -1,0 +1,51 @@
+<ng-container *ngTemplateOutlet="nivel; context: { $implicit: nodos() }"></ng-container>
+
+<ng-template #nivel let-lista>
+  <ul class="space-y-0.5">
+    @for (nodo of lista; track nodo.id) {
+      <li>
+        <button
+          type="button"
+          class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          [class]="
+            nodo.id === idActual()
+              ? 'bg-brand/10 font-medium text-brand'
+              : esGrupo(nodo) || puedeAbrir()(nodo)
+                ? 'text-secondary hover:bg-surface-raised'
+                : 'cursor-not-allowed text-muted opacity-60'
+          "
+          [attr.aria-expanded]="esGrupo(nodo) ? estaExpandido(nodo) : null"
+          [attr.aria-current]="nodo.id === idActual() ? 'page' : null"
+          [attr.aria-disabled]="!esGrupo(nodo) && !puedeAbrir()(nodo) ? 'true' : null"
+          [title]="!esGrupo(nodo) && !puedeAbrir()(nodo) ? ('inicio.sinPantallaDisponible' | translate) : nodo.nombre"
+          (click)="alElegir(nodo)"
+        >
+          <span class="flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden="true">
+            @if (esGrupo(nodo)) {
+              <i
+                class="fa-solid text-xs"
+                [class]="estaExpandido(nodo) ? 'fa-minus text-brand' : 'fa-plus text-muted'"
+              ></i>
+            } @else {
+              <span class="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-500"></span>
+            }
+          </span>
+
+          <span class="flex-1 truncate">{{ nodo.nombre }}</span>
+
+          @if (esGrupo(nodo)) {
+            <span class="shrink-0 rounded-full bg-surface-raised px-2 py-0.5 text-xs font-medium text-muted">
+              {{ nodo.hijos.length }}
+            </span>
+          }
+        </button>
+
+        @if (esGrupo(nodo) && estaExpandido(nodo)) {
+          <div class="ml-[18px] border-l border-subtle pl-1">
+            <ng-container *ngTemplateOutlet="nivel; context: { $implicit: nodo.hijos }"></ng-container>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

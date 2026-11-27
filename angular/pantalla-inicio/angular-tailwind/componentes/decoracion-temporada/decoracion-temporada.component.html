@@ -1,0 +1,54 @@
+@if (visible() && tipo() === 'copos') {
+  <!-- Cada copo va en un «carril» del alto de la tarjeta: al trasladar el carril un 100 % de su
+       propio alto, el copo recorre la tarjeta entera sin tocar top (que recalcularía la página) -->
+  @for (p of particulas; track $index) {
+    <span
+      class="carril"
+      [style.left.%]="p.izquierda"
+      [style.animation-duration.ms]="p.duracion"
+      [style.animation-delay]="-p.retraso + 'ms'"
+    >
+      <span class="copo" [style.width.px]="p.tamano" [style.height.px]="p.tamano"></span>
+    </span>
+  }
+} @else if (visible() && tipo() === 'fuegos') {
+  <!-- Fuegos artificiales: estallidos escalonados que se abren y se desvanecen -->
+  @for (e of estallidos; track $index) {
+    <svg
+      class="estallido"
+      viewBox="-50 -50 100 100"
+      [style.color]="e.color"
+      [style.left.%]="e.izquierda"
+      [style.top.%]="e.arriba"
+      [style.width.px]="e.tamano"
+      [style.height.px]="e.tamano"
+      [style.animation-delay.ms]="e.retraso"
+    >
+      @for (a of RAYOS_LARGOS; track a) {
+        <g [attr.transform]="'rotate(' + a + ')'">
+          <line x1="0" y1="-12" x2="0" y2="-38" />
+          <circle cx="0" cy="-45" r="2.6" />
+        </g>
+      }
+      @for (a of RAYOS_CORTOS; track a) {
+        <g [attr.transform]="'rotate(' + a + ')'">
+          <line x1="0" y1="-10" x2="0" y2="-26" />
+          <circle cx="0" cy="-32" r="2" />
+        </g>
+      }
+    </svg>
+  }
+} @else if (visible()) {
+  @for (p of particulas; track $index) {
+    <span
+      class="particula"
+      [style.background-color]="p.color"
+      [style.left.%]="p.izquierda"
+      [style.width.px]="p.tamano"
+      [style.height.px]="p.tamano * 1.6"
+      [style.animation-delay.ms]="p.retraso"
+      [style.animation-duration.ms]="p.duracion"
+      [style.--giro]="p.giro + 'deg'"
+    ></span>
+  }
+}

@@ -1,0 +1,86 @@
+/* Estándar pantalla de inicio v1.0.0 — decoración de temporada para la demo: el CSS del componente
+   (angular-css-puro/componentes/decoracion-temporada) con :host cambiado por .pi-decoracion. */
+
+/* Encima de la tarjeta de bienvenida (que es position: relative), sin recibir clics */
+.pi-decoracion {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pi-decoracion {
+    display: none;
+  }
+}
+
+/* ----- Nieve continua (Navidad) ----- */
+.pi-decoracion .carril {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  animation-name: nevar;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.pi-decoracion .copo {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  border-radius: 9999px;
+  background-color: #bae6fd;
+}
+
+.dark .pi-decoracion .copo {
+  background-color: rgb(255 255 255 / 0.8);
+}
+
+/* Cae a velocidad constante con un vaivén suave; aparece y se apaga en los bordes */
+@keyframes nevar {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate(8px, 50%); }
+  90% { opacity: 1; }
+  100% { transform: translate(0, 100%); opacity: 0; }
+}
+
+/* ----- Confeti (una vez) ----- */
+.pi-decoracion .particula {
+  position: absolute;
+  top: -12px;
+  opacity: 0;
+  border-radius: 1px;
+  animation-name: caer;
+  animation-timing-function: ease-in;
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+
+@keyframes caer {
+  0% { top: -12px; opacity: 0; transform: translateX(0) rotate(0deg); }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; transform: translateX(14px) rotate(var(--giro, 0deg)); }
+}
+
+/* ----- Fuegos artificiales (una vez) ----- */
+.pi-decoracion .estallido {
+  position: absolute;
+  opacity: 0;
+  stroke: currentColor;
+  fill: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  /* Se abre rápido y frena al final, como un fuego artificial real */
+  animation: estallar 1400ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes estallar {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  12% { opacity: 1; }
+  70% { opacity: 0.85; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0; }
+}

@@ -1,0 +1,27 @@
+<app-widget-card titulo="inicio.conexion" icono="fa-solid fa-server">
+  <button accion type="button" class="pi-boton-fantasma" (click)="cambiar.emit()">
+    {{ 'inicio.cambiar' | translate }}
+  </button>
+  <dl class="pi-widget-filas">
+    <div class="pi-widget-fila">
+      <dt class="pi-widget-etiqueta">{{ 'inicio.estado' | translate }}</dt>
+      <dd class="pi-conexion-estado" [class.pi-conexion-estado--error]="!conectado()">
+        <span class="pi-punto" [class.pi-punto--error]="!conectado()" aria-hidden="true"></span>
+        {{ (conectado() ? 'inicio.conectado' : 'inicio.sinConexion') | translate }}
+      </dd>
+    </div>
+    <div class="pi-widget-fila">
+      <dt class="pi-widget-etiqueta pi-widget-etiqueta--fija">{{ 'inicio.servidor' | translate }}</dt>
+      <!-- Una sola línea: la URL completa queda en el tooltip -->
+      <dd class="pi-servidor" [title]="url()">{{ servidor() || '—' }}</dd>
+    </div>
+    <div class="pi-widget-fila">
+      <dt class="pi-widget-etiqueta">{{ 'inicio.versionWeb' | translate }}</dt>
+      <dd class="pi-widget-valor">{{ versionWeb() || '—' }}</dd>
+    </div>
+    <div class="pi-widget-fila">
+      <dt class="pi-widget-etiqueta">{{ 'inicio.versionApi' | translate }}</dt>
+      <dd class="pi-widget-valor">{{ versionApi() || '—' }}</dd>
+    </div>
+  </dl>
+</app-widget-card>

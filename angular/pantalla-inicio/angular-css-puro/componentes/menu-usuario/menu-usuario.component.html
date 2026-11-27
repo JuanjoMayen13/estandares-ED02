@@ -1,0 +1,70 @@
+<button
+  #disparador
+  type="button"
+  class="pi-menu-disparador pi-foco"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="abierto()"
+  [attr.aria-label]="'inicio.menuUsuario' | translate"
+  (click)="alternar()"
+>
+  <span class="pi-avatar" [style.background-color]="colorAvatar()" aria-hidden="true">{{ iniciales() }}</span>
+  <span class="pi-menu-nombre">{{ usuario() }}</span>
+  <i class="fa-solid fa-chevron-down pi-menu-chevron" [class.pi-menu-chevron--abierto]="abierto()" aria-hidden="true"></i>
+</button>
+
+@if (abierto()) {
+  <div #lista class="pi-menu" role="menu" [attr.aria-label]="'inicio.menuUsuario' | translate" (keydown)="alTeclear($event)">
+    <!-- Quién y dónde -->
+    <div class="pi-menu-quien">
+      <p class="pi-menu-usuario">{{ usuario() }}</p>
+      @if (empresa()) {
+        <p class="pi-menu-dato">
+          <i class="fa-solid fa-building" aria-hidden="true"></i>
+          <span class="pi-sr-only">{{ 'inicio.empresa' | translate }}:</span>
+          <span class="pi-truncar">{{ empresa() }}</span>
+        </p>
+      }
+      @if (estacion()) {
+        <p class="pi-menu-dato pi-menu-dato--segundo">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <span class="pi-sr-only">{{ 'inicio.estacion' | translate }}:</span>
+          <span class="pi-truncar">{{ estacion() }}</span>
+        </p>
+      }
+    </div>
+
+    @if (acciones().length > 0 || ambientacion() !== null) {
+      <div class="pi-menu-grupo">
+        @for (a of acciones(); track a.id) {
+          <button type="button" role="menuitem" class="pi-menu-item" (click)="elegir(a.id)">
+            <i class="pi-menu-item-icono" [class]="a.icono" aria-hidden="true"></i>
+            {{ a.etiqueta | translate }}
+          </button>
+        }
+
+        @if (ambientacion() !== null) {
+          <!-- Se marca o desmarca sin cerrar el menú -->
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            class="pi-menu-item"
+            [attr.aria-checked]="ambientacion()"
+            [title]="'inicio.ambientacionTemporadaDesc' | translate"
+            (click)="cambiarAmbientacion.emit(!ambientacion())"
+          >
+            <i class="fa-solid fa-wand-magic-sparkles pi-menu-item-icono" aria-hidden="true"></i>
+            <span class="pi-menu-item-texto">{{ 'inicio.ambientacionTemporada' | translate }}</span>
+            <i class="fa-solid fa-check pi-menu-check" [class.pi-menu-check--oculto]="!ambientacion()" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+    }
+
+    <div class="pi-menu-grupo pi-menu-grupo--separado">
+      <button type="button" role="menuitem" class="pi-menu-item pi-menu-item--peligro" (click)="salir()">
+        <i class="fa-solid fa-arrow-right-from-bracket pi-menu-item-icono" aria-hidden="true"></i>
+        {{ 'inicio.cerrarSesion' | translate }}
+      </button>
+    </div>
+  </div>
+}

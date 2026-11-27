@@ -1,0 +1,21 @@
+@if (visible()) {
+  <div class="pi-aviso" [class.pi-aviso--cambios]="tipo() === 'cambios'" role="status">
+    <i
+      class="pi-aviso-icono"
+      [class]="tipo() === 'cambios' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-clock'"
+      aria-hidden="true"
+    ></i>
+    <div class="pi-aviso-textos">
+      @if (tipo() === 'cambios') {
+        <p class="pi-aviso-titulo">{{ 'inicio.avisoSesionCambiosTitulo' | translate }}</p>
+        <p class="pi-aviso-mensaje">{{ 'inicio.avisoSesionCambiosMsg' | translate: { hora: horaVence() } }}</p>
+      } @else {
+        <p class="pi-aviso-titulo">{{ 'inicio.avisoSesionTitulo' | translate }}</p>
+        <p class="pi-aviso-mensaje">{{ 'inicio.avisoSesionMsg' | translate: { hora: horaVence() } }}</p>
+      }
+    </div>
+    <button type="button" class="pi-aviso-cerrar pi-foco" [attr.aria-label]="'inicio.cerrar' | translate" (click)="cerrar()">
+      <i class="fa-solid fa-xmark pi-icono-12" aria-hidden="true"></i>
+    </button>
+  </div>
+}

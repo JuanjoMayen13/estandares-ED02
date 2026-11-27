@@ -1,0 +1,35 @@
+@if (visible()) {
+  <div
+    class="flex max-w-sm items-start gap-3 rounded-lg border p-3 pr-2 text-sm shadow-lg"
+    [class]="
+      tipo() === 'cambios'
+        ? 'border-danger-line bg-danger-soft text-danger-strong'
+        : 'border-warning-line bg-warning-soft text-warning-strong'
+    "
+    role="status"
+  >
+    <i
+      class="mt-0.5 shrink-0"
+      [class]="tipo() === 'cambios' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-clock'"
+      aria-hidden="true"
+    ></i>
+    <div class="min-w-0 flex-1">
+      @if (tipo() === 'cambios') {
+        <p class="font-semibold">{{ 'inicio.avisoSesionCambiosTitulo' | translate }}</p>
+        <p class="mt-0.5">{{ 'inicio.avisoSesionCambiosMsg' | translate: { hora: horaVence() } }}</p>
+      } @else {
+        <p class="font-semibold">{{ 'inicio.avisoSesionTitulo' | translate }}</p>
+        <p class="mt-0.5">{{ 'inicio.avisoSesionMsg' | translate: { hora: horaVence() } }}</p>
+      }
+    </div>
+    <button
+      type="button"
+      class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      [class]="tipo() === 'cambios' ? 'hover:bg-danger-line/60' : 'hover:bg-warning-line/60'"
+      [attr.aria-label]="'inicio.cerrar' | translate"
+      (click)="cerrar()"
+    >
+      <i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
+    </button>
+  </div>
+}

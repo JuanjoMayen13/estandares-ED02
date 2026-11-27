@@ -1,0 +1,83 @@
+@if (abierto()) {
+  <div class="pi-buscador-capa">
+    <div class="pi-velo" (click)="cerrar()" aria-hidden="true"></div>
+
+    <div class="pi-buscador" role="dialog" aria-modal="true" [attr.aria-label]="'inicio.buscarPantalla' | translate">
+      <!-- Campo -->
+      <div class="pi-buscador-campo">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input
+          #campo
+          type="text"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-controls="buscador-resultados"
+          [attr.aria-expanded]="resultados().length > 0"
+          [attr.aria-activedescendant]="resultados().length ? idOpcion(activo()) : null"
+          class="pi-buscador-input"
+          [placeholder]="'inicio.buscarPantalla' | translate"
+          [value]="texto()"
+          (input)="escribir($any($event.target).value)"
+          (keydown)="alTeclear($event)"
+        />
+        <kbd class="pi-tecla">Esc</kbd>
+      </div>
+
+      <!-- Resultados -->
+      <div #lista id="buscador-resultados" role="listbox" class="pi-buscador-lista">
+        @if (!texto().trim() && resultados().length > 0) {
+          <p class="pi-buscador-subtitulo">{{ 'inicio.accesosRapidos' | translate }}</p>
+        }
+
+        @for (p of resultados(); track p.aplicativo.id + '-' + p.nodo.id; let i = $index) {
+          <button
+            type="button"
+            role="option"
+            [id]="idOpcion(i)"
+            [attr.aria-selected]="i === activo()"
+            class="pi-opcion"
+            [class.pi-opcion--activa]="i === activo()"
+            (mousemove)="activo.set(i)"
+            (click)="elegir(p)"
+          >
+            <i class="fa-regular fa-file-lines pi-opcion-icono" aria-hidden="true"></i>
+            <span class="pi-opcion-textos">
+              <span class="pi-opcion-nombre">{{ p.nombre }}</span>
+              <span class="pi-opcion-ubicacion">{{ p.ubicacion }}</span>
+            </span>
+            @if (i === activo()) {
+              <i class="fa-solid fa-arrow-turn-down pi-opcion-flecha" aria-hidden="true"></i>
+            }
+          </button>
+        }
+
+        @if (resultados().length === 0) {
+          <p class="pi-buscador-vacio">
+            {{
+              texto().trim()
+                ? ('inicio.sinCoincidencias' | translate)
+                : ('inicio.buscadorAyuda' | translate: { total: pantallas().length })
+            }}
+          </p>
+        }
+      </div>
+
+      <!-- Atajos -->
+      <div class="pi-buscador-pie">
+        <span>
+          <kbd class="pi-tecla pi-tecla--estrecha">↑</kbd>
+          <kbd class="pi-tecla pi-tecla--estrecha">↓</kbd>
+          {{ 'inicio.teclaMover' | translate }}
+        </span>
+        <span>
+          <kbd class="pi-tecla pi-tecla--estrecha">Enter</kbd>
+          {{ 'inicio.teclaAbrir' | translate }}
+        </span>
+        <span>
+          <kbd class="pi-tecla pi-tecla--estrecha">Esc</kbd>
+          {{ 'inicio.cerrar' | translate }}
+        </span>
+      </div>
+    </div>
+  </div>
+}

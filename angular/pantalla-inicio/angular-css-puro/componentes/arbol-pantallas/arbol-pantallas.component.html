@@ -1,0 +1,41 @@
+<ng-container *ngTemplateOutlet="nivel; context: { $implicit: nodos() }"></ng-container>
+
+<ng-template #nivel let-lista>
+  <ul class="pi-arbol">
+    @for (nodo of lista; track nodo.id) {
+      <li>
+        <button
+          type="button"
+          class="pi-arbol-fila pi-foco"
+          [class.pi-arbol-fila--actual]="nodo.id === idActual()"
+          [class.pi-arbol-fila--deshabilitada]="nodo.id !== idActual() && !esGrupo(nodo) && !puedeAbrir()(nodo)"
+          [attr.aria-expanded]="esGrupo(nodo) ? estaExpandido(nodo) : null"
+          [attr.aria-current]="nodo.id === idActual() ? 'page' : null"
+          [attr.aria-disabled]="!esGrupo(nodo) && !puedeAbrir()(nodo) ? 'true' : null"
+          [title]="!esGrupo(nodo) && !puedeAbrir()(nodo) ? ('inicio.sinPantallaDisponible' | translate) : nodo.nombre"
+          (click)="alElegir(nodo)"
+        >
+          <span class="pi-arbol-icono" aria-hidden="true">
+            @if (esGrupo(nodo)) {
+              <i class="fa-solid" [class.fa-minus]="estaExpandido(nodo)" [class.fa-plus]="!estaExpandido(nodo)"></i>
+            } @else {
+              <span class="pi-arbol-punto"></span>
+            }
+          </span>
+
+          <span class="pi-arbol-nombre">{{ nodo.nombre }}</span>
+
+          @if (esGrupo(nodo)) {
+            <span class="pi-arbol-contador">{{ nodo.hijos.length }}</span>
+          }
+        </button>
+
+        @if (esGrupo(nodo) && estaExpandido(nodo)) {
+          <div class="pi-arbol-hijos">
+            <ng-container *ngTemplateOutlet="nivel; context: { $implicit: nodo.hijos }"></ng-container>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

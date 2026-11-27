@@ -1,0 +1,96 @@
+<button
+  #disparador
+  type="button"
+  class="flex items-center gap-2 rounded-full border border-subtle py-1 pl-1 pr-2 hover:bg-surface-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:pr-3"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="abierto()"
+  [attr.aria-label]="'inicio.menuUsuario' | translate"
+  (click)="alternar()"
+>
+  <span
+    class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-white"
+    [style.background-color]="colorAvatar()"
+    aria-hidden="true"
+  >
+    {{ iniciales() }}
+  </span>
+  <span class="hidden max-w-[10rem] truncate text-sm font-medium text-primary md:inline">{{ usuario() }}</span>
+  <i
+    class="fa-solid fa-chevron-down text-[10px] text-muted transition-transform motion-reduce:transition-none"
+    [class.rotate-180]="abierto()"
+    aria-hidden="true"
+  ></i>
+</button>
+
+@if (abierto()) {
+  <div
+    #lista
+    class="absolute right-0 z-40 mt-2 w-72 overflow-hidden rounded-lg border border-subtle bg-surface-overlay shadow-lg"
+    role="menu"
+    [attr.aria-label]="'inicio.menuUsuario' | translate"
+    (keydown)="alTeclear($event)"
+  >
+    <!-- Quién y dónde -->
+    <div class="border-b border-subtle px-4 py-3">
+      <p class="truncate text-sm font-semibold text-primary">{{ usuario() }}</p>
+      @if (empresa()) {
+        <p class="mt-1 flex items-center gap-2 truncate text-xs text-secondary">
+          <i class="fa-solid fa-building w-3 shrink-0 text-center" aria-hidden="true"></i>
+          <span class="sr-only">{{ 'inicio.empresa' | translate }}:</span>
+          <span class="truncate">{{ empresa() }}</span>
+        </p>
+      }
+      @if (estacion()) {
+        <p class="mt-0.5 flex items-center gap-2 truncate text-xs text-secondary">
+          <i class="fa-solid fa-location-dot w-3 shrink-0 text-center" aria-hidden="true"></i>
+          <span class="sr-only">{{ 'inicio.estacion' | translate }}:</span>
+          <span class="truncate">{{ estacion() }}</span>
+        </p>
+      }
+    </div>
+
+    @if (acciones().length > 0 || ambientacion() !== null) {
+      <div class="py-1">
+        @for (a of acciones(); track a.id) {
+          <button
+            type="button"
+            role="menuitem"
+            class="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-primary hover:bg-surface-raised focus:outline-none focus-visible:bg-surface-raised"
+            (click)="elegir(a.id)"
+          >
+            <i class="w-4 text-center text-secondary" [class]="a.icono" aria-hidden="true"></i>
+            {{ a.etiqueta | translate }}
+          </button>
+        }
+
+        @if (ambientacion() !== null) {
+          <!-- Se marca o desmarca sin cerrar el menú -->
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            class="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-primary hover:bg-surface-raised focus:outline-none focus-visible:bg-surface-raised"
+            [attr.aria-checked]="ambientacion()"
+            [title]="'inicio.ambientacionTemporadaDesc' | translate"
+            (click)="cambiarAmbientacion.emit(!ambientacion())"
+          >
+            <i class="fa-solid fa-wand-magic-sparkles w-4 text-center text-secondary" aria-hidden="true"></i>
+            <span class="flex-1">{{ 'inicio.ambientacionTemporada' | translate }}</span>
+            <i class="fa-solid fa-check w-4 text-center text-xs text-brand" [class.invisible]="!ambientacion()" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+    }
+
+    <div class="border-t border-subtle py-1">
+      <button
+        type="button"
+        role="menuitem"
+        class="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-danger-strong hover:bg-danger-soft focus:outline-none focus-visible:bg-danger-soft"
+        (click)="salir()"
+      >
+        <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center" aria-hidden="true"></i>
+        {{ 'inicio.cerrarSesion' | translate }}
+      </button>
+    </div>
+  </div>
+}

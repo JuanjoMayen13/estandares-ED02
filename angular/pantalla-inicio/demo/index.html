@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pantalla de inicio: demo del estándar</title>
+<!-- Demo del "Estándar: Pantalla de inicio" v1.0.0. La barra de arriba es solo de la demo (no es
+     parte del diseño): simula tamaños de pantalla y cambia tema, idioma, temporada y aviso de sesión.
+     La pantalla está en pantalla.html, dentro del marco, para que sus reglas por ancho se apliquen. -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+<link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+<header class="demo-barra">
+  <strong class="demo-titulo"><i class="fa-solid fa-flask"></i> Demo · Pantalla de inicio <span class="demo-version">v1.0.0</span></strong>
+
+  <div class="demo-grupo" role="group" aria-label="Tamaño de pantalla">
+    <span class="demo-etiqueta">Tamaño</span>
+    <div class="demo-segmentos" id="tamanos">
+      <button type="button" data-ancho="0" title="Ocupa todo el espacio disponible">Ventana</button>
+      <button type="button" data-ancho="1600" data-alto="900" title="Grande: 1600 × 900 (≥ 1536 px)">Grande</button>
+      <button type="button" data-ancho="1366" data-alto="768" title="Laptop: 1366 × 768 (1280–1535 px)">Laptop</button>
+      <button type="button" data-ancho="1100" data-alto="760" title="Chica: 1100 × 760 (1024–1279 px)">Chica</button>
+      <button type="button" data-ancho="820" data-alto="1180" title="Tablet: 820 × 1180 (768–1023 px)">Tablet</button>
+      <button type="button" data-ancho="390" data-alto="844" title="Celular: 390 × 844 (menos de 768 px)">Celular</button>
+    </div>
+  </div>
+
+  <div class="demo-grupo" role="group" aria-label="Tema">
+    <span class="demo-etiqueta">Tema</span>
+    <div class="demo-segmentos" id="temas">
+      <button type="button" data-tema="claro"><i class="fa-solid fa-sun"></i> Claro</button>
+      <button type="button" data-tema="oscuro"><i class="fa-solid fa-moon"></i> Oscuro</button>
+    </div>
+  </div>
+
+  <label class="demo-grupo">
+    <span class="demo-etiqueta">Idioma</span>
+    <select id="idioma">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+    </select>
+  </label>
+
+  <label class="demo-grupo">
+    <span class="demo-etiqueta">Temporada</span>
+    <select id="temporada">
+      <option value="auto">Según la fecha</option>
+      <option value="ninguna">Ninguna</option>
+      <option value="navidad">Navidad</option>
+      <option value="anioNuevo">Año Nuevo</option>
+      <option value="mesPatrio">Mes patrio (GT)</option>
+      <option value="semanaSanta">Semana Santa</option>
+    </select>
+  </label>
+
+  <label class="demo-grupo">
+    <span class="demo-etiqueta">Aviso de sesión</span>
+    <select id="aviso">
+      <option value="ninguno">No mostrar</option>
+      <option value="neutro">Por vencer</option>
+      <option value="cambios">Con cambios sin guardar</option>
+    </select>
+  </label>
+
+  <div class="demo-acciones">
+    <span class="demo-tamano" id="tamanoEfectivo" title="Regla de tamaño que está aplicando la pantalla"></span>
+    <button type="button" class="demo-boton" id="reiniciar" title="Borra lo que la demo recordó (paneles, fijados, recientes…) y vuelve a empezar">
+      <i class="fa-solid fa-rotate-left"></i> Reiniciar
+    </button>
+    <a class="demo-boton" href="pantalla.html" target="_blank" rel="noopener" title="Abrir la pantalla sola, a tamaño real">
+      <i class="fa-solid fa-up-right-from-square"></i>
+    </a>
+  </div>
+</header>
+
+<main class="demo-escenario" id="escenario">
+  <div class="demo-marco" id="marco">
+    <iframe id="pantalla" src="pantalla.html" title="Pantalla de inicio (demo)"></iframe>
+  </div>
+</main>
+
+<script src="demo.js"></script>
+</body>
+</html>

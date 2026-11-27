@@ -1,0 +1,14 @@
+<app-widget-card titulo="inicio.atajos" icono="fa-solid fa-keyboard">
+  <dl class="divide-y divide-subtle">
+    @for (atajo of atajos; track atajo.texto) {
+      <div class="flex h-9 items-center justify-between gap-3 text-sm">
+        <dt class="min-w-0 truncate text-secondary">{{ atajo.texto | translate }}</dt>
+        <dd class="flex shrink-0 items-center gap-1">
+          @for (tecla of atajo.teclas; track $index) {
+            <kbd class="rounded border border-subtle bg-surface-raised px-1.5 py-0.5 text-[11px] leading-none text-secondary">{{ tecla }}</kbd>
+          }
+        </dd>
+      </div>
+    }
+  </dl>
+</app-widget-card>

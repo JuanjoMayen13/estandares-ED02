@@ -1,0 +1,95 @@
+<section class="pi-seccion-tarjeta">
+  <header class="pi-accesos-encabezado">
+    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+    <h2 class="pi-accesos-titulo">{{ 'inicio.accesosRapidos' | translate }}</h2>
+  </header>
+
+  @if (!cargado()) {
+    <!-- Mientras se resuelven contra las pantallas: siluetas del mismo tamaño, para que nada salte -->
+    <div class="pi-accesos-lista" aria-hidden="true">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="pi-silueta-acceso pi-pulso"></div>
+      }
+    </div>
+  } @else if (fijados().length === 0 && recientes().length === 0) {
+    <div class="pi-accesos-vacio">
+      <i class="fa-solid fa-thumbtack" aria-hidden="true"></i>
+      <p>{{ 'inicio.accesosVacio' | translate }}</p>
+    </div>
+  } @else {
+    <div class="pi-accesos-grupos">
+      @if (fijados().length > 0) {
+        <div>
+          <h3 class="pi-grupo-titulo pi-grupo-titulo--solo">{{ 'inicio.fijados' | translate }}</h3>
+          <ng-container *ngTemplateOutlet="lista; context: { $implicit: fijados(), esFijado: true }"></ng-container>
+        </div>
+      }
+
+      @if (recientes().length > 0) {
+        <div>
+          <div class="pi-grupo-encabezado">
+            <h3 class="pi-grupo-titulo">{{ 'inicio.recientes' | translate }}</h3>
+            <button type="button" class="pi-borrar pi-foco" (click)="borrarRecientes.emit()">
+              {{ 'inicio.borrarRecientes' | translate }}
+            </button>
+          </div>
+          <ng-container *ngTemplateOutlet="lista; context: { $implicit: recientes(), esFijado: false }"></ng-container>
+        </div>
+      }
+    </div>
+  }
+</section>
+
+<!-- Lista: cuadrícula; en celular (horizontal) una tira deslizable por debajo de 640 px -->
+<ng-template #lista let-items let-esFijado="esFijado">
+  <div class="pi-accesos-lista" [class.pi-accesos-lista--tira]="horizontal()">
+    @for (item of items; track item.clave; let i = $index) {
+      <ng-container *ngTemplateOutlet="tarjeta; context: { $implicit: item, esFijado: esFijado, indice: esFijado ? i : -1 }"></ng-container>
+    }
+  </div>
+</ng-template>
+
+<!-- Una tarjeta: el botón grande abre la pantalla; el pequeño la fija o la quita de fijados.
+     - Sube 2 px al pasar el mouse (solo transform: los colores cambian sin transición).
+     - view-transition-name: al fijar o quitar, el navegador la desliza de una lista a la otra.
+     - Los fijados 1 a 8 muestran su atajo (Alt+1…8) al pasar el mouse o al llegar con el teclado. -->
+<ng-template #tarjeta let-item let-esFijado="esFijado" let-indice="indice">
+  <div class="pi-tarjeta" [class.pi-tarjeta--tira]="horizontal()" [style.view-transition-name]="'acceso-' + item.clave">
+    <button
+      type="button"
+      class="pi-tarjeta-abrir pi-foco"
+      [title]="item.ubicacion + ' › ' + item.nombre"
+      [attr.aria-keyshortcuts]="esFijado && indice < 8 ? 'Alt+' + (indice + 1) : null"
+      (click)="abrir.emit(item)"
+    >
+      <span class="pi-tarjeta-icono" [class.pi-tarjeta-icono--fijado]="esFijado" aria-hidden="true">
+        <i [class]="esFijado ? 'fa-solid fa-thumbtack' : 'fa-solid fa-clock-rotate-left'"></i>
+      </span>
+      <span class="pi-tarjeta-textos">
+        <span class="pi-tarjeta-nombre">{{ item.nombre }}</span>
+        <span class="pi-tarjeta-app">{{ item.aplicativo.nombre }}</span>
+      </span>
+      @if (esFijado && indice < 8 && !horizontal()) {
+        <kbd class="pi-tecla-atajo" aria-hidden="true">Alt+{{ indice + 1 }}</kbd>
+      }
+    </button>
+
+    <button
+      type="button"
+      class="pi-tarjeta-accion pi-foco"
+      [class.pi-tarjeta-accion--fijado]="esFijado"
+      [disabled]="!esFijado && totalFijados() >= maximoFijados()"
+      [attr.aria-label]="(esFijado ? 'inicio.quitarFijado' : 'inicio.fijar') | translate"
+      [title]="
+        esFijado
+          ? ('inicio.quitarFijado' | translate)
+          : totalFijados() >= maximoFijados()
+            ? ('inicio.maximoFijados' | translate: { max: maximoFijados() })
+            : ('inicio.fijar' | translate)
+      "
+      (click)="esFijado ? quitarFijado.emit(item) : fijar.emit(item)"
+    >
+      <i [class]="esFijado ? 'fa-solid fa-xmark' : 'fa-solid fa-thumbtack pi-girado'" aria-hidden="true"></i>
+    </button>
+  </div>
+</ng-template>

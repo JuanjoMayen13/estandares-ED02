@@ -1,0 +1,30 @@
+<section class="flex h-full flex-col rounded-lg border border-subtle bg-surface px-4 pb-2 pt-4">
+  <header class="flex h-8 items-center gap-3">
+    <span
+      class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-raised"
+      [class]="estado() === 'proximamente' ? 'text-secondary' : 'text-brand'"
+      aria-hidden="true"
+    >
+      <i [class]="icono() + ' text-sm'"></i>
+    </span>
+    <h3 class="min-w-0 flex-1 truncate text-sm font-semibold text-primary">{{ titulo() | translate }}</h3>
+    @if (estado() === 'proximamente') {
+      <span class="shrink-0 rounded-full border border-subtle px-2 py-0.5 text-[11px] font-medium text-muted">
+        {{ 'inicio.proximamente' | translate }}
+      </span>
+    } @else {
+      <ng-content select="[accion]"></ng-content>
+    }
+  </header>
+
+  <div class="mt-2 flex-1">
+    @if (estado() === 'cargando') {
+      <div class="flex h-full min-h-[9rem] items-center justify-center">
+        <i class="fa-solid fa-spinner fa-spin text-muted" aria-hidden="true"></i>
+        <span class="sr-only">{{ 'inicio.cargando' | translate }}</span>
+      </div>
+    } @else {
+      <ng-content></ng-content>
+    }
+  </div>
+</section>

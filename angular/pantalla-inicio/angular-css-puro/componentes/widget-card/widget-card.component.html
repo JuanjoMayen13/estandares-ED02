@@ -1,0 +1,24 @@
+<section class="pi-widget">
+  <header class="pi-widget-encabezado">
+    <span class="pi-widget-icono" [class.pi-widget-icono--proximamente]="estado() === 'proximamente'" aria-hidden="true">
+      <i class="pi-icono-14" [class]="icono()"></i>
+    </span>
+    <h3 class="pi-widget-titulo">{{ titulo() | translate }}</h3>
+    @if (estado() === 'proximamente') {
+      <span class="pi-widget-proximamente">{{ 'inicio.proximamente' | translate }}</span>
+    } @else {
+      <ng-content select="[accion]"></ng-content>
+    }
+  </header>
+
+  <div class="pi-widget-cuerpo">
+    @if (estado() === 'cargando') {
+      <div class="pi-widget-cargando">
+        <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+        <span class="pi-sr-only">{{ 'inicio.cargando' | translate }}</span>
+      </div>
+    } @else {
+      <ng-content></ng-content>
+    }
+  </div>
+</section>

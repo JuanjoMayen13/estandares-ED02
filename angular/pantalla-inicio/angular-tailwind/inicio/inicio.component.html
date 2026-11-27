@@ -343,7 +343,11 @@
 
 <!-- ===== PROYECTO: contenido de las secciones de preferencias =====
      Cada sección es una plantilla; `secciones` (en el .ts) dice su título, ícono y orden.
-     Ejemplo: mosaicos de acciones de configuración (README §2.6). -->
+     Ejemplo: el tema de la interfaz y mosaicos de acciones de configuración (README §2.6). -->
+<ng-template #seccionTema>
+  <app-selector-modo-tema [modo]="modoTema()" (cambiar)="cambiarModoTema($event)"></app-selector-modo-tema>
+</ng-template>
+
 <ng-template #seccionConfiguracion>
   <div class="grid grid-cols-2 gap-2">
     <button

@@ -17,7 +17,7 @@ Hay una carpeta por tecnología. Cada estándar vive en su propio archivo y se v
 | Componente de carga (engranajes de pantalla completa) | [angular/componente-carga.md](angular/componente-carga.md) | [flutter/componente-carga.md](flutter/componente-carga.md) | 1.0.0 |
 | Barra de estado (usuario, estación, empresa, firma y versión; modos fija y auto-ocultar) | [angular/barra-estado.md](angular/barra-estado.md) | [flutter/barra-estado.md](flutter/barra-estado.md) | 2.0.0 (Angular) · 1.0.0 (Flutter) |
 | Diseño del login (fondo animado, tarjeta, idioma y tema, modal de empresa y estación) · [demo en línea](https://juanjomayen13.github.io/estandares-ED02/angular/diseno-login/demo/index.html) | [angular/diseno-login/](angular/diseno-login/README.md) | — | 1.1.0 |
-| Pantalla de inicio (módulos, accesos rápidos, buscador y preferencias; adopción por niveles) · [demo en línea](https://juanjomayen13.github.io/estandares-ED02/angular/pantalla-inicio/demo/index.html) | [angular/pantalla-inicio/](angular/pantalla-inicio/README.md) | — | 1.0.0 (borrador) |
+| Pantalla de inicio (módulos, accesos rápidos, buscador y preferencias; adopción por niveles) · [demo en línea](https://juanjomayen13.github.io/estandares-ED02/angular/pantalla-inicio/demo/index.html) | [angular/pantalla-inicio/](angular/pantalla-inicio/README.md) | — | 1.0.0 |
 
 ### Integración con el API
 

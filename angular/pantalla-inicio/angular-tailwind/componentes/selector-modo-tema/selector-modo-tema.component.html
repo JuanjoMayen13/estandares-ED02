@@ -1,0 +1,32 @@
+<!-- Tarjetas con una miniatura de la interfaz en cada modo -->
+<div class="grid grid-cols-3 gap-3" role="radiogroup" [attr.aria-label]="'inicio.modoTema' | translate" (keydown)="alPresionarTecla($event)">
+  @for (opcion of opciones; track opcion.valor) {
+    <button
+      type="button"
+      role="radio"
+      class="rounded-xl border bg-surface p-2 text-center hover:bg-surface-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      [class]="opcion.valor === modo() ? 'border-brand ring-1 ring-brand' : 'border-subtle'"
+      [attr.aria-checked]="opcion.valor === modo()"
+      [attr.tabindex]="opcion.valor === modo() ? 0 : -1"
+      (click)="elegir(opcion.valor)"
+    >
+      <div class="vista" [class]="'vista--' + opcion.valor" aria-hidden="true">
+        @if (opcion.valor === 'automatico') {
+          <div class="vista__mitad-oscura"></div>
+        }
+        <div class="vista__barra"></div>
+        <div class="vista__linea vista__linea--larga"></div>
+        <div class="vista__linea vista__linea--corta"></div>
+        <div class="vista__acento"></div>
+      </div>
+
+      <span
+        class="mt-2 flex items-center justify-center gap-1.5 text-sm"
+        [class]="opcion.valor === modo() ? 'font-medium text-brand' : 'text-secondary'"
+      >
+        <i [class]="opcion.icono + ' text-xs'" aria-hidden="true"></i>
+        {{ opcion.etiqueta | translate }}
+      </span>
+    </button>
+  }
+</div>

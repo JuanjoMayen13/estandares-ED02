@@ -1,0 +1,29 @@
+<!-- Tarjetas con una miniatura de la interfaz en cada modo -->
+<div class="pi-modos" role="radiogroup" [attr.aria-label]="'inicio.modoTema' | translate" (keydown)="alPresionarTecla($event)">
+  @for (opcion of opciones; track opcion.valor) {
+    <button
+      type="button"
+      role="radio"
+      class="pi-modo pi-foco"
+      [class.pi-modo--elegido]="opcion.valor === modo()"
+      [attr.aria-checked]="opcion.valor === modo()"
+      [attr.tabindex]="opcion.valor === modo() ? 0 : -1"
+      (click)="elegir(opcion.valor)"
+    >
+      <div class="vista" [class]="'vista--' + opcion.valor" aria-hidden="true">
+        @if (opcion.valor === 'automatico') {
+          <div class="vista__mitad-oscura"></div>
+        }
+        <div class="vista__barra"></div>
+        <div class="vista__linea vista__linea--larga"></div>
+        <div class="vista__linea vista__linea--corta"></div>
+        <div class="vista__acento"></div>
+      </div>
+
+      <span class="pi-modo-etiqueta">
+        <i [class]="opcion.icono + ' pi-icono-12'" aria-hidden="true"></i>
+        {{ opcion.etiqueta | translate }}
+      </span>
+    </button>
+  }
+</div>

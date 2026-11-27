@@ -1,0 +1,89 @@
+/* Estándar pantalla de inicio v1.0.0 — miniaturas del selector del modo de la interfaz (README §2.6).
+   Idéntico en las dos implementaciones. Los colores son fijos a propósito: dibujan cómo se ve la
+   interfaz en cada modo, no dependen del modo actual. */
+.vista {
+  position: relative;
+  height: 3.75rem;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(0 0 0 / 0.1);
+}
+
+.vista__barra {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 0.625rem;
+}
+
+.vista__linea {
+  position: absolute;
+  left: 0.5rem;
+  height: 0.375rem;
+  border-radius: 0.1875rem;
+}
+
+.vista__linea--larga {
+  top: 1.25rem;
+  width: 55%;
+}
+
+.vista__linea--corta {
+  top: 2rem;
+  width: 35%;
+}
+
+.vista__acento {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+}
+
+.vista--claro,
+.vista--automatico {
+  background: #ffffff;
+}
+
+.vista--claro .vista__barra,
+.vista--automatico .vista__barra {
+  background: #1a365d;
+}
+
+.vista--claro .vista__linea {
+  background: #d1d5db;
+}
+
+.vista--automatico .vista__linea {
+  background: #9ca3af;
+}
+
+.vista--claro .vista__acento,
+.vista--automatico .vista__acento {
+  background: #2563eb;
+}
+
+.vista--oscuro {
+  background: #1f2937;
+}
+
+.vista--oscuro .vista__barra {
+  background: #061b3c;
+}
+
+.vista--oscuro .vista__linea {
+  background: #4b5563;
+}
+
+.vista--oscuro .vista__acento {
+  background: #60a5fa;
+}
+
+/* Automático: la mitad inferior derecha en oscuro, partida en diagonal */
+.vista__mitad-oscura {
+  position: absolute;
+  inset: 0;
+  background: #1f2937;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}

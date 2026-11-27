@@ -1,5 +1,5 @@
 // Estándar pantalla de inicio v1.0.0 — panel de preferencias (README §2.6)
-import { Component, ElementRef, HostListener, inject, input, output, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, computed, inject, input, output, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AccionRapida, EstadoPanel, SeccionPreferencias } from '../../utilidades/modelos';
@@ -42,6 +42,9 @@ export class PanelPreferenciasComponent {
   readonly accionRapidaElegida = output<void>();
 
   protected readonly flotante = signal<Flotante | null>(null);
+
+  /** Las secciones con ícono en la barra compacta. */
+  protected readonly seccionesBarra = computed(() => this.secciones().filter((s) => !s.soloExpandido));
 
   protected esCompacto(): boolean {
     return this.variante() === 'lateral' && this.estado() === 'compacto';

@@ -405,6 +405,21 @@
 }
 .pi-seccion-titulo--flotante { color: rgb(var(--pi-text-secondary)); }
 
+/* Selector del modo de la interfaz (§2.6). Las miniaturas están en selector-modo-tema.component.css */
+.pi-modos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+.pi-modo {
+  border-radius: 0.75rem; border: 1px solid rgb(var(--pi-border-subtle)); background-color: rgb(var(--pi-surface));
+  padding: 0.5rem; text-align: center;
+}
+.pi-modo:hover { background-color: rgb(var(--pi-surface-raised)); }
+.pi-modo--elegido { border-color: rgb(var(--pi-brand)); box-shadow: 0 0 0 1px rgb(var(--pi-brand)); }
+.pi-modo.pi-foco:focus-visible { box-shadow: 0 0 0 2px rgb(var(--pi-focus)); }
+.pi-modo-etiqueta {
+  margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.375rem;
+  font-size: 0.875rem; line-height: 1.25rem; color: rgb(var(--pi-text-secondary));
+}
+.pi-modo--elegido .pi-modo-etiqueta { font-weight: 500; color: rgb(var(--pi-brand)); }
+
 /* Mosaicos (patrón para secciones de configuración, §2.6) */
 .pi-mosaicos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
 .pi-mosaico {

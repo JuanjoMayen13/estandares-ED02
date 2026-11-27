@@ -4,7 +4,7 @@ Pantalla a la que se llega después de iniciar sesión: tres zonas (aplicativos 
 
 | | |
 |---|---|
-| **Versión** | 1.0.0 (borrador) — 2026-11-24 |
+| **Versión** | 1.0.0 — 2026-11-24 |
 | **Estado** | Especificación, contratos, las dos implementaciones, las traducciones y la demo listos ([§9](#9-demo)). Pendiente: compilar el código en un proyecto de prueba y comparar Tailwind con CSS puro |
 | **Origen** | Pantalla de inicio del portal *Business* (Angular 20 + Tailwind CSS 3.4), ruta `/inicio` |
 | **Implementaciones** | 1) [Angular + Tailwind](angular-tailwind/) · 2) [Angular + CSS puro](angular-css-puro/) (sin Tailwind) |
@@ -266,9 +266,19 @@ Las columnas «Módulos» y «Preferencias» son el estado **por defecto**: el u
 | Título de sección | 12 px 600, mayúsculas, espaciado 0.025em, `text-muted`, 12 px de margen inferior |
 | Secciones | Las pone cada proyecto ([§4.2](#42-componentes)). Una sección puede llevar una línea superior `border-subtle` con 24 px arriba para separar grupos |
 
+**Tema de la interfaz** (`<app-selector-modo-tema>`; la primera sección en *Business*): tres tarjetas en una cuadrícula de 3 columnas con 12 px de separación, una por modo: Claro (`fa-sun`), Oscuro (`fa-moon`) y Automático, el del sistema (`fa-circle-half-stroke`). Cada tarjeta tiene radio 12 px, borde `border-subtle`, fondo `surface` (hover `surface-raised`) y relleno 8 px. Adentro, una **miniatura** de 60 px de alto (radio 8 px, borde negro al 10 %) que dibuja la interfaz en ese modo con colores fijos, que no cambian con el tema actual:
+
+| Miniatura | Fondo | Barra superior (10 px) | Dos líneas (6 px de alto, 55 % y 35 % de ancho, a 20 y 32 px del borde) | Acento (16 × 16 px abajo a la derecha, radio 4 px) |
+|---|---|---|---|---|
+| Claro | `#ffffff` | `#1a365d` | `#d1d5db` | `#2563eb` |
+| Oscuro | `#1f2937` | `#061b3c` | `#4b5563` | `#60a5fa` |
+| Automático | `#ffffff`, con la mitad inferior derecha `#1f2937` partida en diagonal | `#1a365d` | `#9ca3af` | `#2563eb` |
+
+Debajo, a 8 px, el ícono (12 px) y el nombre del modo (14 px, `text-secondary`), centrados con 6 px entre ellos. La tarjeta elegida lleva borde y anillo de 1 px `brand`, y su nombre en 500 `brand`. Es un grupo de radios: Tab entra a la opción elegida y las flechas pasan a la vecina y la eligen. En la barra compacta esta sección no tiene ícono: ahí el tema es la acción directa claro ⇄ oscuro.
+
 **Mosaicos** (patrón para acciones de configuración; en *Business*, «Gestión de preferencias»): cuadrícula de 2 columnas con 8 px de separación. Cada mosaico mide 80 px de alto, radio 8 px, borde `border-subtle` (hover `brand`), fondo `surface-raised`, `text-secondary`; adentro, en columna con 6 px de separación, un círculo de 36 px con el ícono (14 px) en los colores del trío de su estado, que crece a 1.1 al pasar el mouse, y el texto de 12 px 500.
 
-**Compacto** (64 px): igual que el de módulos (expandir arriba con `fa-angles-left`, ocultar abajo). En el medio, un ícono de 40 × 40 px por sección, en el mismo estilo que los aplicativos (`surface-raised` / `text-secondary`; hover `brand` al 10 %; abierto `brand` / `on-brand`). El primero puede ser una **acción directa** que no abre panel (en *Business*: alternar claro/oscuro con `fa-moon`/`fa-sun`). Panel flotante de 304 px a la **izquierda** de la barra, con relleno de 16 px y el contenido de esa sección.
+**Compacto** (64 px): igual que el de módulos (expandir arriba con `fa-angles-left`, ocultar abajo). En el medio, un ícono de 40 × 40 px por sección (menos las que son solo del panel expandido, como el tema), en el mismo estilo que los aplicativos (`surface-raised` / `text-secondary`; hover `brand` al 10 %; abierto `brand` / `on-brand`). El primero puede ser una **acción directa** que no abre panel (en *Business*: alternar claro/oscuro con `fa-moon`/`fa-sun`). Panel flotante de 304 px a la **izquierda** de la barra, con relleno de 16 px y el contenido de esa sección.
 
 **Capa** (tablet y celular): el panel expandido de 352 px (máx. 90 % del ancho), pegado a la derecha, con sombra `shadow-xl` y botón cerrar.
 
@@ -602,6 +612,7 @@ Los tipos están en [`utilidades/modelos.ts`](angular-tailwind/utilidades/modelo
 | `<app-panel-modulos>` | `estado: EstadoPanel` · `variante: 'lateral' \| 'capa'` · `aplicativos: Aplicativo[]` · `arboles: Record<number, NodoPantalla[]>` · `pantallas: Pantalla[]` · `carga: EstadoCarga` · `puedeAbrir: (nodo) => boolean` · `aplicativoAbierto: number \| null` | `abrir: Pantalla` · `cambiarEstado: EstadoPanel` · `alternarAplicativo: number` · `reintentar` · `cerrar` | 1 (estados: 2) |
 | `<app-arbol-pantallas>` (lo usa el panel de módulos) | `nodos: NodoPantalla[]` · `idActual: number \| null` · `expandirHasta: number[]` · `puedeAbrir` | `seleccionado: NodoPantalla` | 1 |
 | `<app-panel-preferencias>` | `estado` · `variante` · `secciones: SeccionPreferencias[]` · `accionRapida: AccionRapida \| null` | `cambiarEstado` · `cerrar` · `accionRapidaElegida` | 1 (estados: 2) |
+| `<app-selector-modo-tema>` (sección de preferencias) | `modo: ModoTema` | `cambiar: ModoTema` | 1 |
 | `<app-saludo-inicio>` | `usuario: string` · `saludoContexto: string \| null` (clave de traducción) · `temporada: Temporada \| null` · `anio: number` · `variante: 'tarjeta' \| 'linea'` | — | 1 (contexto y temporada: 4) |
 | `<app-tiempo-sesion>` | `vence: number \| null` (ms) · `inicio: number \| null` (ms) | — | 1 |
 | `<app-accesos-rapidos>` | `fijados: AccesoRapido[]` · `recientes: AccesoRapido[]` · `totalFijados: number` · `maximoFijados = 8` · `cargado: boolean` · `horizontal: boolean` | `abrir` · `fijar` · `quitarFijado` · `borrarRecientes` | 1 |
@@ -622,7 +633,12 @@ export interface SeccionPreferencias {
   plantilla: TemplateRef<unknown>;
   /** Línea divisoria encima de la sección en el panel expandido. */
   separada?: boolean;
+  /** Solo en el panel expandido: sin ícono en la barra compacta (p. ej. el tema). */
+  soloExpandido?: boolean;
 }
+
+/** Modo de la interfaz que elige el usuario: `automatico` sigue al del sistema. */
+export type ModoTema = 'claro' | 'oscuro' | 'automatico';
 
 /** Acción directa de la barra compacta de preferencias (no abre panel flotante). */
 export interface AccionRapida {
@@ -671,7 +687,8 @@ La pantalla de inicio base ([`inicio/inicio.component.ts`](angular-tailwind/inic
 | Cambios sin guardar | `hayCambios()` para el aviso de sesión (opcional; sin él, siempre sale la versión neutra) |
 | Modales del proyecto | `hayModalAbierto()`: mientras devuelva `true`, los atajos no actúan |
 | Menú del usuario | `accionesMenu` y `alElegirAccion(id)` (en *Business*: cambiar estación y empresa, configurar servidor), y `cerrarSesion()` con su confirmación |
-| Preferencias | `secciones` con sus plantillas (en *Business*: tema, color, gestión de preferencias e idioma) y `accionRapida`, si la hay. La base trae una sección de ejemplo con mosaicos |
+| Preferencias | `secciones` con sus plantillas (en *Business*: tema, color, gestión de preferencias e idioma) y `accionRapida`, si la hay. La base trae dos de ejemplo: el tema y una de configuración con mosaicos |
+| Tema | `modoTema` y `esOscuro` con el estado del servicio de tema del proyecto, y `cambiarModoTema(modo)` para aplicarlo. La acción rápida (claro ⇄ oscuro) ya está armada con ellos |
 | Widgets | Los que tenga datos reales, con `<app-widget-card>` ([§2.9](#29-widgets)) |
 | Debajo del header | Un aviso propio, si lo hay (en *Business*: conexión perdida) |
 | Almacenamiento | Conservar las claves de [§3.12](#312-lo-que-se-recuerda) cuando limpia el almacenamiento al iniciar o cerrar sesión |
@@ -689,6 +706,7 @@ La pantalla de inicio base ([`inicio/inicio.component.ts`](angular-tailwind/inic
 │   │   └── inicio.component.html
 │   ├── componentes/                       ← un componente por carpeta (.ts + .html)
 │   │   ├── panel-modulos/  arbol-pantallas/  panel-preferencias/
+│   │   ├── selector-modo-tema/ (+ .css)
 │   │   ├── accesos-rapidos/  buscador-pantallas/  menu-usuario/
 │   │   ├── saludo-inicio/  tiempo-sesion/  aviso-sesion/
 │   │   ├── widget-card/  widget-atajos/  widget-conexion/
@@ -720,7 +738,7 @@ La pantalla de inicio base ([`inicio/inicio.component.ts`](angular-tailwind/inic
     └── demo.css · demo.js                 ← solo la barra de la demo
 ```
 
-Los `.ts`, los servicios, las utilidades y el CSS de la decoración de temporada son **idénticos** en las dos implementaciones: solo cambian las plantillas `.html` y los estilos. Si se corrige algo en un `.ts`, se copia a las dos.
+Los `.ts`, los servicios, las utilidades y el CSS de la decoración de temporada y de las miniaturas del selector de tema son **idénticos** en las dos implementaciones: solo cambian las plantillas `.html` y los estilos. Si se corrige algo en un `.ts`, se copia a las dos.
 
 ---
 
@@ -814,10 +832,11 @@ En CSS puro, las mismas filas son `<dl class="pi-widget-filas">`, `<div class="p
 
 ## 8. Traducciones
 
-[`traducciones/`](traducciones/) trae [`es.json`](traducciones/es.json), [`en.json`](traducciones/en.json), [`de.json`](traducciones/de.json) y [`fr.json`](traducciones/fr.json), con la misma estructura que los JSON de ngx-translate. **Todas las claves están en un solo bloque, `inicio`** (80 claves), para combinarlas con las del proyecto sin depender de otros bloques.
+[`traducciones/`](traducciones/) trae [`es.json`](traducciones/es.json), [`en.json`](traducciones/en.json), [`de.json`](traducciones/de.json) y [`fr.json`](traducciones/fr.json), con la misma estructura que los JSON de ngx-translate. **Todas las claves están en un solo bloque, `inicio`** (85 claves), para combinarlas con las del proyecto sin depender de otros bloques.
 
 - Son los textos de *Business*. Las que allí están en otros bloques (`common`, `dashboard`, `shared`, `labelsLogin`) se juntaron en `inicio` con nombres propios (por ejemplo `common.cerrar` → `inicio.cerrar`, `dashboard.fijados` → `inicio.fijados`).
 - `inicio.configuracion` es nueva: es el título de la sección de ejemplo de preferencias.
+- `inicio.temaInterfaz` es el título de la sección del tema y `inicio.modoTema` el nombre accesible del grupo de tarjetas («Apariencia»).
 - `inicio.cambiarModoClaro` e `inicio.cambiarModoOscuro` no las usan las plantillas: son para la acción rápida de tema ([§4.2](#42-componentes)).
 - Los nombres de aplicativos y pantallas **no** se traducen: vienen de la fuente de datos de cada proyecto.
 
@@ -906,6 +925,7 @@ El estándar replica el original **tal cual**, incluidas estas particularidades.
 | 8 | El texto en inglés de «sin pantallas» (`inicio.sinPantallas`) dice «No diplays available» | Error de tipeo visible | «No screens available» |
 | 9 | El relleno inferior con el área segura (`max(16px, env(safe-area-inset-bottom))`) solo aplica por debajo de 640 px fuera de celular, lo que no ocurre | Sin efecto | Quitarlo o moverlo a la barra inferior |
 | 10 | Al fijar o quitar dos accesos seguidos, el navegador cancela la transición anterior y rechaza su promesa `ready`, que nadie atiende | Error «Uncaught (in promise) AbortError: Transition was skipped» en la consola (no afecta a la pantalla) | Atender la promesa: `transicion.ready.catch(() => {})`. **Ya aplicado** en el código del estándar |
+| 11 | En el selector de tema, el nombre «Automático» no cabe en el ancho de su tarjeta en celular (91 px) ni, en francés y alemán, en el panel de 352 px | El texto se sale de su caja y queda pegado al borde de la tarjeta (sin cortarse ni salirse del borde) | Reducir el texto a 12 px o permitir que pase a dos líneas |
 
 ---
 
@@ -919,6 +939,7 @@ El estándar replica el original **tal cual**, incluidas estas particularidades.
 
 | Versión | Fecha | Cambios |
 |---|---|---|
-| 1.0.0 (borrador) | 2026-11-24 | Especificación visual, comportamiento, niveles de adopción y contrato de los componentes, tomados de la pantalla de inicio del portal Business. |
-| 1.0.0 (borrador) | 2026-11-25 | Implementaciones Angular + Tailwind y Angular + CSS puro (componentes separados de los servicios de Business según §4), tokens y traducciones en cuatro idiomas. Demo en preparación. |
-| 1.0.0 (borrador) | 2026-11-27 | Demo terminada. Publicado en el repositorio de estándares, en `angular/pantalla-inicio/`. |
+| 1.0.0 | 2026-11-24 | Especificación visual, comportamiento, niveles de adopción y contrato de los componentes, tomados de la pantalla de inicio del portal Business. |
+| 1.0.0 | 2026-11-25 | Implementaciones Angular + Tailwind y Angular + CSS puro (componentes separados de los servicios de Business según §4), tokens y traducciones en cuatro idiomas. Demo en preparación. |
+| 1.0.0 | 2026-11-27 | Demo terminada. Publicado en el repositorio de estándares, en `angular/pantalla-inicio/`. |
+| 1.0.0 | 2026-11-27 | Sección «Tema de la interfaz» igual a la de *Business*: componente `<app-selector-modo-tema>` (tarjetas Claro, Oscuro y Automático con miniatura), `ModoTema`, `soloExpandido` en las secciones y la acción rápida claro ⇄ oscuro en la pantalla base. |

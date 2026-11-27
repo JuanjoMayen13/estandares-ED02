@@ -9,10 +9,10 @@
 
   /** Textos propios de la demo: las secciones de ejemplo del panel de preferencias. */
   const TEXTOS_DEMO = {
-    es: { tema: 'Tema', claro: 'Claro', oscuro: 'Oscuro', idioma: 'Idioma' },
-    en: { tema: 'Theme', claro: 'Light', oscuro: 'Dark', idioma: 'Language' },
-    de: { tema: 'Design', claro: 'Hell', oscuro: 'Dunkel', idioma: 'Sprache' },
-    fr: { tema: 'Thème', claro: 'Clair', oscuro: 'Sombre', idioma: 'Langue' },
+    es: { idioma: 'Idioma' },
+    en: { idioma: 'Language' },
+    de: { idioma: 'Sprache' },
+    fr: { idioma: 'Langue' },
   };
   const IDIOMAS = [
     { codigo: 'es', nombre: 'Español' },
@@ -86,6 +86,8 @@
   const estado = {
     idioma: almacen.leer('demoInicio:idioma') || 'es',
     oscuro: document.documentElement.classList.contains('dark'),
+    /** Modo elegido: claro, oscuro o automatico (el del sistema). */
+    modoTema: 'automatico',
   };
 
   function t(clave, valores) {
@@ -475,10 +477,8 @@
         <span class="pi-mosaico-texto">${esc(texto)}</span></button>`;
     return [
       {
-        id: 'tema', icono: 'fa-solid fa-circle-half-stroke', etiqueta: td('tema'),
-        contenido: `<div class="pi-mosaicos">
-          ${mosaico('tema', 'claro', '<i class="fa-solid fa-sun pi-icono-14"></i>', 'aviso', td('claro'), !estado.oscuro)}
-          ${mosaico('tema', 'oscuro', '<i class="fa-solid fa-moon pi-icono-14"></i>', 'info', td('oscuro'), estado.oscuro)}</div>`,
+        id: 'tema', icono: 'fa-solid fa-circle-half-stroke', etiqueta: t('temaInterfaz'), soloExpandido: true,
+        contenido: htmlSelectorModoTema(),
       },
       {
         id: 'idioma', icono: 'fa-solid fa-language', etiqueta: td('idioma'),
@@ -489,6 +489,25 @@
         contenido: `<div class="pi-mosaicos">${mosaico('accion-menu', 'servidor', '<i class="fa-solid fa-server pi-icono-14"></i>', 'info', t('configurarServidor'), false)}</div>`,
       },
     ];
+  }
+
+  /** Copia de <app-selector-modo-tema>: tres tarjetas con una miniatura de la interfaz en cada modo. */
+  function htmlSelectorModoTema() {
+    const opciones = [
+      { valor: 'claro', etiqueta: t('modoClaro'), icono: 'fa-solid fa-sun' },
+      { valor: 'oscuro', etiqueta: t('modoOscuro'), icono: 'fa-solid fa-moon' },
+      { valor: 'automatico', etiqueta: t('modoAutomatico'), icono: 'fa-solid fa-circle-half-stroke' },
+    ];
+    return `<div class="pi-modos" role="radiogroup" aria-label="${esc(t('modoTema'))}">${opciones.map((o) => {
+      const elegido = o.valor === estado.modoTema;
+      return `<button type="button" role="radio" class="pi-modo pi-foco${elegido ? ' pi-modo--elegido' : ''}" data-accion="modo-tema" data-valor="${o.valor}" data-foco="modo-${o.valor}"
+        aria-checked="${elegido}" tabindex="${elegido ? 0 : -1}">
+        <div class="vista vista--${o.valor}" aria-hidden="true">${o.valor === 'automatico' ? '<div class="vista__mitad-oscura"></div>' : ''}
+          <div class="vista__barra"></div><div class="vista__linea vista__linea--larga"></div><div class="vista__linea vista__linea--corta"></div><div class="vista__acento"></div>
+        </div>
+        <span class="pi-modo-etiqueta"><i class="${o.icono} pi-icono-12" aria-hidden="true"></i>${esc(o.etiqueta)}</span>
+      </button>`;
+    }).join('')}</div>`;
   }
 
   function htmlPanelPreferencias(estadoPanel, variante) {
@@ -506,7 +525,7 @@
         </div>
         <div class="pi-barra-iconos">
           <button type="button" class="pi-icono-barra pi-foco" data-accion="tema" data-valor="${estado.oscuro ? 'claro' : 'oscuro'}" aria-label="${esc(accion.etiqueta)}" title="${esc(accion.etiqueta)}"><i class="${accion.icono}" aria-hidden="true"></i></button>
-          ${secciones.map((s) => `<button type="button" class="pi-icono-barra pi-foco${abierta && abierta.id === s.id ? ' pi-icono-barra--activo' : ''}" data-accion="flotante-preferencias" data-id="${s.id}"
+          ${secciones.filter((s) => !s.soloExpandido).map((s) => `<button type="button" class="pi-icono-barra pi-foco${abierta && abierta.id === s.id ? ' pi-icono-barra--activo' : ''}" data-accion="flotante-preferencias" data-id="${s.id}"
             aria-label="${esc(s.etiqueta)}" aria-expanded="${!!abierta && abierta.id === s.id}" title="${esc(s.etiqueta)}"><i class="${s.icono}" aria-hidden="true"></i></button>`).join('')}
         </div>
         <div class="pi-barra-extremo pi-barra-extremo--abajo">
@@ -893,14 +912,26 @@
   // ======================================================================
   // Mensajes del panel de la demo (index.html)
   // ======================================================================
-  function aplicarTema(oscuro) {
-    estado.oscuro = oscuro;
-    document.documentElement.classList.toggle('dark', oscuro);
-    document.documentElement.classList.toggle('light', !oscuro);
+  const SISTEMA_OSCURO = window.matchMedia('(prefers-color-scheme: dark)');
+
+  /** Lo que en un proyecto hace su servicio de tema: claro, oscuro o el del sistema. */
+  function aplicarModo(modo) {
+    estado.modoTema = modo;
+    estado.oscuro = modo === 'oscuro' || (modo === 'automatico' && SISTEMA_OSCURO.matches);
+    document.documentElement.classList.toggle('dark', estado.oscuro);
+    document.documentElement.classList.toggle('light', !estado.oscuro);
   }
 
+  // En automático, sigue al sistema si cambia
+  SISTEMA_OSCURO.addEventListener('change', () => {
+    if (estado.modoTema !== 'automatico') return;
+    aplicarModo('automatico');
+    dibujar();
+    avisarEstado();
+  });
+
   const MENSAJES = {
-    tema: (valor) => aplicarTema(valor === 'oscuro'),
+    tema: (valor) => aplicarModo(valor),
     idioma: (valor) => {
       estado.idioma = TEXTOS[valor] ? valor : 'es';
       almacen.guardar('demoInicio:idioma', estado.idioma);
@@ -1265,7 +1296,8 @@
         enfocar('.pi-filtro-input');
         return;
       case 'tema':
-        aplicarTema(el.dataset.valor === 'oscuro');
+      case 'modo-tema':
+        aplicarModo(el.dataset.valor);
         avisarEstado();
         break;
       case 'idioma':
@@ -1365,6 +1397,21 @@
       }
     }
 
+    // Selector del modo de la interfaz: las flechas pasan a la opción vecina y la eligen
+    if (datos.accion === 'modo-tema') {
+      const salto = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[evento.key];
+      if (salto) {
+        evento.preventDefault();
+        const modos = ['claro', 'oscuro', 'automatico'];
+        const siguiente = modos[(modos.indexOf(estado.modoTema) + salto + modos.length) % modos.length];
+        aplicarModo(siguiente);
+        dibujar();
+        avisarEstado();
+        enfocar(`[data-foco="modo-${siguiente}"]`);
+        return;
+      }
+    }
+
     // Filtro de módulos: Esc solo lo limpia
     if (datos.accion === 'filtro' && evento.key === 'Escape') {
       estado.filtro = '';
@@ -1452,9 +1499,9 @@
   TAMANOS.filter((x) => x.desde > 0).forEach((x) => window.matchMedia(`(min-width: ${x.desde}px)`).addEventListener('change', alCambiarAncho));
   window.addEventListener('resize', alCambiarAncho);
 
-  // Tema inicial: el del sistema, o el que pida el panel de la demo (?tema=oscuro)
+  // Tema inicial: automático (el del sistema), o el que pida el panel de la demo (?tema=oscuro)
   const parametros = new URLSearchParams(location.search);
-  aplicarTema(parametros.get('tema') ? parametros.get('tema') === 'oscuro' : window.matchMedia('(prefers-color-scheme: dark)').matches);
+  aplicarModo(['claro', 'oscuro', 'automatico'].includes(parametros.get('tema')) ? parametros.get('tema') : 'automatico');
   if (parametros.get('temporada')) MENSAJES.temporada(parametros.get('temporada'));
 
   dibujar();

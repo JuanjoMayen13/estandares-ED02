@@ -39,6 +39,9 @@ export type EstadoPanel = 'expandido' | 'compacto' | 'oculto';
 
 export type EstadoCarga = 'cargando' | 'listo' | 'error';
 
+/** Modo de la interfaz que elige el usuario: `automatico` sigue al del sistema. */
+export type ModoTema = 'claro' | 'oscuro' | 'automatico';
+
 /** Una sección del panel de preferencias: título, ícono de la barra compacta y su contenido. */
 export interface SeccionPreferencias {
   id: string;
@@ -49,6 +52,11 @@ export interface SeccionPreferencias {
   plantilla: TemplateRef<unknown>;
   /** Línea divisoria encima de la sección en el panel expandido. */
   separada?: boolean;
+  /**
+   * Solo en el panel expandido: no tiene ícono en la barra compacta (p. ej. el tema, que ahí es
+   * la acción rápida claro ⇄ oscuro).
+   */
+  soloExpandido?: boolean;
 }
 
 /** Acción directa de la barra compacta de preferencias (no abre panel flotante). */

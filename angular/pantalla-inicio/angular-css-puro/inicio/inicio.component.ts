@@ -30,6 +30,7 @@ import {
   Aplicativo,
   EstadoCarga,
   EstadoPanel,
+  ModoTema,
   NodoPantalla,
   Pantalla,
   SeccionPreferencias,
@@ -42,6 +43,7 @@ import { MenuUsuarioComponent } from '../componentes/menu-usuario/menu-usuario.c
 import { PanelModulosComponent } from '../componentes/panel-modulos/panel-modulos.component';
 import { PanelPreferenciasComponent } from '../componentes/panel-preferencias/panel-preferencias.component';
 import { SaludoInicioComponent } from '../componentes/saludo-inicio/saludo-inicio.component';
+import { SelectorModoTemaComponent } from '../componentes/selector-modo-tema/selector-modo-tema.component';
 import { TiempoSesionComponent } from '../componentes/tiempo-sesion/tiempo-sesion.component';
 import { WidgetAtajosComponent } from '../componentes/widget-atajos/widget-atajos.component';
 import { WidgetConexionComponent } from '../componentes/widget-conexion/widget-conexion.component';
@@ -73,6 +75,7 @@ const DURACION_DESHACER_MS = 6000;
     PanelModulosComponent,
     PanelPreferenciasComponent,
     SaludoInicioComponent,
+    SelectorModoTemaComponent,
     TiempoSesionComponent,
     WidgetAtajosComponent,
     WidgetConexionComponent,
@@ -124,11 +127,20 @@ export class InicioComponent implements OnInit {
    * Secciones del panel de preferencias. Las plantillas están en inicio.component.html, fuera de
    * cualquier @if: `static: true` las tiene listas en ngOnInit, donde se arma la lista.
    */
+  @ViewChild('seccionTema', { static: true }) private seccionTema!: TemplateRef<unknown>;
   @ViewChild('seccionConfiguracion', { static: true }) private seccionConfiguracion!: TemplateRef<unknown>;
   protected readonly secciones = signal<SeccionPreferencias[]>([]);
 
-  /** Acción directa de la barra compacta de preferencias (p. ej. claro ⇄ oscuro), o null. */
-  protected readonly accionRapida = signal<AccionRapida | null>(null);
+  /** PROYECTO: modo que eligió el usuario y si la interfaz se ve oscura ahora (en automático, según el sistema). */
+  protected readonly modoTema = signal<ModoTema>('claro');
+  protected readonly esOscuro = signal(false);
+
+  /** Acción directa de la barra compacta de preferencias (claro ⇄ oscuro), o null si no hay. */
+  protected readonly accionRapida = computed<AccionRapida | null>(() =>
+    this.esOscuro()
+      ? { icono: 'fa-solid fa-sun', etiqueta: 'inicio.cambiarModoClaro' }
+      : { icono: 'fa-solid fa-moon', etiqueta: 'inicio.cambiarModoOscuro' },
+  );
 
   /** Datos del widget de conexión (ejemplo de widget del proyecto). */
   protected readonly conexion = signal({ conectado: true, url: '', versionWeb: null as string | null, versionApi: null as string | null });
@@ -177,9 +189,11 @@ export class InicioComponent implements OnInit {
     // this.venceSesion.set(this.sesion.vencimiento());   // p. ej. `exp * 1000` del token
     // this.inicioSesion.set(this.sesion.inicio());       // p. ej. `iat * 1000` del token
 
-    // PROYECTO: las secciones de preferencias, en orden (ejemplo: una sección de configuración)
+    // PROYECTO: las secciones de preferencias, en orden (ejemplo: el tema y una sección de configuración)
+    // y el modo de tema actual, p. ej. this.modoTema.set(this.tema.preferencia()).
     this.secciones.set([
-      { id: 'configuracion', icono: 'fa-solid fa-gears', etiqueta: 'inicio.configuracion', plantilla: this.seccionConfiguracion },
+      { id: 'tema', icono: 'fa-solid fa-circle-half-stroke', etiqueta: 'inicio.temaInterfaz', plantilla: this.seccionTema, soloExpandido: true },
+      { id: 'configuracion', icono: 'fa-solid fa-gears', etiqueta: 'inicio.configuracion', plantilla: this.seccionConfiguracion, separada: true },
     ]);
 
     this.paneles.inicializar(this.destroyRef, this.usuario());
@@ -227,8 +241,20 @@ export class InicioComponent implements OnInit {
     }
   }
 
-  /** PROYECTO: lo que hace la acción rápida de la barra compacta de preferencias. */
-  protected alElegirAccionRapida(): void {}
+  /** PROYECTO: lo que hace la acción rápida de la barra compacta de preferencias (aquí, claro ⇄ oscuro). */
+  protected alElegirAccionRapida(): void {
+    this.cambiarModoTema(this.esOscuro() ? 'claro' : 'oscuro');
+  }
+
+  /**
+   * PROYECTO: aplicar el modo con el servicio de tema del proyecto y actualizar `modoTema` y
+   * `esOscuro` (en automático, `esOscuro` es el del sistema y cambia si el sistema cambia).
+   */
+  protected cambiarModoTema(modo: ModoTema): void {
+    this.modoTema.set(modo);
+    this.esOscuro.set(modo === 'oscuro' || (modo === 'automatico' && matchMedia('(prefers-color-scheme: dark)').matches));
+    // Ejemplo: this.tema.establecerPreferencia(modo);
+  }
 
   /** PROYECTO: confirmar y cerrar la sesión. */
   protected cerrarSesion(): void {}
